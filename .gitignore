@@ -1,1 +1,2 @@
-traffic_sim
+.idea/*
+cmake-build-debug/*
