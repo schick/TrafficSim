@@ -36,7 +36,7 @@ Car::AdvanceData Car::nextStep() {
 void Car::advanceStep(AdvanceData data) {
     assert(data.car == this);
     a = data.acceleration;
-    v = v + a < 0 ? 0 : v + a;
+    v = ((v + a) < 0) ? 0 : v + a;
     x = x + v;
     if (data.lane_change)
         moveToLane(data.lane_change);
@@ -45,7 +45,7 @@ void Car::advanceStep(AdvanceData data) {
 
 double Car::getAcceleration(TrafficObject *leading_vehicle) {
     double vel_fraction = (v / target_velocity);
-    double without_lead = 1 - vel_fraction * vel_fraction * vel_fraction * vel_fraction;
+    double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction;
 
     double with_lead = 0;
     if (leading_vehicle != nullptr) {
@@ -60,15 +60,24 @@ double Car::getAcceleration(TrafficObject *leading_vehicle) {
 }
 
 double Car::laneChangeMetic(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors) {
-    double own_wo_lc = getAcceleration(ownNeighbors.front);
-    if ((otherNeighbors.front->x - x) >= (length / 2) && (x - otherNeighbors.back->x) >= (length / 2) + min_distance) {
+
+    if ((otherNeighbors.front == nullptr || (otherNeighbors.front->x - x) >= (length / 2)) &&
+        (otherNeighbors.back == nullptr || (x - otherNeighbors.back->x) >= (length / 2) + min_distance)) {
+        double own_wo_lc = getAcceleration(ownNeighbors.front);
         double own_w_lc = getAcceleration(otherNeighbors.front);
-        double other_wo_lc = otherNeighbors.back->getAcceleration(otherNeighbors.front);
-        double other_w_lc = otherNeighbors.back->getAcceleration(this);
-        double behind_w_lc = ownNeighbors.back->getAcceleration(ownNeighbors.front);
-        double behind_wo_lc = ownNeighbors.back->getAcceleration(this);
+
+        double other_lane_diff = 0;
+        if (otherNeighbors.back != nullptr)
+            other_lane_diff = (otherNeighbors.back->getAcceleration(this) -
+                    otherNeighbors.back->getAcceleration(otherNeighbors.front));
+
+        double behind_diff = 0;
+        if (ownNeighbors.back != nullptr)
+            behind_diff = (ownNeighbors.back->getAcceleration(ownNeighbors.front) -
+                    ownNeighbors.back->getAcceleration(this));
+
         if (own_w_lc > own_wo_lc) {
-            return own_w_lc - own_wo_lc + politeness * (behind_w_lc - behind_wo_lc + other_w_lc - other_wo_lc);
+            return own_w_lc - own_wo_lc + politeness * (behind_diff + other_lane_diff);
         }
     }
     return 0;
