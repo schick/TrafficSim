@@ -1,0 +1,80 @@
+//
+// Created by oke on 07.12.18.
+//
+
+#ifndef PROJECT_JUNCTION_H
+#define PROJECT_JUNCTION_H
+
+#include <array>
+#include <vector>
+
+#include "RedTrafficLight.h"
+#include "Road.h"
+
+/**
+ * a junction...
+ */
+class Junction {
+
+public:
+    /**
+     * direction to describe and access incoming and outgoing roads
+     */
+    enum Direction {
+        NORTH = 0,
+        EAST = 1,
+        SOUTH = 2,
+        WEST = 3
+    };
+
+    /**
+     * traffic light signal
+     */
+    struct Signal {
+        Signal(uint64_t _duration, Direction _direction) : duration(_duration), direction(_direction) {}
+        uint64_t duration;
+        Direction direction;
+    };
+
+    Junction(uint64_t id, int16_t x, int16_t y) : id(id), x(x), y(y) {};
+
+    /**
+     * signals to cycle through
+     */
+    std::vector<Signal> signals;
+
+    /**
+     * current signal
+     */
+    size_t current_signal_id;
+
+    /**
+     * time left in current signal
+     */
+    uint64_t current_signal_time_left;
+
+
+    /**
+     * red lights for each lane and road. initialize in updateSignals?
+     */
+    std::vector<RedTrafficLight> red_light_cars;
+
+    /**
+     * properties
+     */
+    uint64_t id;
+    int16_t x, y;
+    std::array<Road*, 4> outgoing;
+    std::array<Road*, 4> incoming;
+
+    /**
+     * update signals. called each timestep.
+     */
+    void updateSignals();
+
+};
+
+
+
+
+#endif //PROJECT_JUNCTION_H
