@@ -36,7 +36,12 @@ Car::AdvanceData Car::nextStep() {
 void Car::advanceStep(AdvanceData data) {
     assert(data.car == this);
     a = data.acceleration;
-    v = ((v + a) < 0) ? 0 : v + a;
+    v = v + a;
+	v = std::max(v, 0.);
+	
+	auto limit = getLane()->road->limit;
+	v = std::min(v, limit);
+
     x = x + v;
     if (data.lane_change)
         moveToLane(data.lane_change);
@@ -44,8 +49,8 @@ void Car::advanceStep(AdvanceData data) {
 
 
 double Car::getAcceleration(TrafficObject *leading_vehicle) {
-    double vel_fraction = (v / target_velocity);
-    double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction;
+    double vel_fraction = (v / (target_velocity));
+	double without_lead = 1. - std::pow(vel_fraction, 4);
 
     double with_lead = 0;
     if (leading_vehicle != nullptr) {
@@ -53,7 +58,7 @@ double Car::getAcceleration(TrafficObject *leading_vehicle) {
         double s = leading_vehicle->x - x - 5.;
         with_lead = (min_distance + v * target_headway +
                      (v * delta_v) / (2 * sqrt(max_acceleration * target_deceleration))) / s;
-        with_lead = with_lead * with_lead;
+        with_lead = std::pow(with_lead, 2);
     }
     double acceleration = max_acceleration * (without_lead - with_lead);
     return acceleration;

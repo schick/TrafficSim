@@ -3,16 +3,16 @@
 
 #include "Scenario.h"
 
-#ifdef VISUALIZATION_ENABLED
+//#ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
-#endif
+//#endif
 
 int main(int argc, char* argv[])
 {
     json input, loesung;
-#ifdef USE_CIN
+/*#ifdef USE_CIN
     std::cin >> input;
-#else
+#else*/
     std::string fn(argv[1]);
 
     // read input file
@@ -32,32 +32,32 @@ int main(int argc, char* argv[])
         std::cerr << "Failed to parse JSON.\n";
         return 1;
     }
-#endif
+//#endif
 
     Scenario scenario;
     scenario.parse(input);
 
     OkesExampleAdvanceAlgorithm advancer(&scenario);
 
-#ifdef VISUALIZATION_ENABLED
+//#ifdef VISUALIZATION_ENABLED
     Visualization visualization(&scenario);
     std::string video_fn("output.avi");
     visualization.open(video_fn, 1);
     visualization.render_image();
-#endif
+//#endif
 
     for(int i=0; i < input["time_steps"]; i++) {
         advancer.advance();
 
-#ifdef VISUALIZATION_ENABLED
+//#ifdef VISUALIZATION_ENABLED
         visualization.render_image();
-#endif
+//#endif
 
     }
-#ifdef VISUALIZATION_ENABLED
+//#ifdef VISUALIZATION_ENABLED
     visualization.render_image();
     visualization.close();
-#endif
+//#endif
 
 
     json output = scenario.toJson();
