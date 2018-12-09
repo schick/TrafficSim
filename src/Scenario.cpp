@@ -46,20 +46,9 @@ void Scenario::parse(json input) {
                 lanes.emplace_back(std::move(lane));
             }
 
-            Road *ptr = road_obj.get();
-            if (road_obj->from->x < road_obj->to->x) {
-                road_obj->from->outgoing[Junction::Direction::EAST] = ptr;
-                road_obj->to->incoming[Junction::Direction::WEST] = ptr;
-            } else if (road_obj->from->x > road_obj->to->x) {
-                road_obj->from->outgoing[Junction::Direction::WEST] = ptr;
-                road_obj->to->incoming[Junction::Direction::EAST] = ptr;
-            } else if (road_obj->from->y < road_obj->to->y) {
-                road_obj->from->outgoing[Junction::Direction::NORTH] = ptr;
-                road_obj->to->incoming[Junction::Direction::SOUTH] = ptr;
-            } else if (road_obj->from->y > road_obj->to->y) {
-                road_obj->from->outgoing[Junction::Direction::SOUTH] = ptr;
-                road_obj->to->incoming[Junction::Direction::NORTH] = ptr;
-            }
+            road_obj->from->outgoing[road_obj->getDirection()] = road_obj.get();
+            road_obj->to->incoming[(road_obj->getDirection() + 2) % 4] = road_obj.get();
+
             roads.emplace_back(std::move(road_obj));
         }
     }

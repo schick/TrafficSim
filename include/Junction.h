@@ -9,7 +9,8 @@
 #include <vector>
 
 #include "RedTrafficLight.h"
-#include "Road.h"
+
+class Road;
 
 /**
  * a junction...

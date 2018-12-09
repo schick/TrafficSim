@@ -116,11 +116,11 @@ public:
     Point2d directionVector(Junction::Direction direction) {
         switch(direction) {
             case Junction::Direction::NORTH:
-                return Point2d(0, 1);
+                return Point2d(0, -1);
             case Junction::Direction::EAST:
                 return Point2d(1, 0);
             case Junction::Direction::SOUTH:
-                return Point2d(0, -1);
+                return Point2d(0, 1);
             case Junction::Direction::WEST:
                 return Point2d(-1, 0);
         };
@@ -166,15 +166,12 @@ public:
                    pixel_per_m * car_width, Scalar(0, 0, 255), -1);
         }
 
-        Mat image_flip;
-
-        cv::flip(image, image_flip, 0);
-
+        // no need to flip image -> linkshändisches koordinatensystem
         if (video != nullptr) {
-            video->write(image_flip);
+            video->write(image);
         }
 
-        return image_flip;
+        return image;
     }
 
 

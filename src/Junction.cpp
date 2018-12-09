@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "Junction.h"
+#include "Road.h"
 
 
 void Junction::initializeSignals() {

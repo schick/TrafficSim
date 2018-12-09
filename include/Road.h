@@ -7,9 +7,7 @@
 
 
 #include <vector>
-
-
-class Junction;
+#include "Junction.h"
 class Lane;
 
 
@@ -38,6 +36,8 @@ public:
      * @return length of road in m
      */
     double getLength();
+
+    Junction::Direction getDirection();
 };
 
 

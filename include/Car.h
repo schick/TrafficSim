@@ -5,7 +5,7 @@
 #ifndef PROJECT_CAR_H
 #define PROJECT_CAR_H
 
-#include <vector>
+#include <list>
 #include <inttypes.h>
 
 #include "TrafficObject.h"
@@ -42,9 +42,9 @@ public:
      */
     enum TurnDirection {
         UTURN = 0,
-        RIGHT = 1,
+        LEFT = 1,
         STRAIGHT = 2,
-        LEFT = 3
+        RIGHT = 3
     };
 
     /**
@@ -79,7 +79,7 @@ public:
     double target_headway;
     double politeness;
 
-    std::vector<TurnDirection> turns;
+    std::list<TurnDirection> turns;
 
     /**
      * calculate advance-data for next step

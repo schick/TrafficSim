@@ -7,6 +7,7 @@
 #include <iostream>
 #include <math.h>
 #include <assert.h>
+#include <Junction.h>
 
 Car::AdvanceData Car::nextStep() {
     /**
@@ -43,6 +44,26 @@ void Car::advanceStep(AdvanceData data) {
     v = std::min(v, limit);
 
     x = x + v;
+
+    if (x > getLane()->getLength()) {
+        assert(!turns.empty());
+
+        x -= getLane()->getLength();
+
+        // select road based on current turn
+        Road *road;
+        int road_id = (getLane()->road->getDirection() + turns.front()) % 4;
+
+        // if not exits -> select next to the right
+        while((road = getLane()->road->to->outgoing[road_id]) == nullptr) road_id = (++road_id) % 4;
+
+        // move car to same or the right lane
+        moveToLane(road->lanes[std::max((size_t )getLane()->lane_id, road->lanes.size() - 1)]);
+
+        // next update next turns
+        turns.push_back(turns.front());
+        turns.pop_front();
+    }
     // TODO: junctions
     if (data.lane_change)
         moveToLane(data.lane_change);
