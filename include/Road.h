@@ -15,7 +15,7 @@ class Lane;
 
 class Road {
 public:
-    Road(Junction *_from, Junction *_to, double _limit) : from(_from), to(_to), limit(_limit) {};
+    Road(Junction *_from, Junction *_to, double _limit) : from(_from), to(_to), limit(_limit / 3.6) {};
 
     /**
      * properties
