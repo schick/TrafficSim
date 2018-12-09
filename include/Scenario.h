@@ -77,7 +77,8 @@ public:
     }
 
     void advanceTrafficLights() override {
-
+        for(std::unique_ptr<Junction> &j : getScenario()->junctions)
+            j->updateSignals();
     }
 
 };

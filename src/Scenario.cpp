@@ -11,7 +11,7 @@ void Scenario::parse(json input) {
         double y = junction["y"];
         std::unique_ptr<Junction> junction_obj = std::make_unique<Junction>(junction["id"], x * 100, y * 100);
         for(const auto& signal : junction["signals"])
-            junction_obj->signals.emplace_back(Junction::Signal({signal["dir"], signal["time"]}));
+            junction_obj->signals.emplace_back(Junction::Signal({signal["time"], signal["dir"]}));
         junctions.emplace_back(std::move(junction_obj));
     }
 
@@ -81,6 +81,9 @@ void Scenario::parse(json input) {
 
         cars.emplace_back(std::move(car_obj));
     }
+
+    for(std::unique_ptr<Junction> &j : junctions)
+        j->initializeSignals();
 }
 
 json Scenario::toJson() {

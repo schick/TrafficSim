@@ -31,12 +31,12 @@ public:
      * traffic light signal
      */
     struct Signal {
-        Signal(uint64_t _duration, Direction _direction) : duration(_duration), direction(_direction) {}
+        Signal(uint64_t duration, Direction direction) : duration(duration), direction(direction) {}
         uint64_t duration;
         Direction direction;
     };
 
-    Junction(uint64_t id, int16_t x, int16_t y) : id(id), x(x), y(y) {};
+    Junction(uint64_t id, int16_t x, int16_t y) : id(id), x(x), y(y), incoming(), outgoing() {};
 
     /**
      * signals to cycle through
@@ -49,17 +49,6 @@ public:
     size_t current_signal_id;
 
     /**
-     * time left in current signal
-     */
-    uint64_t current_signal_time_left;
-
-
-    /**
-     * red lights for each lane and road. initialize in updateSignals?
-     */
-    std::vector<RedTrafficLight> red_light_cars;
-
-    /**
      * properties
      */
     uint64_t id;
@@ -68,9 +57,28 @@ public:
     std::array<Road*, 4> incoming;
 
     /**
+     * initialize signals before starting the algorithm. create RedTrafficLight-Objects.
+     */
+    void initializeSignals();
+
+    /**
      * update signals. called each timestep.
      */
     void updateSignals();
+
+private:
+
+    /**
+     * time left in current signal
+     */
+    uint64_t current_signal_time_left;
+
+
+    /**
+     * red lights for each lane and road.
+     */
+    std::array<std::vector<RedTrafficLight>, 4> mRedTrafficLights;
+
 
 };
 

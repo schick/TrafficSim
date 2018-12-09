@@ -12,15 +12,17 @@
 
 class RedTrafficLight : public TrafficObject {
 
-    RedTrafficLight(Lane *lane) : associatedLane(lane), TrafficObject(0, lane->getLength()) {}
+    Lane* mAssociatedLane;
 
-    Lane* associatedLane;
+public:
+
+    explicit RedTrafficLight(Lane *lane) : mAssociatedLane(lane), TrafficObject(0, lane->getLength() - 35. / 2.) {}
 
     /**
      * switch this light off.
      */
     void switchOff() {
-        throw std::invalid_argument("not implemented yet");
+        removeFromLane();
     }
 
 
@@ -28,7 +30,11 @@ class RedTrafficLight : public TrafficObject {
      * switch this light on.
      */
     void switchOn() {
-        throw std::invalid_argument("not implemented yet");
+        moveToLane(mAssociatedLane);
+    }
+
+    bool isRed() {
+        return getLane() != nullptr;
     }
 
 };

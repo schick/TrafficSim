@@ -38,6 +38,7 @@ void Car::advanceStep(AdvanceData data) {
     a = data.acceleration;
     v = ((v + a) < 0) ? 0 : v + a;
     x = x + v;
+    // TODO: junctions
     if (data.lane_change)
         moveToLane(data.lane_change);
 }
@@ -50,7 +51,7 @@ double Car::getAcceleration(TrafficObject *leading_vehicle) {
     double with_lead = 0;
     if (leading_vehicle != nullptr) {
         double delta_v = v - leading_vehicle->v;
-        double s = leading_vehicle->x - x - 5.;
+        double s = leading_vehicle->x - x - leading_vehicle->length;
         with_lead = (min_distance + v * target_headway +
                      (v * delta_v) / (2 * sqrt(max_acceleration * target_deceleration))) / s;
         with_lead = with_lead * with_lead;

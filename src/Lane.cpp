@@ -16,12 +16,12 @@ Lane::NeighboringObjects Lane::getNeighboringObjects(TrafficObject *trafficObjec
     NeighboringObjects result;
     std::sort(mTrafficObjects.begin(), mTrafficObjects.end(), TrafficObject::PosCmp());
     for(TrafficObject *to : mTrafficObjects) {
-        if(result.front != nullptr && trafficObject != to) {
-            result.back = to;
+        if (to->x > trafficObject->x) {
+            result.front = to;
             return result;
         }
         if (to->x < trafficObject->x) {
-            result.front = to;
+            result.back = to;
         }
     }
     return result;

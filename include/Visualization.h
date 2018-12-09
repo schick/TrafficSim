@@ -37,8 +37,8 @@ private:
     double pixel_per_m = 20;
     std::shared_ptr<VideoWriter> video;
 
-    Point2d junctionPoint(Junction &j) {
-        return Point2d((int) (j.x * pixel_per_m), (int) (j.y * pixel_per_m)) + offset;
+    Point2d junctionPoint(Junction *j) {
+        return Point2d((int) (j->x * pixel_per_m), (int) (j->y * pixel_per_m)) + offset;
     }
 
 public:
@@ -101,16 +101,29 @@ public:
 
         for (std::unique_ptr<Road> &r: scenario->roads) {
             size_t count = r->lanes.size() * 2;
-            line(base_image, junctionPoint(*r->from), junctionPoint(*r->to),
+            line(base_image, junctionPoint(r->from), junctionPoint(r->to),
                  Scalar(50, 50, 50), (int) (lane_width * count * pixel_per_m));
         }
 
         // print junctions
         for (std::unique_ptr<Junction> &junction : scenario->junctions) {
-            circle(base_image, junctionPoint(*junction),
+            circle(base_image, junctionPoint(junction.get()),
                    (int) (35. * pixel_per_m / 2.),
                    Scalar(100, 100, 100), -1);
         }
+    }
+
+    Point2d directionVector(Junction::Direction direction) {
+        switch(direction) {
+            case Junction::Direction::NORTH:
+                return Point2d(0, 1);
+            case Junction::Direction::EAST:
+                return Point2d(1, 0);
+            case Junction::Direction::SOUTH:
+                return Point2d(0, -1);
+            case Junction::Direction::WEST:
+                return Point2d(-1, 0);
+        };
     }
 
     /**
@@ -121,11 +134,20 @@ public:
     Mat render_image() {
         Mat image = base_image.clone();
 
+        for(std::unique_ptr<Junction> &j: scenario->junctions) {
+            for (int i = 0; i < 4; i++) {
+                if (j->incoming[i] != nullptr)
+                    circle(image, junctionPoint(j.get()) + (directionVector(static_cast<Junction::Direction>(i)) * junction_radius * pixel_per_m), pixel_per_m * 1,
+                       (j->signals[j->current_signal_id].direction == i) ? Scalar(0, 255, 0) : Scalar(0, 0, 255), -1);
+            }
+        }
+
         for(std::unique_ptr<Car> &car : scenario->cars) {
-            Point2d from = junctionPoint(*car->getLane()->road->from);
-            Point2d to = junctionPoint(*car->getLane()->road->to);
+            Point2d from = junctionPoint(car->getLane()->road->from);
+            Point2d to = junctionPoint(car->getLane()->road->to);
             Point2d dir = (to - from);
             dir = dir / sqrt(dir.x * dir.x + dir.y * dir.y) * pixel_per_m;
+
             Point2d orth;
             if (dir.x > 0) {
                 orth = Point2d(0, 1);
@@ -136,10 +158,11 @@ public:
             } else if (dir.y < 0) {
                 orth = Point2d(1, 0);
             }
+
             orth = pixel_per_m * orth;
             Point2d o = ((float) car->getLane()->lane_id + 0.5) * lane_width * orth;
             circle(image,
-                   junctionPoint(*car->getLane()->road->from) - o + dir * car->x,
+                   junctionPoint(car->getLane()->road->from) - o + dir * car->x,
                    pixel_per_m * car_width, Scalar(0, 0, 255), -1);
         }
 
