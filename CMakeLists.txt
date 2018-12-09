@@ -52,3 +52,10 @@ target_link_libraries(traffic_sim traffic_scenario)
 IF (OpenCV_FOUND)
     target_link_libraries(traffic_sim vis)
 ENDIF()
+
+include(GoogleTest)
+
+add_executable(json_test src/test_json.cpp)
+target_link_libraries(json_test gtest gtest_main pthread)
+target_link_libraries(json_test traffic_scenario)
+gtest_add_tests(json_test "" AUTO)
