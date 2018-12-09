@@ -37,10 +37,10 @@ void Car::advanceStep(AdvanceData data) {
     assert(data.car == this);
     a = data.acceleration;
     v = v + a;
-	v = std::max(v, 0.);
-	
-	auto limit = getLane()->road->limit;
-	v = std::min(v, limit);
+    v = std::max(v, 0.);
+
+    auto limit = getLane()->road->limit;
+    v = std::min(v, limit);
 
     x = x + v;
     // TODO: junctions
@@ -51,7 +51,7 @@ void Car::advanceStep(AdvanceData data) {
 
 double Car::getAcceleration(TrafficObject *leading_vehicle) {
     double vel_fraction = (v / (target_velocity));
-	double without_lead = 1. - std::pow(vel_fraction, 4);
+    double without_lead = 1. - std::pow(vel_fraction, 4);
 
     double with_lead = 0;
     if (leading_vehicle != nullptr) {
