@@ -30,7 +30,7 @@ public:
 
     Scenario *getScenario() { return scenario; }
 
-    AdvanceAlgorithm(Scenario *scenario) : scenario(scenario) {};
+    explicit AdvanceAlgorithm(Scenario *scenario) : scenario(scenario) {};
 
     virtual std::vector<Car::AdvanceData> calculateCarChanges() = 0;
 
