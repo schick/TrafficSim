@@ -58,6 +58,12 @@ else()
     message(STATUS "building without openmp")
 endif()
 
+# find threads lib the cross-plattform way
+find_package (Threads QUIET)
+IF(Threads_FOUND)
+ELSE()
+    error("Threads not found")
+ENDIF()
 
 # add library with all logic
 add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
@@ -75,7 +81,7 @@ IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
     add_executable(json_test src/test_json.cpp)
-    target_link_libraries(json_test gtest gtest_main pthread)
+    target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test traffic_scenario)
     gtest_discover_tests(json_test)
 ELSE()
