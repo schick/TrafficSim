@@ -7,6 +7,7 @@ libtraffic_scenario.a
 traffic_sim
 libvis.a
 CMakeCache.txt
+Project.cbp
 
 #VS
 .vs
