@@ -40,9 +40,6 @@ void Car::advanceStep(AdvanceData data) {
     v = v + a;
     v = std::max(v, 0.);
 
-    auto limit = getLane()->road->limit;
-    v = std::min(v, limit);
-
     x = x + v;
 
     if (x > getLane()->getLength()) {
@@ -71,7 +68,7 @@ void Car::advanceStep(AdvanceData data) {
 
 
 double Car::getAcceleration(TrafficObject *leading_vehicle) {
-    double vel_fraction = (v / (target_velocity));
+    double vel_fraction = (v / std::min(getLane()->road->limit, target_velocity));
     double without_lead = 1. - std::pow(vel_fraction, 4);
 
     double with_lead = 0;
