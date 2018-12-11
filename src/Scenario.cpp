@@ -22,10 +22,11 @@ void Scenario::initJunctions() {
 
 void Scenario::parseCars(json &input) {
     for (const auto& car : input["cars"]) {
+        double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
         std::unique_ptr<Car> car_obj = std::make_unique<Car>(
             car["id"],
             5.,
-            car["target_velocity"] / 3.6, //km/h to m/s
+            target_velocity,
             car["max_acceleration"],
             car["target_deceleration"],
             car["min_distance"],
@@ -71,11 +72,8 @@ void Scenario::createRoads(const nlohmann::json & road) {
             to = (*junction1).get();
         }
 
-
-        std::unique_ptr<Road> road_obj = std::make_unique<Road>(
-            from,
-            to,
-            road["limit"] / 3.6); //km/h to m/s
+        double roadLimit = static_cast<double>(road["limit"]) / 3.6;
+        std::unique_ptr<Road> road_obj = std::make_unique<Road>(from, to, roadLimit);
 
         createLanesForRoad(road, road_obj);
 
