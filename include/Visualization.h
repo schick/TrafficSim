@@ -23,10 +23,13 @@ public:
     /*
      * display settings
      */
-    double car_width = 2;
-    double junction_radius = 35. / 2.;
+    const double car_width = 2.0;
+    const double car_length= 5.0;
+
+    const double junction_radius = 35. / 2.;
     Point2d max_size = Point(2400, 1200);
-    double lane_width = 3.75;
+    const double lane_width = 4.0;
+    const double lane_border = 1.0;
 
 private:
     /**
