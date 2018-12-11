@@ -76,8 +76,11 @@ public:
     double max_acceleration;
     double target_deceleration;
     double min_distance;
+    //definition from ilias:
+    const double min_s = 0.001;
     double target_headway;
     double politeness;
+
 
     std::list<TurnDirection> turns;
 

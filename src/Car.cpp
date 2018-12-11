@@ -98,7 +98,7 @@ double Car::getAcceleration(TrafficObject *leading_vehicle) {
     double with_lead = 0;
     if (leading_vehicle != nullptr) {
         double delta_v = v - leading_vehicle->v;
-        double s = leading_vehicle->x - x - leading_vehicle->length;
+        double s = std::max(leading_vehicle->x - x - leading_vehicle->length, min_s);
         with_lead = (min_distance + v * target_headway +
             (v * delta_v) / (2 * sqrt(max_acceleration * target_deceleration))) / s;
         with_lead = std::pow(with_lead, 2);
