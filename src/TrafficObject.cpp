@@ -10,8 +10,9 @@
 
 
 void TrafficObject::moveToLane(Lane* lane) {
-    if (this->lane != nullptr)
+    if (this->lane != nullptr) {
         removeFromLane();
+    }
     assert(this->lane == nullptr);
     this->lane = lane;
     lane->mTrafficObjects.push_back(this);
