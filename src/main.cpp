@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     std::ifstream json_file(fn);
     try {
         json_file >> input;
-    } catch(std::exception e) {
+    } catch(const std::exception &e) {
         std::cerr << "Failed to parse JSON.\n";
         return 1;
     }
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     std::ifstream json_file_out(fn + ".sol");
     try {
         json_file_out >> loesung;
-    } catch(std::exception e) {
+    } catch(const std::exception &e) {
         std::cerr << "Failed to parse JSON.\n";
         return 1;
     }
