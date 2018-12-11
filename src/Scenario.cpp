@@ -9,7 +9,7 @@ void Scenario::parse(json input) {
     {
         double x = junction["x"];
         double y = junction["y"];
-        std::unique_ptr<Junction> junction_obj = std::make_unique<Junction>(junction["id"], x * 100, y * 100);
+        std::unique_ptr<Junction> junction_obj = std::make_unique<Junction>(junction["id"], x * 100.0, y * 100.0);
         for(const auto& signal : junction["signals"])
             junction_obj->signals.emplace_back(Junction::Signal({signal["time"], signal["dir"]}));
         junctions.emplace_back(std::move(junction_obj));
