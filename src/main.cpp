@@ -10,12 +10,13 @@
 int main(int argc, char* argv[])
 {
     json input, loesung;
+
+    // read input file
 #ifdef USE_CIN
     std::cin >> input;
 #else
-    std::string fn(argv[1]);
 
-    // read input file
+    std::string fn(argv[1]);
     std::ifstream json_file(fn);
     try {
         json_file >> input;
@@ -52,16 +53,14 @@ int main(int argc, char* argv[])
 #ifdef VISUALIZATION_ENABLED
         visualization.render_image();
 #endif
-
     }
+
 #ifdef VISUALIZATION_ENABLED
     visualization.render_image();
     visualization.close();
 #endif
 
-
     json output = scenario.toJson();
-
     std::cout << output.dump() << "\n";
 
 #ifndef USE_CIN
