@@ -13,6 +13,12 @@ class Lane;
 
 class Road {
 public:
+
+    struct NeighboringLanes {
+        Lane *right = nullptr;
+        Lane *left = nullptr;
+    };
+
     Road(Junction *_from, Junction *_to, double _limit) : from(_from), to(_to), limit(_limit / 3.6) {};
 
     /**
@@ -28,7 +34,7 @@ public:
      * @param lane
      * @return
      */
-    std::vector<Lane*> getNeighboringLanes(Lane* lane);
+    NeighboringLanes getNeighboringLanes(Lane* lane);
 
 
     /**

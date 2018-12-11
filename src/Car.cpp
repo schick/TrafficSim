@@ -14,56 +14,68 @@ Car::AdvanceData Car::nextStep() {
      * lots of cases...
      */
     Lane::NeighboringObjects ownNeighbors = getLane()->getNeighboringObjects(this);
-    std::vector<Lane*> neighboringLanes = getLane()->road->getNeighboringLanes(getLane());
+    Road::NeighboringLanes neighboringLanes = getLane()->road->getNeighboringLanes(getLane());
 
-    std::vector<double> m;
-    for(Lane *lane : neighboringLanes) {
-        Lane::NeighboringObjects leftNeighbors = lane->getNeighboringObjects(this);
-        m.emplace_back(laneChangeMetric(ownNeighbors, leftNeighbors));
+    double m_left = 0;
+    double m_right = 0;
+
+    if (neighboringLanes.left != nullptr) {
+        Lane::NeighboringObjects leftNeighbors = neighboringLanes.left->getNeighboringObjects(this);
+        m_left = laneChangeMetric(ownNeighbors, leftNeighbors);
     }
 
-    if (m.size() == 1 && m[0] > 1) {
-            return Car::AdvanceData(this, getAcceleration(neighboringLanes[0]->getNeighboringObjects(this).front), neighboringLanes[0]);
-    } else if (m.size() == 2){
-        if (m[0] > 1 && m[0] >= m[1]) {
-            return Car::AdvanceData(this, getAcceleration(neighboringLanes[0]->getNeighboringObjects(this).front), neighboringLanes[0]);
-        } else if (m[1] > 1) {
-            return Car::AdvanceData(this, getAcceleration(neighboringLanes[1]->getNeighboringObjects(this).front), neighboringLanes[1]);
-        }
+    if (neighboringLanes.right != nullptr) {
+        Lane::NeighboringObjects rightNeighbors = neighboringLanes.right->getNeighboringObjects(this);
+        m_right = laneChangeMetric(ownNeighbors, rightNeighbors);
     }
-    return Car::AdvanceData(this, getAcceleration(ownNeighbors.front), nullptr);
+
+    if(m_left > 1 && m_left >= m_right) {
+        // left
+        return Car::AdvanceData(this, getAcceleration(neighboringLanes.left->getNeighboringObjects(this).front), -1);
+    } else if(m_right > 1 && m_left < m_right) {
+        // right
+        return Car::AdvanceData(this, getAcceleration(neighboringLanes.right->getNeighboringObjects(this).front), 1);
+    } else {
+        // stay
+        return Car::AdvanceData(this, getAcceleration(ownNeighbors.front), 0);
+    }
 }
 
 void Car::advanceStep(AdvanceData data) {
     assert(data.car == this);
+    // update kinematic state
     a = data.acceleration;
-    v = v + a;
-    v = std::max(v, 0.);
-
+    v = std::max(v + a, 0.);
     x = x + v;
 
+    // check for junction
     if (x > getLane()->getLength()) {
         assert(!turns.empty());
 
-        x -= getLane()->getLength();
+        // subtract moved position on current lane from distance
+        x -= getLane()->road->getLength();
 
-        // select road based on current turn
+        // select direction based on current turn
+        int direction = (getLane()->road->getDirection() + turns.front()) % 4;
+
+        // if no road in that direction -> select next to the right
         Road *road;
-        int road_id = (getLane()->road->getDirection() + turns.front()) % 4;
+        while((road = getLane()->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
 
-        // if not exits -> select next to the right
-        while((road = getLane()->road->to->outgoing[road_id]) == nullptr) road_id = (++road_id) % 4;
+        // move car to same or the right lane AFTER lane change
+        int16_t lane_id = std::max(0, std::min((int) road->lanes.size() - 1, getLane()->lane_id + data.lane_offset));
+        moveToLane(road->lanes[lane_id]);
 
-        // move car to same or the right lane
-        moveToLane(road->lanes[std::max((size_t )getLane()->lane_id, road->lanes.size() - 1)]);
-
-        // next update next turns
+        // update next turns
         turns.push_back(turns.front());
         turns.pop_front();
+
+    } else {
+        // just do a lane change if wanted
+        if (data.lane_offset != 0)
+            // lane_offset should be validated in this case
+            moveToLane(getLane()->road->lanes[getLane()->lane_id + data.lane_offset]);
     }
-    // TODO: junctions
-    if (data.lane_change)
-        moveToLane(data.lane_change);
 }
 
 

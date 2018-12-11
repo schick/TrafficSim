@@ -7,12 +7,12 @@
 #include <Lane.h>
 #include <Junction.h>
 
-std::vector<Lane*> Road::getNeighboringLanes(Lane* lane) {
-    std::vector<Lane*> lanes;
+Road::NeighboringLanes Road::getNeighboringLanes(Lane* lane) {
+    NeighboringLanes lanes;
     if (lane->lane_id > 0)
-        lanes.push_back(lane->road->lanes[lane->lane_id - 1]);
+        lanes.left = lane->road->lanes[lane->lane_id - 1];
     if (lane->road->lanes.size() > lane->lane_id + 1)
-        lanes.push_back(lane->road->lanes[lane->lane_id + 1]);
+        lanes.right = lane->road->lanes[lane->lane_id + 1];
     return lanes;
 }
 

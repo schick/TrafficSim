@@ -29,11 +29,11 @@ public:
      * Data representing next advance of a car
      */
     struct AdvanceData {
-        AdvanceData(Car *car, double acceleration, Lane* lane_change)
-            : car(car), acceleration(acceleration), lane_change(lane_change) {};
+        AdvanceData(Car *car, double acceleration, int lane_offset)
+            : car(car), acceleration(acceleration), lane_offset(lane_offset) {};
         Car *car = nullptr;
         double acceleration = 0;
-        Lane* lane_change = nullptr;
+        int8_t lane_offset = 0;
     };
 
 
