@@ -19,7 +19,7 @@ Car::AdvanceData Car::nextStep() {
     std::vector<double> m;
     for(Lane *lane : neighboringLanes) {
         Lane::NeighboringObjects leftNeighbors = lane->getNeighboringObjects(this);
-        m.emplace_back(laneChangeMetic(ownNeighbors, leftNeighbors));
+        m.emplace_back(laneChangeMetric(ownNeighbors, leftNeighbors));
     }
 
     if (m.size() == 1 && m[0] > 1) {
@@ -86,7 +86,7 @@ double Car::getAcceleration(TrafficObject *leading_vehicle) {
     return acceleration;
 }
 
-double Car::laneChangeMetic(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors) {
+double Car::laneChangeMetric(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors) {
 
     if ((otherNeighbors.front == nullptr || (otherNeighbors.front->x - x) >= (length / 2)) &&
         (otherNeighbors.back == nullptr || (x - otherNeighbors.back->x) >= (length / 2) + min_distance)) {

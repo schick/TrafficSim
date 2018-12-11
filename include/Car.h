@@ -21,7 +21,7 @@ private:
      * @param otherNeighbors neighbors on other lane
      * @return metric value in m/s^2
      */
-    double laneChangeMetic(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors);
+    double laneChangeMetric(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors);
 
 public:
 
