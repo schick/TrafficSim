@@ -79,6 +79,25 @@ Point2d Visualization::directionVector(Junction::Direction direction) {
         case Junction::Direction::WEST:
             return Point2d(-1, 0);
     };
+
+    //Error assertion
+}
+
+Point2d getOuterLaneDirection(Point2d point) {
+    if (point == Point2d(0,-1)) {
+        return Point2d(1,0);
+
+    } else if (point == Point2d(1,0)) {
+        return Point2d(0,1);
+
+    } else if(point == Point2d(0,1)) {
+        return Point2d(-1,0);
+
+    } else if(point == Point2d(-1,0)) {
+        return Point2d(0, -1);
+    }
+
+    //Error assertion
 }
 
 Mat Visualization::render_image() {
@@ -96,24 +115,21 @@ Mat Visualization::render_image() {
         Point2d from = junctionPoint(car->getLane()->road->from);
         Point2d to = junctionPoint(car->getLane()->road->to);
         Point2d dir = (to - from);
-        dir = dir / sqrt(dir.x * dir.x + dir.y * dir.y) * pixel_per_m;
 
-        Point2d orth;
-        if (dir.x > 0) {
-            orth = Point2d(0, 1);
-        } else if (dir.x < 0) {
-            orth = Point2d(0, -1);
-        } else if (dir.y > 0) {
-            orth = Point2d(-1, 0);
-        } else if (dir.y < 0) {
-            orth = Point2d(1, 0);
-        }
+        //get directions
+        dir = dir / sqrt(pow(dir.x, 2) + pow(dir.y, 2));
+        Point2d outerLaneDir = getOuterLaneDirection(dir);
 
-        orth = pixel_per_m * orth;
-        Point2d o = - ((float) car->getLane()->lane_id + 0.5) * lane_width * orth;
-        circle(image,
-               junctionPoint(car->getLane()->road->from) - o + dir * car->x,
-               pixel_per_m * car_width, Scalar(0, 0, 255), -1);
+        //calculate offsets
+        Point2d carOffset = dir * car->x * pixel_per_m;
+        Point2d laneOffset = ((double) car->getLane()->lane_id) * lane_width * outerLaneDir * pixel_per_m;
+        Point2d laneBorderOffset = lane_border * outerLaneDir * pixel_per_m;
+        Point2d carSizeOffset =  (car_length * dir + car_width * outerLaneDir) * pixel_per_m;
+
+        Point2d start = from + carOffset + laneOffset + laneBorderOffset;
+        Point2d end = start + carSizeOffset;
+
+        rectangle(image, start, end, Scalar(0, 0, 255), -1);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem
