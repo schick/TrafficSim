@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd ${DIR}
 
 # files to delete for cleanup
-CLEANUP_FILES="CMakeFiles/ cmake_install.cmake libtraffic_scenario.a traffic_sim libvis.a
+CLEANUP_FILES="CMakeFiles/ CMakeCache.txt cmake_install.cmake libtraffic_scenario.a traffic_sim libvis.a
         json_test[1]_include.cmake json_test[1]_tests.cmake"
 
 # cleanup caches and old builds
