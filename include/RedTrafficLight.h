@@ -21,24 +21,18 @@ public:
     /**
      * switch this light off.
      */
-    void switchOff() {
-        removeFromLane();
-    }
-
+    void switchOff();
 
     /**
      * switch this light on.
      */
-    void switchOn() {
-        moveToLane(mAssociatedLane);
-    }
+    void switchOn();
 
-    bool isRed() {
-        return getLane() != nullptr;
-    }
+    /**
+     * @return whether red light is currently active
+     */
+    bool isRed();
 
 };
-
-
 
 #endif //PROJECT_REDTRAFFICLIGHT_H
