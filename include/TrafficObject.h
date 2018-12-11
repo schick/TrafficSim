@@ -15,7 +15,7 @@ public:
      * compare object to compare Traffic objects by
      */
     struct PosCmp {
-        bool operator () (const TrafficObject *lhs, TrafficObject* rhs) { return lhs->x < rhs->x; }
+        bool operator () (const TrafficObject *lhs, TrafficObject *rhs) { return lhs->x < rhs->x; }
     };
 
 
@@ -41,7 +41,7 @@ public:
      * move a this object to a specific lane.
      * @param lane lane to move object to
      */
-    void moveToLane(Lane* lane);
+    void moveToLane(Lane *lane);
 
     /**
      * remove object from any lane it may be assigned to

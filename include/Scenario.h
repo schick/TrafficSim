@@ -34,7 +34,7 @@ public:
 
     virtual std::vector<Car::AdvanceData> calculateCarChanges() = 0;
 
-    void advance(size_t steps=1);
+    void advance(size_t steps = 1);
 
     virtual void advanceCars() = 0;
     virtual void advanceTrafficLights() = 0;
@@ -50,6 +50,12 @@ public:
     std::vector<std::unique_ptr<Car>> cars;
 
     void parse(json input);
+    void initJunctions();
+    void parseCars(json & input);
+    void parseRoads(json & input);
+    void createRoads(const nlohmann::json & road);
+    void createLanesForRoad(const nlohmann::json & road, std::unique_ptr<Road> &road_obj);
+    void parseJunctions(json &input);
     json toJson();
 
 };
@@ -71,14 +77,15 @@ public:
 
     void advanceCars() override {
         std::vector<Car::AdvanceData> changes = calculateCarChanges();
-        for(Car::AdvanceData &d : changes) {
+        for (Car::AdvanceData &d : changes) {
             d.car->advanceStep(d);
         }
     }
 
     void advanceTrafficLights() override {
-        for(std::unique_ptr<Junction> &j : getScenario()->junctions)
+        for (std::unique_ptr<Junction> &j : getScenario()->junctions) {
             j->updateSignals();
+        }
     }
 
 };

@@ -19,7 +19,7 @@ public:
         Lane *left = nullptr;
     };
 
-    Road(Junction *_from, Junction *_to, double _limit) : from(_from), to(_to), limit(_limit / 3.6) {};
+    Road(Junction *_from, Junction *_to, double _limit) : from(_from), to(_to), limit(_limit) {};
 
     /**
      * properties

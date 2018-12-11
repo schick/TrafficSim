@@ -64,7 +64,7 @@ public:
     Car(uint64_t id, double length, double target_velocity, double max_acceleration, double target_deceleration,
             double min_distance, double target_headway, double politeness,
             double x=0, double v=0, double a=0)
-                : id(id), length(length), target_velocity(target_velocity / 3.6), max_acceleration(max_acceleration),
+                : id(id), length(length), target_velocity(target_velocity), max_acceleration(max_acceleration),
                     target_deceleration(target_deceleration), min_distance(min_distance),
                     target_headway(target_headway), politeness(politeness), TrafficObject(length, x, v, a) {}
     /**
@@ -76,8 +76,11 @@ public:
     double max_acceleration;
     double target_deceleration;
     double min_distance;
+    //definition from ilias:
+    const double min_s = 0.001;
     double target_headway;
     double politeness;
+
 
     std::list<TurnDirection> turns;
 
@@ -87,11 +90,20 @@ public:
      */
     AdvanceData nextStep();
 
+    
+    double getLaneChangeMetricForLane(Lane *neighboringLane, const Lane::NeighboringObjects &ownNeighbors);
+
     /**
      * advance car based of data
      * @param data data representing the change
      */
     void advanceStep(AdvanceData data);
+
+    bool isCarOverJunction();
+
+    void moveCarAcrossJunction(Car::AdvanceData &data);
+
+    void updateKinematicState(Car::AdvanceData &data);
 
     /**
      * calculate the desired acceleration. base calculation on leading object
