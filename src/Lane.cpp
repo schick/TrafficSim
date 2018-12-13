@@ -15,6 +15,7 @@ std::vector<TrafficObject*> Lane::getTrafficObjects() {
 Lane::NeighboringObjects Lane::getNeighboringObjects(TrafficObject *trafficObject) {
     NeighboringObjects result;
     std::sort(mTrafficObjects.begin(), mTrafficObjects.end(), TrafficObject::PosCmp());
+    //ampel hat int max
     for(TrafficObject *to : mTrafficObjects) {
         if (to->x > trafficObject->x) {
             result.front = to;

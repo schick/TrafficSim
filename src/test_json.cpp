@@ -24,21 +24,22 @@ void test_file(std::string fn, double genauigkeit) {
 
     OkesExampleAdvanceAlgorithm advancer(&scenario);
 
-    for(int i=0; i < input["time_steps"]; i++) {
+    for (int i = 0; i < input["time_steps"]; i++) {
         advancer.advance();
     }
 
     json output = scenario.toJson();
 
+    //ASSERT_TRUE(loesung == output);
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());
-    for(auto &car_json : output["cars"]) {
+    for (auto &car_json : output["cars"]) {
         bool found_car = false;
-        for(auto cmp_car_json : loesung["cars"]) {
+        for (auto cmp_car_json : loesung["cars"]) {
             if (cmp_car_json["id"] == car_json["id"] &&
-                    cmp_car_json["to"] == car_json["to"] &&
-                    cmp_car_json["from"] == car_json["from"] &&
-                    abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= genauigkeit &&
-                    cmp_car_json["lane"] == car_json["lane"] ) {
+                cmp_car_json["to"] == car_json["to"] &&
+                cmp_car_json["from"] == car_json["from"] &&
+                abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= genauigkeit &&
+                cmp_car_json["lane"] == car_json["lane"]) {
                 found_car = true;
                 break;
             }
@@ -47,7 +48,7 @@ void test_file(std::string fn, double genauigkeit) {
     }
 }
 
-#define JSON_TEST_PATH std::string("../tests/")
+#define JSON_TEST_PATH std::string("tests/")
 
 TEST(TestJson, zero_timestamp) {
     test_file(JSON_TEST_PATH + "00-zero_timestep.json", 1e-7);
@@ -81,6 +82,28 @@ TEST(TestJson, 2cars_lane_change) {
     test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 1e-7);
 }
 
+TEST(TestJson, 2cars_lane_change_to_same_lane) {
+    test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 1e-7);
+}
+
+TEST(TestJson, lane_change_after_junction_to_missing_lane) {
+    test_file(JSON_TEST_PATH + "35-lane_change_after_junction.json", 1e-7);
+}
+
+TEST(TestJson, lane_change_after_junction_to_same_lane) {
+    test_file(JSON_TEST_PATH + "36-lane_change_after_junction_same_lane.json", 1e-7);
+}
+
+TEST(TestJson, cars_correct_turning) {
+    test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 1e-7);
+}
+
+TEST(TestJson, tiny_400_steps) {
+    test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 1e-7);
+}
+
+
+
 TEST(TestJsonExact, zero_timestamp) {
     test_file(JSON_TEST_PATH + "00-zero_timestep.json", 0);
 }
@@ -112,6 +135,33 @@ TEST(TestJsonExact, 2two_cars_before_lane_change) {
 TEST(TestJsonExact, 2cars_lane_change) {
     test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 0);
 }
+
+TEST(TestJsonExact, 2cars_lane_change_to_same_lane) {
+    test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 0);
+}
+
+TEST(TestJsonExact, lane_change_after_junction_to_missing_lane) {
+    test_file(JSON_TEST_PATH + "35-lane_change_after_junction.json", 0);
+}
+
+TEST(TestJsonExact, lane_change_after_junction_to_same_lane) {
+    test_file(JSON_TEST_PATH + "36-lane_change_after_junction_same_lane.json", 0);
+}
+
+TEST(TestJsonExact, cars_correct_turning) {
+    test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 0);
+}
+
+TEST(TestJsonExact, tiny_400_steps) {
+    test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 0);
+}
+/*TEST(Foo, Acceleration) {
+    auto leadingCar = Car(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
+    auto followingCar = Car(1, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
+
+    auto a = followingCar.getAcceleration(&leadingCar);
+    ASSERT_EQ(a, 2);
+}*/
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
