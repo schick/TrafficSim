@@ -68,16 +68,18 @@ void Car::moveCarAcrossJunction(Car::AdvanceData &data) {
     // subtract moved position on current lane from distance
     x -= getLane()->road->getLength();
 
-    // select direction based on current turn
+    // select direction based on current direction and turn
     int direction = (getLane()->road->getDirection() + turns.front() + 2) % 4;
 
     // if no road in that direction -> select next to the right
-    Road *road;
-    while ((road = getLane()->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
+    Road *nextRoad;
+    while ((nextRoad = getLane()->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
 
     // move car to same or the right lane AFTER lane change
-    int16_t lane_id = std::max(0, std::min((int)road->lanes.size() - 1, getLane()->lane_id + data.lane_offset));
-    moveToLane(road->lanes[lane_id]);
+    int8_t indexOfNextLane = std::min((int8_t)nextRoad->lanes.size() - 1, (int8_t)getLane()->lane_id + data.lane_offset);
+    indexOfNextLane = std::max((int8_t)0, indexOfNextLane);
+
+    moveToLane(nextRoad->lanes[indexOfNextLane]);
 
     // update next turns
     turns.push_back(turns.front());
