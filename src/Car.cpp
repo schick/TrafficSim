@@ -86,6 +86,7 @@ void Car::moveCarAcrossJunction(Car::AdvanceData &data) {
     turns.pop_front();
 }
 
+
 void Car::updateKinematicState(Car::AdvanceData &data) {
     a = data.acceleration;
     v = std::max(v + a, 0.);
