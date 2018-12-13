@@ -19,11 +19,12 @@ public:
     };
 
 
-    TrafficObject(double length=0, double x=0, double v=0, double a=0) : x(x),v(v), a(a), length(length), lane(nullptr) {};
+    TrafficObject(int id, double length=0, double x=0, double v=0, double a=0) : id(id), x(x),v(v), a(a), length(length), lane(nullptr) {};
 
     /**
      * state. put acceleration in here for a more generic implementation of Car::nextStep
      */
+    int id;
     double x;
     double v;
     double a;

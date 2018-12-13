@@ -82,8 +82,12 @@ TEST(TestJson, 2cars_lane_change) {
     test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 1e-7);
 }
 
-TEST(TestJson, 2cars_lane_change_to_same_lane) {
+TEST(TestJson, 2cars_lane_change_to_same_lane_one_car_faster) {
     test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 1e-7);
+}
+
+TEST(TestJson, 2cars_lane_change_to_same_lane) {
+    test_file(JSON_TEST_PATH + "31-cars_change_to_same_lane.json", 1e-7);
 }
 
 TEST(TestJson, lane_change_after_junction_to_missing_lane) {
@@ -98,7 +102,7 @@ TEST(TestJson, cars_correct_turning) {
     test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 1e-7);
 }
 
-TEST(TestJson, tiny_400_steps) {
+TEST(TestJson, tiny_100_steps) {
     test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 1e-7);
 }
 
@@ -136,8 +140,12 @@ TEST(TestJsonExact, 2cars_lane_change) {
     test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 0);
 }
 
-TEST(TestJsonExact, 2cars_lane_change_to_same_lane) {
+TEST(TestJsonExact, 2cars_lane_change_to_same_lane_one_car_faster) {
     test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 0);
+}
+
+TEST(TestJsonExact, 2cars_lane_change_to_same_lane) {
+    test_file(JSON_TEST_PATH + "31-cars_change_to_same_lane.json", 0);
 }
 
 TEST(TestJsonExact, lane_change_after_junction_to_missing_lane) {
@@ -152,7 +160,7 @@ TEST(TestJsonExact, cars_correct_turning) {
     test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 0);
 }
 
-TEST(TestJsonExact, tiny_400_steps) {
+TEST(TestJsonExact, tiny_100_steps) {
     test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 0);
 }
 /*TEST(Foo, Acceleration) {
