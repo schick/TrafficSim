@@ -69,7 +69,7 @@ void Car::moveCarAcrossJunction(Car::AdvanceData &data) {
     x -= getLane()->road->getLength();
 
     // select direction based on current turn
-    int direction = (getLane()->road->getDirection() + turns.front()) % 4;
+    int direction = (getLane()->road->getDirection() + turns.front() + 2) % 4;
 
     // if no road in that direction -> select next to the right
     Road *road;
