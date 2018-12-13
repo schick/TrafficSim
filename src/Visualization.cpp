@@ -5,9 +5,14 @@
 #include "Visualization.h"
 
 
-void Visualization::open(std::string &fn, double fps) {
-    assert(video == nullptr);
+void Visualization::setVideoPath(std::string &fn, double fps) {
+    assert(video == nullptr && imageBasePath.length() == 0);
     video = std::make_shared<VideoWriter>(fn, VideoWriter::fourcc('M','J','P','G'), fps, Size(base_image.size()));
+}
+
+void Visualization::setImageBasePath(std::string &fn) {
+    assert(video == nullptr && imageBasePath.length() == 0);
+    imageBasePath = fn;
 }
 
 void Visualization::close() {
@@ -101,6 +106,7 @@ Point2d getOuterLaneDirection(Point2d point) {
 }
 
 Mat Visualization::render_image() {
+    numFrame++;
     Mat image = base_image.clone();
 
     for(std::unique_ptr<Junction> &j: scenario->junctions) {
@@ -135,12 +141,16 @@ Mat Visualization::render_image() {
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
         //arrowedLine(image, back_middle, front_middle, Scalar(0, 0, 0), (int)(1*pixel_per_m));
         circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
-        putText(image, std::to_string(car->id), start, 0, 1., Scalar(255, 255, 0), 2);
+        putText(image, std::to_string(car->id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem
     if (video != nullptr) {
         video->write(image);
+    }
+    if (imageBasePath.length() > 0){
+        std::string fn = imageBasePath + std::to_string(numFrame) + ".jpg";
+        imwrite(fn, image);
     }
 
     return image;

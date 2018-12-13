@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 #ifdef VISUALIZATION_ENABLED
     Visualization visualization(&scenario);
     std::string video_fn("output.avi");
-    visualization.open(video_fn, 1);
+    visualization.setVideoPath(video_fn, 1);
     visualization.render_image();
 #endif
 
