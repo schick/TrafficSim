@@ -21,17 +21,18 @@ int main(int argc, char* argv[])
     try {
         json_file >> input;
     } catch(const std::exception &e) {
-        std::cerr << "Failed to parse JSON.\n";
+        std::cerr << "Failed to parse JSON.\n" << e.what() << std::endl;
         return 1;
     }
 
     // read loesung
     std::ifstream json_file_out(fn + ".sol");
-    try {
-        json_file_out >> loesung;
-    } catch(const std::exception &e) {
-        std::cerr << "Failed to parse JSON.\n";
-        return 1;
+    if (json_file_out.good()) {
+        try {
+            json_file_out >> loesung;
+        } catch (const std::exception &e) {
+            std::cerr << "Failed to parse JSON.\n";
+        }
     }
 #endif
 
@@ -64,8 +65,10 @@ int main(int argc, char* argv[])
     std::cout << output.dump() << "\n";
 
 #ifndef USE_CIN
-    std::cout << loesung.dump() << "\n";
-    assert(output == loesung);
+    if (json_file_out.good()) {
+        std::cout << loesung.dump() << "\n";
+        assert(output == loesung);
+    }
 #endif
 
     return 0;
