@@ -27,7 +27,7 @@ public:
     const double car_length= 5.0;
 
     const double junction_radius = 35. / 2.;
-    Point2d max_size = Point(2400, 1200);
+    Point2d max_size = Point(2000, 2000);
     const double lane_width = 4.0;
     const double lane_border = 1.0;
 

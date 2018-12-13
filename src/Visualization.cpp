@@ -48,7 +48,7 @@ void Visualization::initialize() {
 
     // create base_image
     base_image = Mat::zeros(Point(base_image_size), CV_8UC3);
-    base_image.setTo(Scalar(255, 255, 255));
+    base_image.setTo(Scalar(175, 175, 175));
 
     for (std::unique_ptr<Road> &r: scenario->roads) {
         size_t count = r->lanes.size() * 2;
@@ -121,7 +121,7 @@ Mat Visualization::render_image() {
         Point2d outerLaneDir = getOuterLaneDirection(dir);
 
         //calculate offsets
-        Point2d carOffset = dir * car->x * pixel_per_m;
+        Point2d carOffset = dir * (car->x - car->length / 2) * pixel_per_m;
         Point2d laneOffset = ((double) car->getLane()->lane_id) * lane_width * outerLaneDir * pixel_per_m;
         Point2d laneBorderOffset = lane_border * outerLaneDir * pixel_per_m;
         Point2d carSizeOffset =  (car_length * dir + car_width * outerLaneDir) * pixel_per_m;
@@ -129,7 +129,13 @@ Mat Visualization::render_image() {
         Point2d start = from + carOffset + laneOffset + laneBorderOffset;
         Point2d end = start + carSizeOffset;
 
+        Point2d front_middle = end - 0.5 * car_width * outerLaneDir * pixel_per_m;
+        Point2d back_middle = start + 0.5 * car_width * outerLaneDir * pixel_per_m;
+
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
+        //arrowedLine(image, back_middle, front_middle, Scalar(0, 0, 0), (int)(1*pixel_per_m));
+        circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
+        putText(image, std::to_string(car->id), start, 0, 1., Scalar(255, 255, 0), 2);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem
