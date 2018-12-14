@@ -7,14 +7,18 @@
 #include "Road.h"
 #include <stdexcept>
 
-std::vector<TrafficObject*> Lane::getTrafficObjects() {
 
+void Lane::prepareLanes() {
+    std::sort(mTrafficObjects.begin(), mTrafficObjects.end(), TrafficObject::PosCmp());
+}
+
+std::vector<TrafficObject*> Lane::getTrafficObjects() {
     throw std::invalid_argument("Method not yet implemented");
 }
 
 Lane::NeighboringObjects Lane::getNeighboringObjects(TrafficObject *trafficObject) {
+    // TODO: assert is sorted
     NeighboringObjects result;
-    std::sort(mTrafficObjects.begin(), mTrafficObjects.end(), TrafficObject::PosCmp());
     for(TrafficObject *to : mTrafficObjects) {
         if (to == trafficObject) {
             continue;
