@@ -5,9 +5,14 @@
 #include "Visualization.h"
 
 
-void Visualization::open(std::string &fn, double fps) {
-    assert(video == nullptr);
+void Visualization::setVideoPath(std::string &fn, double fps) {
+    assert(video == nullptr && imageBasePath.length() == 0);
     video = std::make_shared<VideoWriter>(fn, VideoWriter::fourcc('M','J','P','G'), fps, Size(base_image.size()));
+}
+
+void Visualization::setImageBasePath(std::string &fn) {
+    assert(video == nullptr && imageBasePath.length() == 0);
+    imageBasePath = fn;
 }
 
 void Visualization::close() {
@@ -48,7 +53,7 @@ void Visualization::initialize() {
 
     // create base_image
     base_image = Mat::zeros(Point(base_image_size), CV_8UC3);
-    base_image.setTo(Scalar(255, 255, 255));
+    base_image.setTo(Scalar(175, 175, 175));
 
     for (std::unique_ptr<Road> &r: scenario->roads) {
         size_t count = r->lanes.size() * 2;
@@ -101,6 +106,7 @@ Point2d getOuterLaneDirection(Point2d point) {
 }
 
 Mat Visualization::render_image() {
+    numFrame++;
     Mat image = base_image.clone();
 
     for(std::unique_ptr<Junction> &j: scenario->junctions) {
@@ -120,21 +126,34 @@ Mat Visualization::render_image() {
         dir = dir / sqrt(pow(dir.x, 2) + pow(dir.y, 2));
         Point2d outerLaneDir = getOuterLaneDirection(dir);
 
+        //scale directions
+        auto scaledDir = dir * pixel_per_m;
+        auto scaledOuterLaneDir = outerLaneDir * pixel_per_m;
+
         //calculate offsets
-        Point2d carOffset = dir * car->x * pixel_per_m;
-        Point2d laneOffset = ((double) car->getLane()->lane_id) * lane_width * outerLaneDir * pixel_per_m;
-        Point2d laneBorderOffset = lane_border * outerLaneDir * pixel_per_m;
-        Point2d carSizeOffset =  (car_length * dir + car_width * outerLaneDir) * pixel_per_m;
+        Point2d carOffset = scaledDir * (car->x - car->length / 2);
+        Point2d laneOffset = scaledOuterLaneDir * ((double) car->getLane()->lane_id) * lane_width;
+        Point2d laneBorderOffset = scaledOuterLaneDir * lane_border;
+        Point2d carSizeOffset = scaledDir * car_length + scaledOuterLaneDir * car_width;
 
         Point2d start = from + carOffset + laneOffset + laneBorderOffset;
         Point2d end = start + carSizeOffset;
 
+        Point2d front_middle = end - 0.5 * car_width * scaledOuterLaneDir;
+
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
+
+        circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
+        putText(image, std::to_string(car->id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem
     if (video != nullptr) {
         video->write(image);
+    }
+    if (imageBasePath.length() > 0){
+        std::string fn = imageBasePath + std::to_string(numFrame) + ".jpg";
+        imwrite(fn, image);
     }
 
     return image;

@@ -52,11 +52,28 @@ void Scenario::parseRoads(json &input) {
     }
 }
 
+// helper to calculate direction of a road
+Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to) {
+    // linkshändisches koordinatensystem
+    if (from->y < to->y) {
+        return Junction::Direction::SOUTH;
+    } else if (from->y > to->y) {
+        return Junction::Direction::NORTH;
+    } else if (from->x < to->x) {
+        return Junction::Direction::EAST;
+    } else if (from->x > to->x) {
+        return Junction::Direction::WEST;
+    }
+    printf("ERROR: not a valid road...");
+    exit(-1);
+}
+
 void Scenario::createRoads(const nlohmann::json & road) {
     auto junction1 = std::find_if(std::begin(junctions), std::end(junctions),
         [&](const std::unique_ptr<Junction> &v) { return v->id == road["junction1"]; });
     auto junction2 = std::find_if(std::begin(junctions), std::end(junctions),
         [&](const std::unique_ptr<Junction> &v) { return v->id == road["junction2"]; });
+
     /* one for each direction */
     for (int j = 0; j < 2; j++) {
         Junction *from, *to;
@@ -73,12 +90,14 @@ void Scenario::createRoads(const nlohmann::json & road) {
         }
 
         double roadLimit = static_cast<double>(road["limit"]) / 3.6;
-        std::unique_ptr<Road> road_obj = std::make_unique<Road>(from, to, roadLimit);
+        Junction::Direction roadDir = calcDirectionOfRoad(from, to);
+
+        std::unique_ptr<Road> road_obj = std::make_unique<Road>(from, to, roadLimit, roadDir);
 
         createLanesForRoad(road, road_obj);
 
-        road_obj->from->outgoing[road_obj->getDirection()] = road_obj.get();
-        road_obj->to->incoming[(road_obj->getDirection() + 2) % 4] = road_obj.get();
+        road_obj->from->outgoing[roadDir] = road_obj.get();
+        road_obj->to->incoming[(roadDir + 2) % 4] = road_obj.get();
 
         roads.emplace_back(std::move(road_obj));
     }

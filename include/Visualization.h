@@ -15,8 +15,7 @@ class Visualization {
 public:
     Scenario *scenario;
     
-    Visualization(Scenario *map) : scenario(map) {
-        video = nullptr;
+    Visualization(Scenario *map) : scenario(map), video(nullptr), imageBasePath("")  {
         initialize();
     };
 
@@ -27,7 +26,7 @@ public:
     const double car_length= 5.0;
 
     const double junction_radius = 35. / 2.;
-    Point2d max_size = Point(2400, 1200);
+    Point2d max_size = Point(2000, 2000);
     const double lane_width = 4.0;
     const double lane_border = 1.0;
 
@@ -35,10 +34,12 @@ private:
     /**
      * helper variables
      */
+     uint64_t numFrame = 0;
     Mat base_image = Mat::zeros(1000, 1000, CV_8UC3 );
     Point2d offset = Point(500, 500);
     double pixel_per_m = 20;
     std::shared_ptr<VideoWriter> video;
+    std::string imageBasePath;
 
     Point2d junctionPoint(Junction *j);
     Point2d directionVector(Junction::Direction direction);
@@ -50,7 +51,14 @@ public:
      * @param fn file name
      * @param fps fps
      */
-    void open(std::string &fn, double fps = 1);
+    void setVideoPath(std::string &fn, double fps);
+
+
+    /**
+     * set image path. render_image will save image for each frame.
+     * @param fn image base_file name. '%d.jpg' will be appended before saving file.
+     */
+    void setImageBasePath(std::string &fn);
 
     /**
      * close video file
