@@ -126,20 +126,23 @@ Mat Visualization::render_image() {
         dir = dir / sqrt(pow(dir.x, 2) + pow(dir.y, 2));
         Point2d outerLaneDir = getOuterLaneDirection(dir);
 
+        //scale directions
+        auto scaledDir = dir * pixel_per_m;
+        auto scaledOuterLaneDir = outerLaneDir * pixel_per_m;
+
         //calculate offsets
-        Point2d carOffset = dir * (car->x - car->length / 2) * pixel_per_m;
-        Point2d laneOffset = ((double) car->getLane()->lane_id) * lane_width * outerLaneDir * pixel_per_m;
-        Point2d laneBorderOffset = lane_border * outerLaneDir * pixel_per_m;
-        Point2d carSizeOffset =  (car_length * dir + car_width * outerLaneDir) * pixel_per_m;
+        Point2d carOffset = scaledDir * (car->x - car->length / 2);
+        Point2d laneOffset = scaledOuterLaneDir * ((double) car->getLane()->lane_id) * lane_width;
+        Point2d laneBorderOffset = scaledOuterLaneDir * lane_border;
+        Point2d carSizeOffset = scaledDir * car_length + scaledOuterLaneDir * car_width;
 
         Point2d start = from + carOffset + laneOffset + laneBorderOffset;
         Point2d end = start + carSizeOffset;
 
-        Point2d front_middle = end - 0.5 * car_width * outerLaneDir * pixel_per_m;
-        Point2d back_middle = start + 0.5 * car_width * outerLaneDir * pixel_per_m;
+        Point2d front_middle = end - 0.5 * car_width * scaledOuterLaneDir;
 
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
-        //arrowedLine(image, back_middle, front_middle, Scalar(0, 0, 0), (int)(1*pixel_per_m));
+
         circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
         putText(image, std::to_string(car->id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
     }
