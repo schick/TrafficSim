@@ -106,6 +106,13 @@ TEST(TestJson, tiny_100_steps) {
     test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 1e-7);
 }
 
+TEST(TestJson, 4x4) {
+    test_file(JSON_TEST_PATH + "own_tests/4x4.json", 1e-7);
+}
+
+TEST(TestJson, 16x16) {
+    test_file(JSON_TEST_PATH + "own_tests/16x16.json", 1e-7);
+}
 
 
 TEST(TestJsonExact, zero_timestamp) {
@@ -163,6 +170,15 @@ TEST(TestJsonExact, cars_correct_turning) {
 TEST(TestJsonExact, tiny_100_steps) {
     test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 0);
 }
+
+TEST(TestJsonExact, 4x4) {
+    test_file(JSON_TEST_PATH + "own_tests/4x4.json", 0);
+}
+
+TEST(TestJsonExact, 16x16) {
+    test_file(JSON_TEST_PATH + "own_tests/16x16.json", 0);
+}
+
 /*TEST(Foo, Acceleration) {
     auto leadingCar = Car(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
     auto followingCar = Car(1, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
