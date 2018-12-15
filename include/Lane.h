@@ -28,8 +28,6 @@ private:
 
 public:
 
-    void prepareLanes();
-
     /**
      * stores neighboring objects on a lane based on a given position on lane.
      */

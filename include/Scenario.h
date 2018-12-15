@@ -6,6 +6,7 @@
 #define PROJECT_SCENARIO_H
 
 #include <memory>
+#include <omp.h>
 
 #include "json.hpp"
 
@@ -34,7 +35,7 @@ public:
 
     virtual std::vector<Car::AdvanceData> calculateCarChanges() = 0;
 
-    void advance(size_t steps = 1);
+    virtual void advance(size_t steps = 1);
 
     virtual void advanceCars() = 0;
     virtual void advanceTrafficLights() = 0;
@@ -61,11 +62,11 @@ public:
 };
 
 
-class OkesExampleAdvanceAlgorithm : public AdvanceAlgorithm {
+class SequentialAlgorithm : public AdvanceAlgorithm {
 
 public:
 
-    explicit OkesExampleAdvanceAlgorithm(Scenario *scenario) : AdvanceAlgorithm(scenario) {};
+    explicit SequentialAlgorithm(Scenario *scenario) : AdvanceAlgorithm(scenario) {};
 
     std::vector<Car::AdvanceData> calculateCarChanges() override {
 
@@ -90,6 +91,57 @@ public:
     }
 
 };
+
+
+class OpenMPAlgorithm : public AdvanceAlgorithm {
+
+public:
+
+    explicit OpenMPAlgorithm(Scenario *scenario) : AdvanceAlgorithm(scenario) {};
+
+    std::vector<Car::AdvanceData> calculateCarChanges() override {
+        std::vector<Car::AdvanceData> changes(getScenario()->cars.size());
+        auto &cars = getScenario()->cars;
+        #pragma for shared(changes, cars)
+        for (int i = 0; i < cars.size(); i++) {
+            changes[i] = cars[i]->nextStep();
+        }
+        return changes;
+    };
+
+    void advanceCars() override {
+    }
+
+
+    void advance(size_t steps = 1) override {
+
+        std::vector<Car::AdvanceData> changes = calculateCarChanges();
+        auto &cars = getScenario()->cars;
+        #pragma omp parallel shared(cars, changes)
+        {
+            for (int i = 0; i < steps; i++) {
+
+                #pragma omp for
+                for (int i = 0; i < cars.size(); i++) {
+                    changes[i] = cars[i]->nextStep();
+                }
+
+                #pragma omp for
+                for (int i = 0; i < changes.size(); i++) {
+                    changes[i].car->advanceStep(changes[i]);
+                }
+            }
+        }
+    }
+
+    void advanceTrafficLights() override {
+        for (std::unique_ptr<Junction> &j : getScenario()->junctions) {
+            j->updateSignals();
+        }
+    }
+
+};
+
 
 
 #endif //PROJECT_SCENARIO_H

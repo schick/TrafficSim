@@ -22,12 +22,10 @@ void test_file(std::string fn, double genauigkeit) {
     Scenario scenario;
     scenario.parse(input);
 
-    OkesExampleAdvanceAlgorithm advancer(&scenario);
-
+    OpenMPAlgorithm advancer(&scenario);
     for (int i = 0; i < input["time_steps"]; i++) {
         advancer.advance();
     }
-
     json output = scenario.toJson();
 
     //ASSERT_TRUE(loesung == output);

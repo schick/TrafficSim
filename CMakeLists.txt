@@ -10,19 +10,25 @@ endif(MSVC)
 
 option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
 option(USE_CIN "Use cin to read JSON" ON)
+option(DEBUG_MSGS "Print stuff" ON)
 option(BUILD_TESTS "Build Tests" OFF)
 
 option(OKE "Oke's default config" OFF)
-
 IF(OKE)
     set(WITHOUT_VIS OFF)
     set(USE_CIN OFF)
+    set(DEBUG_MSGS ON)
     set(BUILD_TESTS ON)
+ENDIF()
+
+if(DEBUG_MSGS)
+    add_definitions(-DDEBUG_MSGS)
 ENDIF()
 
 # enable optimization in release mode
 string(TOLOWER "${CMAKE_BUILD_TYPE}" DEBUG_TYPE_LOWER )
 if(DEBUG_TYPE_LOWER STREQUAL debug)
+    add_definitions(-DDEBUG)
 else()
     message(STATUS "building in release mode")
     set(CMAKE_CXX_FLAGS -O3)

@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv[])
 {
-    json input, loesung;
+    json input;
 
     // read input file
 #ifdef USE_CIN
@@ -26,6 +26,8 @@ int main(int argc, char* argv[])
     }
 
     // read loesung
+#ifdef DEBUG_MSGS
+    json loesung;
     std::ifstream json_file_out(fn + ".sol");
     if (json_file_out.good()) {
         try {
@@ -35,11 +37,12 @@ int main(int argc, char* argv[])
         }
     }
 #endif
+#endif
 
     Scenario scenario;
     scenario.parse(input);
 
-    OkesExampleAdvanceAlgorithm advancer(&scenario);
+    OpenMPAlgorithm advancer(&scenario);
 
 #ifdef VISUALIZATION_ENABLED
     Visualization visualization(&scenario);
@@ -48,13 +51,24 @@ int main(int argc, char* argv[])
     visualization.render_image();
 #endif
 
-    for(int i=0; i < input["time_steps"]; i++) {
-        advancer.advance();
+#ifdef DEBUG_MSGS
+    auto start = std::chrono::system_clock::now();
+#endif
 
 #ifdef VISUALIZATION_ENABLED
+    for(int i=0; i < input["time_steps"]; i++) {
+        advancer.advance();
         visualization.render_image();
-#endif
     }
+#else
+    advancer.advance(input["time_steps"]);
+#endif
+
+#ifdef DEBUG_MSGS
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+            end - start);
+#endif
 
 #ifdef VISUALIZATION_ENABLED
     visualization.render_image();
@@ -65,11 +79,20 @@ int main(int argc, char* argv[])
     std::cout << output.dump() << "\n";
 
 #ifndef USE_CIN
+#ifdef DEBUG_MSGS
     if (json_file_out.good()) {
         std::cout << loesung.dump() << "\n";
-        assert(output == loesung);
+        if(output != loesung) {
+            printf("Lösungen nicht gleich...\n");
+        }
     }
 #endif
+#endif
+
+#ifdef DEBUG_MSGS
+    std::cout << "Time: " << elapsed.count() << "ms" << std::endl;
+#endif
+
 
     return 0;
 }

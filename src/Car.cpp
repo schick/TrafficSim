@@ -16,7 +16,6 @@ Car::AdvanceData Car::nextStep() {
 
     double m_left = getLaneChangeMetricForLane(neighboringLanes.left, ownNeighbors);
     double m_right = getLaneChangeMetricForLane(neighboringLanes.right, ownNeighbors);
-
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
         return Car::AdvanceData(this, getAcceleration(neighboringLanes.left->getNeighboringObjects(this).front), -1);
@@ -55,6 +54,7 @@ void Car::updateLane(AdvanceData &data) {
         // just do a lane change if wanted
         if (data.lane_offset != 0) {
             // lane_offset should be validated in this case
+            assert(getLane()->road->lanes.size() > getLane()->lane_id + data.lane_offset);
             moveToLane(getLane()->road->lanes[getLane()->lane_id + data.lane_offset]);
         }
     }
