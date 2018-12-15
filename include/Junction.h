@@ -80,7 +80,7 @@ private:
      */
     std::array<std::vector<RedTrafficLight>, 4> mRedTrafficLights;
 
-
+    void setSignals();
 };
 
 

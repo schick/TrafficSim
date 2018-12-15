@@ -69,9 +69,6 @@ public:
 
     std::vector<Car::AdvanceData> calculateCarChanges() override {
 
-        for(std::unique_ptr<Lane> &l : getScenario()->lanes)
-            l->prepareLanes();
-
         std::vector<Car::AdvanceData> changes;
         for (std::unique_ptr<Car> &c : getScenario()->cars) {
             changes.emplace_back(c->nextStep());

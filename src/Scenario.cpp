@@ -133,7 +133,7 @@ json Scenario::toJson() {
         out_car["from"] = car->getLane()->road->from->id;
         out_car["to"] = car->getLane()->road->to->id;
         out_car["lane"] = car->getLane()->lane_id;
-        out_car["position"] = car->x;
+        out_car["position"] = car->getPosition();
 
         output["cars"].push_back(out_car);
     }
