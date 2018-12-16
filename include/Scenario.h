@@ -15,31 +15,7 @@
 #include "RedTrafficLight.h"
 #include "Road.h"
 
-
 using json = nlohmann::json;
-
-
-class Scenario;
-
-class AdvanceAlgorithm {
-private:
-
-    Scenario *scenario;
-
-public:
-
-    Scenario *getScenario() { return scenario; }
-
-    explicit AdvanceAlgorithm(Scenario *scenario) : scenario(scenario) {};
-
-    virtual std::vector<Car::AdvanceData> calculateCarChanges() = 0;
-
-    void advance(size_t steps = 1);
-
-    virtual void advanceCars() = 0;
-    virtual void advanceTrafficLights() = 0;
-};
-
 
 class Scenario {
 public:
@@ -61,34 +37,7 @@ public:
 };
 
 
-class OkesExampleAdvanceAlgorithm : public AdvanceAlgorithm {
 
-public:
-
-    explicit OkesExampleAdvanceAlgorithm(Scenario *scenario) : AdvanceAlgorithm(scenario) {};
-
-    std::vector<Car::AdvanceData> calculateCarChanges() override {
-        std::vector<Car::AdvanceData> changes;
-        for (std::unique_ptr<Car> &c : getScenario()->cars) {
-            changes.emplace_back(c->nextStep());
-        }
-        return changes;
-    };
-
-    void advanceCars() override {
-        std::vector<Car::AdvanceData> changes = calculateCarChanges();
-        for (Car::AdvanceData &d : changes) {
-            d.car->advanceStep(d);
-        }
-    }
-
-    void advanceTrafficLights() override {
-        for (std::unique_ptr<Junction> &j : getScenario()->junctions) {
-            j->updateSignals();
-        }
-    }
-
-};
 
 
 #endif //PROJECT_SCENARIO_H

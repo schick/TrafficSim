@@ -29,6 +29,7 @@ public:
      * Data representing next advance of a car
      */
     struct AdvanceData {
+        AdvanceData() = default;
         AdvanceData(Car *car, double acceleration, int lane_offset)
             : car(car), acceleration(acceleration), lane_offset(lane_offset) {};
         Car *car = nullptr;
@@ -97,13 +98,7 @@ public:
      * advance car based of data
      * @param data data representing the change
      */
-    void advanceStep(AdvanceData data);
-
-    bool isCarOverJunction();
-
-    void moveCarAcrossJunction(Car::AdvanceData &data);
-
-    void updateKinematicState(Car::AdvanceData &data);
+    void advanceStep(AdvanceData &data);
 
     /**
      * calculate the desired acceleration. base calculation on leading object
@@ -113,7 +108,15 @@ public:
      */
     double getAcceleration(TrafficObject *leading_object) override;
 
+private:
 
+    void updateLane(AdvanceData &data);
+
+    bool isCarOverJunction();
+
+    void moveCarAcrossJunction(Car::AdvanceData &data);
+
+    void updateKinematicState(Car::AdvanceData &data);
 };
 
 

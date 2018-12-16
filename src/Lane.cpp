@@ -8,33 +8,24 @@
 #include <stdexcept>
 
 std::vector<TrafficObject*> Lane::getTrafficObjects() {
-
     throw std::invalid_argument("Method not yet implemented");
 }
 
 Lane::NeighboringObjects Lane::getNeighboringObjects(TrafficObject *trafficObject) {
+    // TODO: assert is sorted
+    if (mTrafficObjects.size() == 0) return NeighboringObjects();
+    auto it = std::lower_bound(mTrafficObjects.begin(), mTrafficObjects.end(), trafficObject, TrafficObject::Cmp());
     NeighboringObjects result;
-    std::sort(mTrafficObjects.begin(), mTrafficObjects.end(), TrafficObject::PosCmp());
-    for(TrafficObject *to : mTrafficObjects) {
-        if (to == trafficObject) {
-            continue;
-        }
-        if (to->x > trafficObject->x) {
-            result.front = to;
-            return result;
-        }
-        if (to->x < trafficObject->x) {
-            result.back = to;
-        }
-        // if traffic objects are on same position the object with smaller id becomes front car
-        if (to->x == trafficObject->x) {
-            if (trafficObject->id < to->id) {
-                result.back = to;
-                return result;
-            }
-            result.front = to;
-            return result;
-        }
+
+    if (it != mTrafficObjects.begin())
+        result.back = *(it - 1);
+
+    if (mTrafficObjects.end() == it || *it != trafficObject) {
+        if (it != mTrafficObjects.end())
+            result.front = *it;
+    } else {
+        if (it + 1 != mTrafficObjects.end())
+            result.front = *(it + 1);
     }
     return result;
 }

@@ -9,6 +9,7 @@
 #include <inttypes.h>
 #include <iostream>
 #include <algorithm>
+#include <mutex>
 
 class Road;
 class TrafficObject;
@@ -23,6 +24,7 @@ private:
      * object on this lane. currently not sorted.
      */
     std::vector<TrafficObject *> mTrafficObjects;
+    std::mutex mTrafficObjectsMutex;
 
 public:
 
@@ -30,12 +32,13 @@ public:
      * stores neighboring objects on a lane based on a given position on lane.
      */
     struct NeighboringObjects {
+        NeighboringObjects() : front(nullptr), back(nullptr) {};
         TrafficObject *front = nullptr;
         TrafficObject *back = nullptr;
     };
 
 
-    Lane(uint8_t lane_id, Road* road) : lane_id(lane_id), road(road), mTrafficObjects() {};
+    Lane(uint8_t lane_id, Road* road) : lane_id(lane_id), road(road), mTrafficObjects(), mTrafficObjectsMutex() {};
 
     /**
      * properties

@@ -10,19 +10,25 @@ endif(MSVC)
 
 option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
 option(USE_CIN "Use cin to read JSON" ON)
+option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
 
 option(OKE "Oke's default config" OFF)
-
 IF(OKE)
     set(WITHOUT_VIS OFF)
     set(USE_CIN OFF)
+    set(DEBUG_MSGS ON)
     set(BUILD_TESTS ON)
+ENDIF()
+
+if(DEBUG_MSGS)
+    add_definitions(-DDEBUG_MSGS)
 ENDIF()
 
 # enable optimization in release mode
 string(TOLOWER "${CMAKE_BUILD_TYPE}" DEBUG_TYPE_LOWER )
 if(DEBUG_TYPE_LOWER STREQUAL debug)
+    add_definitions(-DDEBUG)
 else()
     message(STATUS "building in release mode")
     set(CMAKE_CXX_FLAGS -O3)
@@ -67,7 +73,8 @@ ENDIF()
 
 # add library with all logic
 add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
-        src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp)
+        src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp
+        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp)
 
 # create final executable
 add_executable(traffic_sim src/main.cpp)
@@ -84,6 +91,9 @@ IF (BUILD_TESTS)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test traffic_scenario)
     gtest_discover_tests(json_test)
+
+    add_executable(benchmark src/benchmark.cpp)
+    target_link_libraries(benchmark traffic_scenario)
 ELSE()
     message(STATUS "not building tests")
 ENDIF()
