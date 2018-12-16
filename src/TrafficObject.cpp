@@ -16,7 +16,6 @@ void TrafficObject::moveToLane(Lane* lane) {
         std::lock_guard<std::mutex> lk(lane->mTrafficObjectsMutex);
         _moveToLane(lane);
     } else {
-        {
         std::lock(lane->mTrafficObjectsMutex, this->lane->mTrafficObjectsMutex);
         std::lock_guard<std::mutex> lk1(lane->mTrafficObjectsMutex, std::adopt_lock);
         std::lock_guard<std::mutex> lk2(this->lane->mTrafficObjectsMutex, std::adopt_lock);
