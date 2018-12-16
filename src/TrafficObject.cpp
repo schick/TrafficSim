@@ -13,10 +13,13 @@
 void TrafficObject::moveToLane(Lane* lane) {
     if (lane == this->lane) return;
     if (this->lane == nullptr) {
-        std::scoped_lock lock_guard(lane->mTrafficObjectsMutex);
+        std::lock_guard<std::mutex> lk(lane->mTrafficObjectsMutex);
         _moveToLane(lane);
     } else {
-        std::scoped_lock lock_guard(lane->mTrafficObjectsMutex, this->lane->mTrafficObjectsMutex);
+        {
+        std::lock(lane->mTrafficObjectsMutex, this->lane->mTrafficObjectsMutex);
+        std::lock_guard<std::mutex> lk1(lane->mTrafficObjectsMutex, std::adopt_lock);
+        std::lock_guard<std::mutex> lk2(this->lane->mTrafficObjectsMutex, std::adopt_lock);
         _moveToLane(lane);
     }
 }
