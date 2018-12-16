@@ -325,6 +325,87 @@ src/TrafficObject.cpp.s:
 	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/TrafficObject.cpp.s
 .PHONY : src/TrafficObject.cpp.s
 
+src/algorithms/AdvanceAlgorithm.o: src/algorithms/AdvanceAlgorithm.cpp.o
+
+.PHONY : src/algorithms/AdvanceAlgorithm.o
+
+# target to build an object file
+src/algorithms/AdvanceAlgorithm.cpp.o:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/AdvanceAlgorithm.cpp.o
+.PHONY : src/algorithms/AdvanceAlgorithm.cpp.o
+
+src/algorithms/AdvanceAlgorithm.i: src/algorithms/AdvanceAlgorithm.cpp.i
+
+.PHONY : src/algorithms/AdvanceAlgorithm.i
+
+# target to preprocess a source file
+src/algorithms/AdvanceAlgorithm.cpp.i:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/AdvanceAlgorithm.cpp.i
+.PHONY : src/algorithms/AdvanceAlgorithm.cpp.i
+
+src/algorithms/AdvanceAlgorithm.s: src/algorithms/AdvanceAlgorithm.cpp.s
+
+.PHONY : src/algorithms/AdvanceAlgorithm.s
+
+# target to generate assembly for a file
+src/algorithms/AdvanceAlgorithm.cpp.s:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/AdvanceAlgorithm.cpp.s
+.PHONY : src/algorithms/AdvanceAlgorithm.cpp.s
+
+src/algorithms/OpenMPAlgorithm.o: src/algorithms/OpenMPAlgorithm.cpp.o
+
+.PHONY : src/algorithms/OpenMPAlgorithm.o
+
+# target to build an object file
+src/algorithms/OpenMPAlgorithm.cpp.o:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/OpenMPAlgorithm.cpp.o
+.PHONY : src/algorithms/OpenMPAlgorithm.cpp.o
+
+src/algorithms/OpenMPAlgorithm.i: src/algorithms/OpenMPAlgorithm.cpp.i
+
+.PHONY : src/algorithms/OpenMPAlgorithm.i
+
+# target to preprocess a source file
+src/algorithms/OpenMPAlgorithm.cpp.i:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/OpenMPAlgorithm.cpp.i
+.PHONY : src/algorithms/OpenMPAlgorithm.cpp.i
+
+src/algorithms/OpenMPAlgorithm.s: src/algorithms/OpenMPAlgorithm.cpp.s
+
+.PHONY : src/algorithms/OpenMPAlgorithm.s
+
+# target to generate assembly for a file
+src/algorithms/OpenMPAlgorithm.cpp.s:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/OpenMPAlgorithm.cpp.s
+.PHONY : src/algorithms/OpenMPAlgorithm.cpp.s
+
+src/algorithms/SequentialAlgorithm.o: src/algorithms/SequentialAlgorithm.cpp.o
+
+.PHONY : src/algorithms/SequentialAlgorithm.o
+
+# target to build an object file
+src/algorithms/SequentialAlgorithm.cpp.o:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/SequentialAlgorithm.cpp.o
+.PHONY : src/algorithms/SequentialAlgorithm.cpp.o
+
+src/algorithms/SequentialAlgorithm.i: src/algorithms/SequentialAlgorithm.cpp.i
+
+.PHONY : src/algorithms/SequentialAlgorithm.i
+
+# target to preprocess a source file
+src/algorithms/SequentialAlgorithm.cpp.i:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/SequentialAlgorithm.cpp.i
+.PHONY : src/algorithms/SequentialAlgorithm.cpp.i
+
+src/algorithms/SequentialAlgorithm.s: src/algorithms/SequentialAlgorithm.cpp.s
+
+.PHONY : src/algorithms/SequentialAlgorithm.s
+
+# target to generate assembly for a file
+src/algorithms/SequentialAlgorithm.cpp.s:
+	$(MAKE) -f CMakeFiles/traffic_scenario.dir/build.make CMakeFiles/traffic_scenario.dir/src/algorithms/SequentialAlgorithm.cpp.s
+.PHONY : src/algorithms/SequentialAlgorithm.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -383,6 +464,15 @@ help:
 	@echo "... src/TrafficObject.o"
 	@echo "... src/TrafficObject.i"
 	@echo "... src/TrafficObject.s"
+	@echo "... src/algorithms/AdvanceAlgorithm.o"
+	@echo "... src/algorithms/AdvanceAlgorithm.i"
+	@echo "... src/algorithms/AdvanceAlgorithm.s"
+	@echo "... src/algorithms/OpenMPAlgorithm.o"
+	@echo "... src/algorithms/OpenMPAlgorithm.i"
+	@echo "... src/algorithms/OpenMPAlgorithm.s"
+	@echo "... src/algorithms/SequentialAlgorithm.o"
+	@echo "... src/algorithms/SequentialAlgorithm.i"
+	@echo "... src/algorithms/SequentialAlgorithm.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
