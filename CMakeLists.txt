@@ -10,7 +10,7 @@ endif(MSVC)
 
 option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
 option(USE_CIN "Use cin to read JSON" ON)
-option(DEBUG_MSGS "Print stuff" ON)
+option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
 
 option(OKE "Oke's default config" OFF)
