@@ -46,7 +46,7 @@ else()
     find_package(OpenCV QUIET)
     IF(OpenCV_FOUND)
         add_definitions(-DVISUALIZATION_ENABLED)
-        add_library(vis src/Visualization.cpp)
+        add_library(vis src/util/Visualization.cpp)
         target_link_libraries(vis ${OpenCV_LIBS})
     ELSE()
         message(WARNING "OpenCV not found. Building without visualization.")
@@ -74,7 +74,7 @@ ENDIF()
 # add library with all logic
 add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
         src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp
-        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp)
+        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp src/util/SimpleArgumentParser.cpp include/util/SimpleArgumentParser.h)
 
 # create final executable
 add_executable(traffic_sim src/main.cpp)
@@ -87,12 +87,12 @@ ENDIF()
 IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
-    add_executable(json_test src/test_json.cpp)
+    add_executable(json_test src/test/test_json.cpp)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test traffic_scenario)
     gtest_discover_tests(json_test)
 
-    add_executable(benchmark src/benchmark.cpp)
+    add_executable(benchmark src/test/benchmark.cpp)
     target_link_libraries(benchmark traffic_scenario)
 ELSE()
     message(STATUS "not building tests")

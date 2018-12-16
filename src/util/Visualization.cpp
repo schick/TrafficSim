@@ -2,7 +2,7 @@
 // Created by oke on 07.12.18.
 //
 
-#include "Visualization.h"
+#include "util/Visualization.h"
 
 
 void Visualization::setVideoPath(std::string &fn, double fps) {
