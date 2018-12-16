@@ -73,7 +73,8 @@ ENDIF()
 
 # add library with all logic
 add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
-        src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp)
+        src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp
+        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp)
 
 # create final executable
 add_executable(traffic_sim src/main.cpp)

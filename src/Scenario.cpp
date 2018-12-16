@@ -139,10 +139,3 @@ json Scenario::toJson() {
     }
     return output;
 }
-
-void AdvanceAlgorithm::advance(size_t steps) {
-    for (int i = 0; i < steps; i++) {
-        advanceCars();
-        advanceTrafficLights();
-    }
-}
