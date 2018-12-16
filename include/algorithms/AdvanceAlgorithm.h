@@ -35,6 +35,13 @@ public:
     explicit AdvanceAlgorithm(Scenario *scenario) : scenario(scenario) {};
     virtual void advance(size_t steps) = 0;
 
+    static std::vector<std::string> getAlgorithms() {
+        std::vector<std::string> names;
+        for(auto kv : registry()) {
+            names.push_back(kv.first);
+        }
+        return names;
+    }
 
 private:
 
