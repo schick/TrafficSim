@@ -46,7 +46,7 @@ else()
     find_package(OpenCV QUIET)
     IF(OpenCV_FOUND)
         add_definitions(-DVISUALIZATION_ENABLED)
-        add_library(vis src/Visualization.cpp)
+        add_library(vis src/util/Visualization.cpp)
         target_link_libraries(vis ${OpenCV_LIBS})
     ELSE()
         message(WARNING "OpenCV not found. Building without visualization.")
@@ -74,7 +74,7 @@ ENDIF()
 # add library with all logic
 add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
         src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp
-        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp)
+        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp src/util/SimpleArgumentParser.cpp include/util/SimpleArgumentParser.h)
 
 # create final executable
 add_executable(traffic_sim src/main.cpp)
