@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include <assert.h>
+#include <mutex>
 
 #include "TrafficObject.h"
 #include "Lane.h"
@@ -11,11 +12,11 @@
 
 void TrafficObject::moveToLane(Lane* lane) {
     if (lane == this->lane) return;
-    std::lock_guard<std::mutex> lock(lane->mTrafficObjectsMutex);
-    if (this->lane != nullptr) {
-        std::lock_guard<std::mutex> lock2(this->lane->mTrafficObjectsMutex);
+    if (this->lane == nullptr) {
+        std::scoped_lock lock_guard(lane->mTrafficObjectsMutex);
         _moveToLane(lane);
     } else {
+        std::scoped_lock lock_guard(lane->mTrafficObjectsMutex, this->lane->mTrafficObjectsMutex);
         _moveToLane(lane);
     }
 }
