@@ -4,11 +4,12 @@
 
 #include "json.hpp"
 #include "Scenario.h"
+#include "algorithms/SequentialAlgorithm.h"
 
 
 using json = nlohmann::json;
 
-void test_file(std::string fn, double genauigkeit) {
+void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
     json input, loesung;
 
@@ -22,11 +23,8 @@ void test_file(std::string fn, double genauigkeit) {
     Scenario scenario;
     scenario.parse(input);
 
-    OkesExampleAdvanceAlgorithm advancer(&scenario);
-
-    for (int i = 0; i < input["time_steps"]; i++) {
-        advancer.advance();
-    }
+    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, &scenario);
+    advancer->advance(input["time_steps"]);
 
     json output = scenario.toJson();
 
@@ -50,134 +48,47 @@ void test_file(std::string fn, double genauigkeit) {
 
 #define JSON_TEST_PATH std::string("tests/")
 
-TEST(TestJson, zero_timestamp) {
-    test_file(JSON_TEST_PATH + "00-zero_timestep.json", 1e-7);
+#define TEST_ALGORITHMS(ALGO, PATH, NAME)
+#define _CREATE_TEST(NAME, PATH, ALGO, ACCURACY) TEST(test##ALGO##ACCURACY, NAME) {\
+    test_file(STR(ALGO), JSON_TEST_PATH + PATH, 1e-##ACCURACY);\
 }
 
-TEST(TestJson, 1car_1step) {
-    test_file(JSON_TEST_PATH + "05-1car_1step.json", 1e-7);
-}
-
-TEST(TestJson, 1car_10steps) {
-    test_file(JSON_TEST_PATH + "10-1car_10steps.json", 1e-7);
-}
-
-TEST(TestJson, speed_limit) {
-    test_file(JSON_TEST_PATH + "13-speed_limit.json", 1e-7);
-}
-
-TEST(TestJson, 1car_uturn) {
-    test_file(JSON_TEST_PATH + "15-1car_uturn.json", 1e-7);
-}
-
-TEST(TestJson, 3cars_1lane) {
-    test_file(JSON_TEST_PATH + "20-3cars_1lane.json", 1e-7);
-}
-
-TEST(TestJson, 2two_cars_before_lane_change) {
-    test_file(JSON_TEST_PATH + "25-2two_cars_before_lane_change.json", 1e-7);
-}
-
-TEST(TestJson, 2cars_lane_change) {
-    test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 1e-7);
-}
-
-TEST(TestJson, 2cars_lane_change_to_same_lane_one_car_faster) {
-    test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 1e-7);
-}
-
-TEST(TestJson, 2cars_lane_change_to_same_lane) {
-    test_file(JSON_TEST_PATH + "31-cars_change_to_same_lane.json", 1e-7);
-}
-
-TEST(TestJson, lane_change_after_junction_to_missing_lane) {
-    test_file(JSON_TEST_PATH + "35-lane_change_after_junction.json", 1e-7);
-}
-
-TEST(TestJson, lane_change_after_junction_to_same_lane) {
-    test_file(JSON_TEST_PATH + "36-lane_change_after_junction_same_lane.json", 1e-7);
-}
-
-TEST(TestJson, cars_correct_turning) {
-    test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 1e-7);
-}
-
-TEST(TestJson, tiny_100_steps) {
-    test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 1e-7);
-}
-
-TEST(TestJson, 4x4) {
-    test_file(JSON_TEST_PATH + "own_tests/4x4.json", 1e-7);
-}
-
-TEST(TestJson, 16x16) {
-    test_file(JSON_TEST_PATH + "own_tests/16x16.json", 1e-7);
-}
+#define CREATE_TESTS(NAME, PATH) \
+    _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
+    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);
 
 
-TEST(TestJsonExact, zero_timestamp) {
-    test_file(JSON_TEST_PATH + "00-zero_timestep.json", 0);
-}
+CREATE_TESTS(zero_timestamp, "00-zero_timestep.json");
 
-TEST(TestJsonExact, 1car_1step) {
-    test_file(JSON_TEST_PATH + "05-1car_1step.json", 0);
-}
+CREATE_TESTS(1car_1step, "05-1car_1step.json");
 
-TEST(TestJsonExact, 1car_10steps) {
-    test_file(JSON_TEST_PATH + "10-1car_10steps.json", 0);
-}
+CREATE_TESTS(1car_10steps, "10-1car_10steps.json");
 
-TEST(TestJsonExact, speed_limit) {
-    test_file(JSON_TEST_PATH + "13-speed_limit.json", 0);
-}
+CREATE_TESTS(speed_limit, "13-speed_limit.json");
 
-TEST(TestJsonExact, 1car_uturn) {
-    test_file(JSON_TEST_PATH + "15-1car_uturn.json", 0);
-}
+CREATE_TESTS(1car_uturn, "15-1car_uturn.json");
 
-TEST(TestJsonExact, 3cars_1lane) {
-    test_file(JSON_TEST_PATH + "20-3cars_1lane.json", 0);
-}
+CREATE_TESTS(3cars_1lane, "20-3cars_1lane.json");
 
-TEST(TestJsonExact, 2two_cars_before_lane_change) {
-    test_file(JSON_TEST_PATH + "25-2two_cars_before_lane_change.json", 0);
-}
+CREATE_TESTS(2two_cars_before_lane_change, "25-2two_cars_before_lane_change.json");
 
-TEST(TestJsonExact, 2cars_lane_change) {
-    test_file(JSON_TEST_PATH + "27-2cars_lane_change.json", 0);
-}
+CREATE_TESTS(2cars_lane_change, "27-2cars_lane_change.json");
 
-TEST(TestJsonExact, 2cars_lane_change_to_same_lane_one_car_faster) {
-    test_file(JSON_TEST_PATH + "30-cars_change_to_same_lane_one_car_faster.json", 0);
-}
+CREATE_TESTS(2cars_lane_change_to_same_lane_one_car_faster, "30-cars_change_to_same_lane_one_car_faster.json");
 
-TEST(TestJsonExact, 2cars_lane_change_to_same_lane) {
-    test_file(JSON_TEST_PATH + "31-cars_change_to_same_lane.json", 0);
-}
+CREATE_TESTS(2cars_lane_change_to_same_lane, "31-cars_change_to_same_lane.json");
 
-TEST(TestJsonExact, lane_change_after_junction_to_missing_lane) {
-    test_file(JSON_TEST_PATH + "35-lane_change_after_junction.json", 0);
-}
+CREATE_TESTS(lane_change_after_junction_to_missing_lane, "35-lane_change_after_junction.json");
 
-TEST(TestJsonExact, lane_change_after_junction_to_same_lane) {
-    test_file(JSON_TEST_PATH + "36-lane_change_after_junction_same_lane.json", 0);
-}
+CREATE_TESTS(lane_change_after_junction_to_same_lane, "36-lane_change_after_junction_same_lane.json");
 
-TEST(TestJsonExact, cars_correct_turning) {
-    test_file(JSON_TEST_PATH + "40-cars_correct_turning.json", 0);
-}
+CREATE_TESTS(cars_correct_turning, "40-cars_correct_turning.json");
 
-TEST(TestJsonExact, tiny_100_steps) {
-    test_file(JSON_TEST_PATH + "42-tiny_100timestep.json", 0);
-}
+CREATE_TESTS(tiny_100_steps, "42-tiny_100timestep.json");
 
-TEST(TestJsonExact, 4x4) {
-    test_file(JSON_TEST_PATH + "own_tests/4x4.json", 0);
-}
+CREATE_TESTS(4x4, "own_tests/4x4.json");
 
-TEST(TestJsonExact, 16x16) {
-    test_file(JSON_TEST_PATH + "own_tests/16x16.json", 0);
-}
+CREATE_TESTS(16x16, "own_tests/16x16.json");
 
 /*TEST(Foo, Acceleration) {
     auto leadingCar = Car(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);

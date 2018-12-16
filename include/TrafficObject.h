@@ -5,6 +5,8 @@
 #ifndef PROJECT_TRAFFICOBJECT_H
 #define PROJECT_TRAFFICOBJECT_H
 
+#include "Lane.h"
+
 class Lane;
 
 class TrafficObject {
@@ -14,8 +16,12 @@ public:
     /**
      * compare object to compare Traffic objects by
      */
-    struct PosCmp {
-        bool operator () (const TrafficObject *lhs, TrafficObject *rhs) { return lhs->x < rhs->x; }
+    struct Cmp {
+        bool operator () (const TrafficObject *lhs, TrafficObject *rhs) {
+            if(lhs->x == rhs->x)
+                return lhs->id > rhs->id;
+            return lhs->x < rhs->x;
+        }
     };
 
 
@@ -25,7 +31,6 @@ public:
      * state. put acceleration in here for a more generic implementation of Car::nextStep
      */
     int id;
-    double x;
     double v;
     double a;
     double length;
@@ -55,11 +60,21 @@ public:
      */
     Lane *getLane();
 
+    double getPosition();
+    void setPosition(double x);
+
 private:
     /**
      * current lane
      */
     Lane *lane;
+
+
+    double x;
+
+
+    void _moveToLane(Lane *lane);
+    void _removeFromLane();
 
 };
 

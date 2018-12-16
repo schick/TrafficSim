@@ -9,7 +9,6 @@
 
 
 void Junction::initializeSignals() {
-
     for(int i = 0; i < 4; i++) {
         if (incoming[i] != nullptr) {
             for(Lane *l : incoming[i]->lanes)
@@ -22,12 +21,10 @@ void Junction::initializeSignals() {
         current_signal_time_left = signals[current_signal_id].duration;
     }
 
-    updateSignals();
-
+    setSignals();
 }
 
-void Junction::updateSignals() {
-
+void Junction::setSignals() {
     for(int i = 0; i < 4; i++) {
         for(RedTrafficLight &l : mRedTrafficLights[i]) {
             if (!signals.empty() && signals[current_signal_id].direction == i) {
@@ -39,9 +36,12 @@ void Junction::updateSignals() {
             }
         }
     }
+}
 
+void Junction::updateSignals() {
     if(!signals.empty() && 0 == --current_signal_time_left) {
         current_signal_id = ++current_signal_id % signals.size();
         current_signal_time_left = signals[current_signal_id].duration;
+        setSignals();
     }
 }
