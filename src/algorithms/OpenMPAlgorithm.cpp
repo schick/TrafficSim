@@ -9,20 +9,20 @@ void OpenMPAlgorithm::advance(size_t steps) {
     auto &cars = getScenario()->cars;
     auto &lights = getScenario()->junctions;
     std::vector<Car::AdvanceData> changes(cars.size());
-    #pragma omp parallel shared(cars, changes)
+    //#pragma omp parallel shared(cars, changes)
     {
         for (int i = 0; i < steps; i++) {
-            #pragma omp for
+            #pragma omp parallel for
             for (int i = 0; i < cars.size(); i++) {
                 changes[i] = cars[i]->nextStep();
             }
 
-            #pragma omp for
+            #pragma omp parallel for
             for (int i = 0; i < changes.size(); i++) {
                 changes[i].car->advanceStep(changes[i]);
             }
 
-            #pragma omp for
+            #pragma omp parallel for
             for (int i = 0; i < lights.size(); i++) {
                 lights[i]->updateSignals();
             }
