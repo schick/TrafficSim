@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 
 #ifdef VISUALIZATION_ENABLED
     for(int i=0; i < input["time_steps"]; i++) {
-        advancer->advance();
+        advancer->advance(1);
         visualization.render_image();
     }
 #else
