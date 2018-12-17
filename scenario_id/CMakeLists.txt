@@ -17,4 +17,5 @@ IF(WITH_CUDA)
 ENDIF()
 
 add_library(scenario_id ${SOURCE_FILES_BY_ID})
+
 target_link_libraries(scenario_id scenario_base)

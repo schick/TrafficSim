@@ -12,7 +12,9 @@ if(OpenCV_FOUND)
 endif()
 
 add_library(scenario_ref ${SOURCE_FILES})
+
 link_libraries(scenario_ref scenario_base)
+
 if(OpenCV_FOUND)
     target_link_libraries(scenario_ref ${OpenCV_LIBS})
 endif()

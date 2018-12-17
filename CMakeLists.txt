@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 project(traffic_sim LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-# Add include directory to include search path
-
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 endif(MSVC)
@@ -28,36 +26,29 @@ IF(ALL_ALGOS)
     add_definitions(-DALL_ALGORITHMS)
 ENDIF()
 
-IF(BY_ID)
-    message(STATUS "enable by_id")
-    include_directories(include/by_id include)
-ELSE()
-    message(STATUS "enable default referencing")
-    include_directories(include)
-ENDIF()
-
-IF(WITH_CUDA)
+IF(WITH_CUDA) # enable cuda
     enable_language(CUDA)
 ENDIF()
 
-if(DEBUG_MSGS)
+if(DEBUG_MSGS) # enable debugging in source code
     add_definitions(-DDEBUG_MSGS)
 ENDIF()
 
 # enable optimization in release mode
-string(TOLOWER "${CMAKE_BUILD_TYPE}" DEBUG_TYPE_LOWER )
+string(TOLOWER "${CMAKE_BUILD_TYPE}" DEBUG_TYPE_LOWER)
 if(DEBUG_TYPE_LOWER STREQUAL debug)
     add_definitions(-DDEBUG)
 else()
     message(STATUS "building in release mode")
-    set(CMAKE_CXX_FLAGS -O3)
+    set(CMAKE_CXX_FLAGS -O3) #TODO: Visual Studio?
 endif()
+
 # add library for visualization
 if(USE_CIN)
     add_definitions(-DUSE_CIN)
 endif()
 
-# openmp
+# load openmp
 find_package(OpenMP QUIET)
 if (OPENMP_FOUND)
     message(STATUS "building with openmp")
@@ -75,8 +66,7 @@ ELSE()
     error("Threads not found")
 ENDIF()
 
-include_directories(scenario_base/include scenario_ref/include scenario_id/include)
-
+# check for opencv
 if(VISUALIZATION)
     find_package(OpenCV QUIET)
     IF(OpenCV_FOUND)
@@ -86,20 +76,24 @@ if(VISUALIZATION)
     ENDIF(OpenCV_FOUND)
 endif()
 
+# build libraries
+include_directories(scenario_base/include scenario_ref/include scenario_id/include)
 add_subdirectory(scenario_base)
 add_subdirectory(scenario_ref)
 add_subdirectory(scenario_id)
 
-
 # create final executable
+include_directories(include)
+
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
+
 target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
 
 IF(OpenCV_FOUND)
     target_link_libraries(traffic_sim ${OpenCV_LIBS})
 ENDIF(OpenCV_FOUND)
 
-
+# build tests & benchmark
 IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
