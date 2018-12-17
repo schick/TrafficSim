@@ -2,8 +2,8 @@
 // Created by oke on 16.12.18.
 //
 
-
-#include "algorithms/AdvanceAlgorithm.h"
+#include "register_algorithms.h"
+#include "Scenario.h"
 #include <chrono>
 #include <fstream>
 
@@ -27,10 +27,7 @@ int main() {
             std::ifstream json_file(fn);
             json_file >> input;
 
-            Scenario scenario;
-            scenario.parse(input);
-
-            std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(a_name, &scenario);
+            std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(a_name, input);
 
             printf("    - execute test for %d steps\n", steps);
             auto start = std::chrono::system_clock::now();

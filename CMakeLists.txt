@@ -8,19 +8,24 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 endif(MSVC)
 
-option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
+option(VISUALIZATION "Disable Visualization to dismiss opencv dependency" OFF)
 option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
 option(WITH_CUDA "use cuda" OFF)
-option(BY_ID "byid library" OFF)
+option(ALL_ALGOS "use all algorithsm - not only preffered" OFF)
 
 option(OKE "Oke's default config" OFF)
 IF(OKE)
-    set(WITHOUT_VIS OFF)
+    set(VISUALIZATION ON)
     set(USE_CIN OFF)
     set(DEBUG_MSGS ON)
     set(BUILD_TESTS ON)
+    set(WITH_CUDA ON)
+ENDIF()
+
+IF(ALL_ALGOS)
+    add_definitions(-DALL_ALGORITHMS)
 ENDIF()
 
 IF(BY_ID)
@@ -52,21 +57,6 @@ if(USE_CIN)
     add_definitions(-DUSE_CIN)
 endif()
 
-if(WITHOUT_VIS)
-    message(STATUS "not building visualization")
-else()
-    # find opencv for visualization
-    message(STATUS "building visualization")
-    find_package(OpenCV QUIET)
-    IF(OpenCV_FOUND)
-        add_definitions(-DVISUALIZATION_ENABLED)
-        add_library(vis src/util/Visualization.cpp)
-        target_link_libraries(vis ${OpenCV_LIBS})
-    ELSE()
-        message(WARNING "OpenCV not found. Building without visualization.")
-    ENDIF(OpenCV_FOUND)
-endif()
-
 # openmp
 find_package(OpenMP QUIET)
 if (OPENMP_FOUND)
@@ -85,49 +75,41 @@ ELSE()
     error("Threads not found")
 ENDIF()
 
-# add library with all logic
-SET(SOURCE_FILES src/Car.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight.cpp src/Road.cpp src/Scenario.cpp
-        src/TrafficObject.cpp src/algorithms/SequentialAlgorithm.cpp src/algorithms/AdvanceAlgorithm.cpp
-        src/algorithms/OpenMPAlgorithm.cpp)
-add_library(traffic_scenario_references ${SOURCE_FILES})
+include_directories(scenario_base/include scenario_ref/include scenario_id/include)
 
-# by_id library
-SET(SOURCE_FILES_BY_ID src/by_id/Car.cpp src/by_id/Junction.cpp src/by_id/Lane.cpp src/by_id/RedTrafficLight.cpp
-        src/by_id/Road.cpp src/by_id/Scenario.cpp src/by_id/TrafficObject.cpp
-        src/by_id/algorithms/SequentialAlgorithm.cpp src/by_id/algorithms/AdvanceAlgorithm.cpp
-        src/by_id/algorithms/OpenMPAlgorithm.cpp)
+if(VISUALIZATION)
+    find_package(OpenCV QUIET)
+    IF(OpenCV_FOUND)
+        add_definitions(-DVISUALIZATION_ENABLED)
+    ELSE()
+        message(WARNING "OpenCV not found. Building without visualization.")
+    ENDIF(OpenCV_FOUND)
+endif()
 
-IF(WITH_CUDA)
-    add_definitions(-DWITH_CUDA)
-    set(SOURCE_FILES ${SOURCE_FILES_BY_ID}) # TODO: add cuda files
-ENDIF()
+add_subdirectory(scenario_base)
+add_subdirectory(scenario_ref)
+add_subdirectory(scenario_id)
 
-add_library(traffic_scenario_by_id ${SOURCE_FILES_BY_ID})
-
-
-IF(BY_ID)
-    add_library(traffic_scenario ALIAS traffic_scenario_by_id)
-ELSE()
-    add_library(traffic_scenario ALIAS traffic_scenario_references)
-ENDIF()
 
 # create final executable
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
+target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
 
-IF (OpenCV_FOUND)
-    target_link_libraries(traffic_sim vis)
-ENDIF()
+IF(OpenCV_FOUND)
+    target_link_libraries(traffic_sim ${OpenCV_LIBS})
+ENDIF(OpenCV_FOUND)
+
 
 IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
     add_executable(json_test src/test/test_json.cpp)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
-    target_link_libraries(json_test traffic_scenario)
+    target_link_libraries(json_test scenario_ref scenario_id )
     gtest_discover_tests(json_test)
 
     add_executable(benchmark src/test/benchmark.cpp)
-    target_link_libraries(benchmark traffic_scenario)
+    target_link_libraries(benchmark scenario_ref scenario_id scenario_base)
 ELSE()
     message(STATUS "not building tests")
 ENDIF()

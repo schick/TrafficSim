@@ -3,17 +3,21 @@
 
 #include "util/SimpleArgumentParser.h"
 #include "Scenario.h"
-#include "algorithms/AdvanceAlgorithm.h"
+#include "AdvanceAlgorithm.h"
+
+#include "register_algorithms.h"
+
 
 #ifdef VISUALIZATION_ENABLED
-#include "util/Visualization.h"
+#include "BaseVisualizationEngine.h"
+#include "Visualization_id.h"
 #endif
 int main(int argc, char* argv[])
 {
     json input;
 
     SimpleArgumentParser p;
-    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
+    p.add_kw_argument("algorithm", "OpenMPAlgorithm_id");
 
     // read input file
 #ifdef USE_CIN
@@ -46,19 +50,16 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-    Scenario scenario;
-    scenario.parse(input);
-
-    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(p["algorithm"], &scenario);
+    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(p["algorithm"], input);
     if (advancer == nullptr) {
         printf("Algorithm not found.");
         exit(-1);
     }
 #ifdef VISUALIZATION_ENABLED
-    Visualization visualization(&scenario);
+    std::shared_ptr<BaseVisualizationEngine> visualization = advancer->createVisualizationEngine(advancer->getScenario());
     std::string video_fn("output.avi");
-    visualization.setVideoPath(video_fn, 1);
-    visualization.render_image();
+    visualization->setVideoPath(video_fn, 1);
+    visualization->render_image();
 #endif
 
 #ifdef DEBUG_MSGS
@@ -68,7 +69,7 @@ int main(int argc, char* argv[])
 #ifdef VISUALIZATION_ENABLED
     for(int i=0; i < input["time_steps"]; i++) {
         advancer->advance(1);
-        visualization.render_image();
+        visualization->render_image();
     }
 #else
     advancer->advance(input["time_steps"]);
@@ -81,11 +82,11 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef VISUALIZATION_ENABLED
-    visualization.render_image();
-    visualization.close();
+    visualization->render_image();
+    visualization->close();
 #endif
 
-    json output = scenario.toJson();
+    json output = advancer->getScenario()->toJson();
     std::cout << output.dump() << "\n";
 
 #ifndef USE_CIN

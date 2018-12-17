@@ -5,6 +5,7 @@
 #include "util/json.hpp"
 #include "Scenario.h"
 #include "algorithms/SequentialAlgorithm.h"
+#include "register_algorithms.h"
 
 
 using json = nlohmann::json;
@@ -20,13 +21,10 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
     std::ifstream json_file_out(fn + ".sol");
     EXPECT_NO_THROW(json_file_out >> loesung);
 
-    Scenario scenario;
-    scenario.parse(input);
-
-    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, &scenario);
+    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, input);
     advancer->advance(input["time_steps"]);
 
-    json output = scenario.toJson();
+    json output = advancer->getScenario()->toJson();
 
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());
     for (auto &car_json : output["cars"]) {
@@ -53,7 +51,9 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
-    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);
+    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7); \
+    _CREATE_TEST(NAME, PATH, SequentialAlgorithm_id, 7);\
+    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm_id, 7);
 
 
 CREATE_TESTS(zero_timestamp, "00-zero_timestep.json");
@@ -89,8 +89,8 @@ CREATE_TESTS(4x4, "own_tests/4x4.json");
 CREATE_TESTS(16x16, "own_tests/16x16.json");
 
 /*TEST(Foo, Acceleration) {
-    auto leadingCar = Car(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
-    auto followingCar = Car(1, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
+    auto leadingCar = Car_id(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
+    auto followingCar = Car_id(1, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
 
     auto a = followingCar.getAcceleration(&leadingCar);
     ASSERT_EQ(a, 2);
