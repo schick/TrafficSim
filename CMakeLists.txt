@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
+project(traffic_sim LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # Add include directory to include search path
@@ -12,6 +13,7 @@ option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
 option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
+# option(WITH_CUDA "use cuda" OFF)
 
 option(OKE "Oke's default config" OFF)
 IF(OKE)
@@ -21,6 +23,9 @@ IF(OKE)
     set(BUILD_TESTS ON)
 ENDIF()
 
+IF(WITH_CUDA)
+    enable_language(CUDA)
+ENDIF()
 if(DEBUG_MSGS)
     add_definitions(-DDEBUG_MSGS)
 ENDIF()
@@ -72,9 +77,15 @@ ELSE()
 ENDIF()
 
 # add library with all logic
-add_library(traffic_scenario src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp
-        src/Lane.cpp src/Road.cpp src/TrafficObject.cpp src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp
-        src/algorithms/AdvanceAlgorithm.cpp src/algorithms/OpenMPAlgorithm.cpp)
+SET(SOURCE_FILES src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp src/Lane.cpp src/Road.cpp src/TrafficObject.cpp
+        src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp src/algorithms/AdvanceAlgorithm.cpp
+        src/algorithms/OpenMPAlgorithm.cpp)
+
+#IF(WITH_CUDA)
+#    set(SOURCE_FILES ${SOURCE_FILES} src/algorithms/CudaAlgorithm.cpp src/algorithms/cuda_algorithms.cu)
+#ENDIF()
+
+add_library(traffic_scenario ${SOURCE_FILES})
 
 # create final executable
 add_executable(traffic_sim src/main.cpp)
