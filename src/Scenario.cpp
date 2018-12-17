@@ -3,6 +3,7 @@
 //
 
 #include "Scenario.h"
+
 void Scenario::parse(json input) {
 
     parseJunctions(input);

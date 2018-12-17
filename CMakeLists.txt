@@ -3,7 +3,6 @@ project(traffic_sim LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # Add include directory to include search path
-include_directories(include)
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
@@ -14,6 +13,7 @@ option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
 option(WITH_CUDA "use cuda" OFF)
+option(BY_ID "byid library" OFF)
 
 option(OKE "Oke's default config" OFF)
 IF(OKE)
@@ -21,6 +21,14 @@ IF(OKE)
     set(USE_CIN OFF)
     set(DEBUG_MSGS ON)
     set(BUILD_TESTS ON)
+ENDIF()
+
+IF(BY_ID)
+    message(STATUS "enable by_id")
+    include_directories(include/by_id include)
+ELSE()
+    message(STATUS "enable default referencing")
+    include_directories(include)
 ENDIF()
 
 IF(WITH_CUDA)
@@ -81,17 +89,30 @@ ENDIF()
 SET(SOURCE_FILES src/Car.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight.cpp src/Road.cpp src/Scenario.cpp
         src/TrafficObject.cpp src/algorithms/SequentialAlgorithm.cpp src/algorithms/AdvanceAlgorithm.cpp
         src/algorithms/OpenMPAlgorithm.cpp)
+add_library(traffic_scenario_references ${SOURCE_FILES})
+
+# by_id library
+SET(SOURCE_FILES_BY_ID src/by_id/Car.cpp src/by_id/Junction.cpp src/by_id/Lane.cpp src/by_id/RedTrafficLight.cpp
+        src/by_id/Road.cpp src/by_id/Scenario.cpp src/by_id/TrafficObject.cpp
+        src/by_id/algorithms/SequentialAlgorithm.cpp src/by_id/algorithms/AdvanceAlgorithm.cpp
+        src/by_id/algorithms/OpenMPAlgorithm.cpp)
 
 IF(WITH_CUDA)
     add_definitions(-DWITH_CUDA)
-    set(SOURCE_FILES ${SOURCE_FILES}) # TODO: add cuda files
+    set(SOURCE_FILES ${SOURCE_FILES_BY_ID}) # TODO: add cuda files
 ENDIF()
 
-add_library(traffic_scenario ${SOURCE_FILES})
+add_library(traffic_scenario_by_id ${SOURCE_FILES_BY_ID})
+
+
+IF(BY_ID)
+    add_library(traffic_scenario ALIAS traffic_scenario_by_id)
+ELSE()
+    add_library(traffic_scenario ALIAS traffic_scenario_references)
+ENDIF()
 
 # create final executable
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
-target_link_libraries(traffic_sim traffic_scenario)
 
 IF (OpenCV_FOUND)
     target_link_libraries(traffic_sim vis)

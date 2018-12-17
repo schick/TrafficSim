@@ -5,7 +5,7 @@
 #ifndef PROJECT_OPENMPALGORITHM_H
 #define PROJECT_OPENMPALGORITHM_H
 
-#include "algorithms/AdvanceAlgorithm.h"
+#include "AdvanceAlgorithm.h"
 
 class OpenMPAlgorithm : public AdvanceAlgorithm {
 
