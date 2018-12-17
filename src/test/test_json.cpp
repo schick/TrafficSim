@@ -2,7 +2,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-#include "json.hpp"
+#include "util/json.hpp"
 #include "Scenario.h"
 #include "algorithms/SequentialAlgorithm.h"
 
@@ -28,7 +28,6 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
     json output = scenario.toJson();
 
-    //ASSERT_TRUE(loesung == output);
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());
     for (auto &car_json : output["cars"]) {
         bool found_car = false;
@@ -48,7 +47,6 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
 #define JSON_TEST_PATH std::string("tests/")
 
-#define TEST_ALGORITHMS(ALGO, PATH, NAME)
 #define _CREATE_TEST(NAME, PATH, ALGO, ACCURACY) TEST(test##ALGO##ACCURACY, NAME) {\
     test_file(STR(ALGO), JSON_TEST_PATH + PATH, 1e-##ACCURACY);\
 }

@@ -13,7 +13,7 @@ option(WITHOUT_VIS "Disable Visualization to dismiss opencv dependency" ON)
 option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
-# option(WITH_CUDA "use cuda" OFF)
+option(WITH_CUDA "use cuda" OFF)
 
 option(OKE "Oke's default config" OFF)
 IF(OKE)
@@ -26,6 +26,7 @@ ENDIF()
 IF(WITH_CUDA)
     enable_language(CUDA)
 ENDIF()
+
 if(DEBUG_MSGS)
     add_definitions(-DDEBUG_MSGS)
 ENDIF()
@@ -51,7 +52,7 @@ else()
     find_package(OpenCV QUIET)
     IF(OpenCV_FOUND)
         add_definitions(-DVISUALIZATION_ENABLED)
-        add_library(vis src/Visualization.cpp)
+        add_library(vis src/util/Visualization.cpp)
         target_link_libraries(vis ${OpenCV_LIBS})
     ELSE()
         message(WARNING "OpenCV not found. Building without visualization.")
@@ -77,18 +78,19 @@ ELSE()
 ENDIF()
 
 # add library with all logic
-SET(SOURCE_FILES src/Junction.cpp src/Car.cpp src/RedTrafficLight.cpp src/Lane.cpp src/Road.cpp src/TrafficObject.cpp
-        src/Scenario.cpp src/algorithms/SequentialAlgorithm.cpp src/algorithms/AdvanceAlgorithm.cpp
+SET(SOURCE_FILES src/Car.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight.cpp src/Road.cpp src/Scenario.cpp
+        src/TrafficObject.cpp src/algorithms/SequentialAlgorithm.cpp src/algorithms/AdvanceAlgorithm.cpp
         src/algorithms/OpenMPAlgorithm.cpp)
 
-#IF(WITH_CUDA)
-#    set(SOURCE_FILES ${SOURCE_FILES} src/algorithms/CudaAlgorithm.cpp src/algorithms/cuda_algorithms.cu)
-#ENDIF()
+IF(WITH_CUDA)
+    add_definitions(-DWITH_CUDA)
+    set(SOURCE_FILES ${SOURCE_FILES}) # TODO: add cuda files
+ENDIF()
 
 add_library(traffic_scenario ${SOURCE_FILES})
 
 # create final executable
-add_executable(traffic_sim src/main.cpp)
+add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
 target_link_libraries(traffic_sim traffic_scenario)
 
 IF (OpenCV_FOUND)
@@ -98,12 +100,12 @@ ENDIF()
 IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
-    add_executable(json_test src/test_json.cpp)
+    add_executable(json_test src/test/test_json.cpp)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test traffic_scenario)
     gtest_discover_tests(json_test)
 
-    add_executable(benchmark src/benchmark.cpp)
+    add_executable(benchmark src/test/benchmark.cpp)
     target_link_libraries(benchmark traffic_scenario)
 ELSE()
     message(STATUS "not building tests")
