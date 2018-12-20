@@ -8,7 +8,7 @@
 #include <stdexcept>
 
 std::vector<TrafficObject*> Lane::getTrafficObjects() {
-    throw std::invalid_argument("Method not yet implemented");
+    return mTrafficObjects;
 }
 
 Lane::NeighboringObjects Lane::getNeighboringObjects(TrafficObject *trafficObject) {

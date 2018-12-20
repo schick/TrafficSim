@@ -23,10 +23,9 @@ private:
     /**
      * object on this lane. currently not sorted.
      */
-    std::vector<TrafficObject *> mTrafficObjects;
-    std::mutex mTrafficObjectsMutex;
 
 public:
+    std::vector<TrafficObject *> mTrafficObjects;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.
@@ -38,7 +37,7 @@ public:
     };
 
 
-    Lane(uint8_t lane, Road* road) : lane(lane), road(road), mTrafficObjects(), mTrafficObjectsMutex() {};
+    Lane(uint8_t lane, Road* road) : lane(lane), road(road), mTrafficObjects() {};
 
     /**
      * properties

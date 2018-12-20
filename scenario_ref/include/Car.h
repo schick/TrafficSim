@@ -13,16 +13,6 @@
 
 class Car : public TrafficObject {
 
-private:
-
-    /**
-     * lane change metric described on slide 19 (22)
-     * @param ownNeighbors neighbors on current lane
-     * @param otherNeighbors neighbors on other lane
-     * @return metric value in m/s^2
-     */
-    double laneChangeMetric(Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors);
-
 public:
 
     /**
@@ -85,38 +75,6 @@ public:
 
     std::list<TurnDirection> turns;
 
-    /**
-     * calculate advance-data for next step
-     * @return data representing the change
-     */
-    AdvanceData nextStep();
-
-    
-    double getLaneChangeMetricForLane(Lane *neighboringLane, const Lane::NeighboringObjects &ownNeighbors);
-
-    /**
-     * advance car based of data
-     * @param data data representing the change
-     */
-    void advanceStep(AdvanceData &data);
-
-    /**
-     * calculate the desired acceleration. base calculation on leading object
-     * @param leading_object leading object. may actually be in a different lane, this methods treats every object
-     *      passed with this parameter as if it where in current lane
-     * @return acceleration in m/s^2
-     */
-    double getAcceleration(TrafficObject *leading_object) override;
-
-private:
-
-    void updateLane(AdvanceData &data);
-
-    bool isCarOverJunction();
-
-    void moveCarAcrossJunction(Car::AdvanceData &data);
-
-    void updateKinematicState(Car::AdvanceData &data);
 };
 
 

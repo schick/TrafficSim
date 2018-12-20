@@ -38,7 +38,7 @@ void Scenario::parseCars(json &input) {
         auto it = std::find_if(std::begin(roads), std::end(roads), [&](const std::unique_ptr<Road> &road) {
             return ((road->from->id == car["start"]["from"] && road->to->id == car["start"]["to"])); });
         assert(it != roads.end());
-
+        //auto a = lanes[car["start"]["lane"]];
         car_obj->moveToLane((*it)->lanes[car["start"]["lane"]]);
 
         for (const auto& route : car["route"]) car_obj->turns.push_back(route);

@@ -6,10 +6,11 @@
 
 
 std::vector<Car::AdvanceData> SequentialAlgorithm::calculateCarChanges() {
-
+    
+    
     std::vector<Car::AdvanceData> changes;
     for (std::unique_ptr<Car> &c : getRefScenario()->cars) {
-        changes.emplace_back(c->nextStep());
+        changes.emplace_back(idm.nextStep(c.get()));
     }
     return changes;
 };
@@ -17,7 +18,7 @@ std::vector<Car::AdvanceData> SequentialAlgorithm::calculateCarChanges() {
 void SequentialAlgorithm::advanceCars() {
     std::vector<Car::AdvanceData> changes = calculateCarChanges();
     for (Car::AdvanceData &d : changes) {
-        d.car->advanceStep(d);
+        idm.advanceStep(d, d.car);
     }
 }
 
@@ -27,9 +28,17 @@ void SequentialAlgorithm::advanceTrafficLights() {
     }
 }
 
+void SequentialAlgorithm::sortLanes() {
+    for (auto &lane : getRefScenario()->lanes) {
+        auto trafficObjects = lane->mTrafficObjects;
+        std::sort(trafficObjects.begin(), trafficObjects.end(), TrafficObject::Cmp());
+    }
+}
+
 
 void SequentialAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
+        sortLanes();
         advanceCars();
         advanceTrafficLights();
     }

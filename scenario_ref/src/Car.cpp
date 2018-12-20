@@ -9,7 +9,7 @@
 #include <assert.h>
 #include "Junction.h"
 
-Car::AdvanceData Car::nextStep() {
+/*Car::AdvanceData Car::nextStep() {
 
     Lane::NeighboringObjects ownNeighbors = getLane()->getNeighboringObjects(this);
     Road::NeighboringLanes neighboringLanes = getLane()->road->getNeighboringLanes(getLane());
@@ -38,7 +38,7 @@ double Car::getLaneChangeMetricForLane(Lane *neighboringLane, const Lane::Neighb
     return 0;
 }
 
-void Car::advanceStep(Car::AdvanceData &data) {
+/*void Car::advanceStep(Car::AdvanceData &data) {
     updateKinematicState(data);
     updateLane(data);
 }
@@ -97,10 +97,10 @@ void Car::updateKinematicState(Car::AdvanceData &data) {
     a = data.acceleration;
     v = std::max(v + a, 0.);
     setPosition(getPosition() + v);
-}
+}*/
 
 
-double Car::getAcceleration(TrafficObject *leading_vehicle) {
+/*double Car::getAcceleration(TrafficObject *leading_vehicle) {
     double vel_fraction = (v / std::min(getLane()->road->limit, target_velocity));
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
@@ -141,4 +141,4 @@ double Car::laneChangeMetric(Lane::NeighboringObjects ownNeighbors, Lane::Neighb
         }
     }
     return 0;
-}
+}*/

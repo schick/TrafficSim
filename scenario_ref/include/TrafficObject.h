@@ -41,7 +41,17 @@ public:
     * @param leading_vehicle the leading vehicle
     * @return acceleration for t + 1
     */
-    virtual double getAcceleration(TrafficObject *leading_vehicle) { return 0; }
+    virtual double getAcceleration(TrafficObject *leading_vehicle) { return 0; } 
+
+    /**
+     * get currently assigned lane
+     * @return currently assigned lane
+     */
+    Lane *getLane();
+
+    double getPosition();
+
+    void setPosition(double position) { x = position; }
 
     /**
      * move a this object to a specific lane.
@@ -53,15 +63,7 @@ public:
      * remove object from any lane it may be assigned to
      */
     void removeFromLane();
-
-    /**
-     * get currently assigned lane
-     * @return currently assigned lane
-     */
-    Lane *getLane();
-
-    double getPosition();
-    void setPosition(double x);
+  
 
 private:
     /**
@@ -71,11 +73,6 @@ private:
 
 
     double x;
-
-
-    void _moveToLane(Lane *lane);
-    void _removeFromLane();
-
 };
 
 

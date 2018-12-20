@@ -7,6 +7,7 @@
 
 #include "AdvanceAlgorithm.h"
 #include "Scenario.h"
+#include "InteligentDriverModel.h"
 #ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
 #endif
@@ -26,6 +27,10 @@ public:
     void advanceCars();
     void advanceTrafficLights();
     void advance(size_t steps) override;
+    void sortLanes();
+
+    InteligentDriverModel idm;
+
 
 };
 
