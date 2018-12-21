@@ -12,11 +12,15 @@ int main() {
 
     std::vector<std::string> files = {
             "tests/own_tests/16x16.json",
-            "tests/own_tests/32x32.json"
+            "tests/own_tests/32x32.json",
+            "tests/own_tests/64x64.json",
+            // "tests/own_tests/128_5_20695_103475.json",
+            //"tests/own_tests/256_5_83.751_418.755.json"
     };
 
     std::vector<std::string> algorithms = AdvanceAlgorithm::getAlgorithms();
     std::swap(*std::find(algorithms.begin(), algorithms.end(), "SequentialAlgorithm"), algorithms[0]);
+    std::vector<long> durations_total;
     std::vector<long> durations;
     for (std::string &fn : files) {
         for(std::string &a_name : algorithms) {
@@ -26,7 +30,7 @@ int main() {
             json input;
             std::ifstream json_file(fn);
             json_file >> input;
-
+            auto before_parsing = std::chrono::system_clock::now();
             std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(a_name, input);
 
             printf("    - execute test for %d steps\n", steps);
@@ -35,7 +39,9 @@ int main() {
             auto end = std::chrono::system_clock::now();
             auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             durations.push_back(milliseconds);
-            printf("Done in %ldms\n\n", milliseconds);
+            auto milliseconds_total = std::chrono::duration_cast<std::chrono::milliseconds>(end - before_parsing).count();
+            durations_total.push_back(milliseconds_total);
+            printf("Done in %ldms (%ldms)\n\n", milliseconds, milliseconds_total);
         }
     }
 
@@ -47,8 +53,21 @@ int main() {
         }
     }
 
+    printf("\n");
+
     for(int a_idx=1; a_idx<algorithms.size(); a_idx++) {
         printf("%s: %.2f\n", algorithms[a_idx].c_str(), means[a_idx]);
+    }
+
+    printf("Speedups with Parsing:\n");
+    std::vector<double> means_total(algorithms.size());
+    for(int a_idx=0; a_idx<algorithms.size(); a_idx++) {
+        for(int f_idx=0; f_idx<files.size(); f_idx++) {
+            means_total[a_idx] = (double) durations_total[f_idx * algorithms.size()] / (double) durations_total[a_idx + f_idx * algorithms.size()];
+        }
+    }
+    for(int a_idx=1; a_idx<algorithms.size(); a_idx++) {
+        printf("%s: %.2f\n", algorithms[a_idx].c_str(), means_total[a_idx]);
     }
 
 }
