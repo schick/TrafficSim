@@ -3,7 +3,7 @@
 //
 
 #include "algorithms/OpenMPAlgorithm_id.h"
-
+/*
 void OpenMPAlgorithm_id::advance(size_t steps) {
 
     auto &cars = getIDScenario()->cars;
@@ -29,3 +29,4 @@ void OpenMPAlgorithm_id::advance(size_t steps) {
         }
     }
 }
+*/

@@ -13,26 +13,26 @@ public:
     /**
      * properties
      */
-    int id;
-    int from;
-    int to;
+    size_t id;
+    size_t from;
+    size_t to;
     double limit;
     double length;
-    std::array<int, 3> lanes;
+    std::array<size_t , 3> lanes;
     Junction_id::Direction roadDir;
 
 
     struct NeighboringLanes {
-        int right = -1;
-        int left = -1;
+        size_t right = (size_t) -1;
+        size_t left = (size_t) -1;
     };
 
-    Road_id(int id, int from_id, int to_id, double limit, double length, Junction_id::Direction roadDir) :
+    Road_id(size_t id, size_t from_id, size_t to_id, double limit, double length, Junction_id::Direction roadDir) :
             id(id), from(from_id), to(to_id), length(length), limit(limit), roadDir(roadDir), lanes() {
-        lanes.fill(-1);
+        lanes.fill((size_t )-1);
     };
-    Road_id() : id(-1), from(-1), to(-1), length(0), limit(0), roadDir(Junction_id::Direction::NORTH), lanes() {
-        lanes.fill(-1);
+    Road_id() : id((size_t )-1), from((size_t )-1), to((size_t )-1), length(0), limit(0), roadDir(Junction_id::Direction::NORTH), lanes() {
+        lanes.fill((size_t )-1);
     };
 
     /**
@@ -40,7 +40,7 @@ public:
      * @param lane
      * @return
      */
-    NeighboringLanes getNeighboringLanes(Scenario_id &s, Lane_id &lane);
+    NeighboringLanes getNeighboringLanes(const Scenario_id &s, const Lane_id &lane) const;
 
 };
 

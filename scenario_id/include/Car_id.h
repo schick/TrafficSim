@@ -17,7 +17,7 @@ private:
      * @param otherNeighbors neighbors on other lane
      * @return metric value in m/s^2
      */
-    double laneChangeMetric(Scenario_id &s, Lane_id::NeighboringObjects ownNeighbors, Lane_id::NeighboringObjects otherNeighbors);
+    double laneChangeMetric(Scenario_id &s, size_t other_front, size_t other_back, size_t own_front, size_t own_back);
 
 public:
 
@@ -88,7 +88,9 @@ public:
      * calculate advance-data for next step
      * @return data representing the change
      */
-    AdvanceData nextStep(Scenario_id &s);
+    AdvanceData nextStep(Scenario_id &s, size_t own_front, size_t own_back,
+            size_t left_front, size_t left_back,
+            size_t right_front, size_t right_back);
 
     
     double getLaneChangeMetricForLane(Scenario_id &s, int neighboringLane, const Lane_id::NeighboringObjects &ownNeighbors);
@@ -105,7 +107,7 @@ public:
      *      passed with this parameter as if it where in current lane
      * @return acceleration in m/s^2
      */
-    double getAcceleration(Scenario_id &s, int leading_object_id) override;
+    double getAcceleration(Scenario_id &s, size_t leading_object_id) override;
 
 private:
 

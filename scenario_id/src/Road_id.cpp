@@ -9,7 +9,7 @@
 #include "Junction_id.h"
 #include "Scenario_id.h"
 
-Road_id::NeighboringLanes Road_id::getNeighboringLanes(Scenario_id &s, Lane_id &lane) {
+Road_id::NeighboringLanes Road_id::getNeighboringLanes(const Scenario_id &s, const Lane_id &lane) const {
     NeighboringLanes lanes;
     if (lane.lane_num > 0)
         lanes.left = lane.id - 1;

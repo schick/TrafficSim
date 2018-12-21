@@ -6,6 +6,7 @@
 #define PROJECT_LANE_ID_H
 
 #include <inttypes.h>
+#include <vector>
 
 class Scenario_id;
 class TrafficObject_id;
@@ -18,20 +19,20 @@ public:
      * properties
      */
     uint8_t lane_num;
-    int id;
-    int road;
+    size_t id;
+    size_t road;
     double length;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.
      */
     struct NeighboringObjects {
-        NeighboringObjects() : front(-1), back(-1) {};
-        int front = -1;
-        int back = -1;
+        NeighboringObjects() : front((size_t)-1), back((size_t)-1) {};
+        size_t front = (size_t)-1;
+        size_t back = (size_t)-1;
     };
 
-    Lane_id(uint8_t lane_num, int road, int id, double length) : lane_num(lane_num), road(road), id(id), length(length) {};
+    Lane_id(uint8_t lane_num, size_t road, size_t id, double length) : lane_num(lane_num), road(road), id(id), length(length) {};
 
     /**
      * get neighboring objects on this lane
@@ -39,7 +40,7 @@ public:
      *      this algorithm treats all objects as if there where on this lane.
      * @return neighboring objects
      */
-    NeighboringObjects getNeighboringObjects(Scenario_id &s, TrafficObject_id &object);
+    NeighboringObjects getNeighboringObjects(const Scenario_id &s, const TrafficObject_id &object) const;
 
 };
 

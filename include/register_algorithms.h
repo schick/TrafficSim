@@ -9,9 +9,11 @@
 #include "algorithms/SequentialAlgorithm_id.h"
 #include "algorithms/OpenMPAlgorithm.h"
 #include "algorithms/OpenMPAlgorithm_id.h"
+#include "algorithms/CudaAlgorithm_id.h"
 
 REGISTER_ALGORITHM(SequentialAlgorithm);
 REGISTER_ALGORITHM(OpenMPAlgorithm);
+REGISTER_ALGORITHM(CudaAlgorithm_id);
 
 #ifdef ALL_ALGORITHMS
     REGISTER_ALGORITHM(SequentialAlgorithm_id);

@@ -10,36 +10,29 @@
 #include "Junction_id.h"
 #include "Scenario_id.h"
 
-Car_id::AdvanceData Car_id::nextStep(Scenario_id &s) {
 
-    Lane_id::NeighboringObjects ownNeighbors = s.lanes.at(getLane()).getNeighboringObjects(s, *this);
-    Road_id::NeighboringLanes neighboringLanes = s.roads.at(s.lanes.at(getLane()).road).getNeighboringLanes(s, s.lanes.at(getLane()));
+Car_id::AdvanceData Car_id::nextStep(Scenario_id &s, size_t own_front, size_t own_back,
+        size_t left_front, size_t left_back,
+        size_t right_front, size_t right_back) {
+    Road_id::NeighboringLanes neighboringLanes = s.roads[s.lanes[lane].road].getNeighboringLanes(s, s.lanes[lane]);
 
-    double m_left = getLaneChangeMetricForLane(s, neighboringLanes.left, ownNeighbors);
-    double m_right = getLaneChangeMetricForLane(s, neighboringLanes.right, ownNeighbors);
+    double m_left = (neighboringLanes.left != (size_t ) -1) ? laneChangeMetric(s, left_front, left_back, own_front, own_back) : 0;
+    double m_right = (neighboringLanes.right != (size_t ) -1) ? laneChangeMetric(s, right_front, right_back, own_front, own_back) : 0;
 
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
-        return Car_id::AdvanceData(this->id, getAcceleration(s, s.lanes.at(neighboringLanes.left).getNeighboringObjects(s, *this).front), -1);
+        return Car_id::AdvanceData(this->id, getAcceleration(s, left_front), -1);
     }
     else if (m_right > 1 && m_left < m_right) {
         // right go to right lane
-        return Car_id::AdvanceData(this->id, getAcceleration(s, s.lanes.at(neighboringLanes.right).getNeighboringObjects(s, *this).front), 1);
+        return Car_id::AdvanceData(this->id, getAcceleration(s, right_front), 1);
     }
     else {
         // stay on lane
-        return Car_id::AdvanceData(this->id, getAcceleration(s, ownNeighbors.front), 0);
+        return Car_id::AdvanceData(this->id, getAcceleration(s, own_front), 0);
     }
 }
 
-double Car_id::getLaneChangeMetricForLane(Scenario_id &s, int neighboringLane, const Lane_id::NeighboringObjects &ownNeighbors) {
-    if (neighboringLane != -1) {
-        Lane_id &l = s.lanes.at(neighboringLane);
-        Lane_id::NeighboringObjects neighbors = l.getNeighboringObjects(s, *this);
-        return laneChangeMetric(s, ownNeighbors, neighbors);
-    }
-    return 0;
-}
 
 void Car_id::advanceStep(Scenario_id &s, Car_id::AdvanceData &data) {
     updateKinematicState(data);
@@ -103,7 +96,7 @@ void Car_id::updateKinematicState(Car_id::AdvanceData &data) {
 }
 
 
-double Car_id::getAcceleration(Scenario_id &s, int leading_vehicle_id) {
+double Car_id::getAcceleration(Scenario_id &s, size_t leading_vehicle_id) {
     double vel_fraction = (v / std::min(s.roads.at(s.lanes.at(getLane()).road).limit, target_velocity));
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
@@ -120,25 +113,23 @@ double Car_id::getAcceleration(Scenario_id &s, int leading_vehicle_id) {
     return acceleration;
 }
 
-double Car_id::laneChangeMetric(Scenario_id &s, Lane_id::NeighboringObjects ownNeighbors, Lane_id::NeighboringObjects otherNeighbors) {
-
-
-    if ((otherNeighbors.front == -1 || (s.getTrafficObject(otherNeighbors.front).getPosition() - getPosition()) >= (length / 2)) &&
-        (otherNeighbors.back == -1 || (getPosition() - s.getTrafficObject(otherNeighbors.back).getPosition()) >= (length / 2) + min_distance)) {
-        double own_wo_lc = getAcceleration(s, ownNeighbors.front);
-        double own_w_lc = getAcceleration(s, otherNeighbors.front);
+double Car_id::laneChangeMetric(Scenario_id &s, size_t other_front, size_t other_back, size_t own_front, size_t own_back) {
+    if ((other_front == -1 || (s.getTrafficObject(other_front).getPosition() - getPosition()) >= (length / 2)) &&
+        (other_back == -1 || (getPosition() - s.getTrafficObject(other_back).getPosition()) >= (length / 2) + min_distance)) { // TODO min distance auch für vorderes auto?
+        double own_wo_lc = getAcceleration(s, own_front);
+        double own_w_lc = getAcceleration(s, other_front);
 
         double other_lane_diff = 0;
-        if (otherNeighbors.back != -1) {
-            other_lane_diff = (s.getTrafficObject(otherNeighbors.back).getAcceleration(s, this->id) -
-                    s.getTrafficObject(otherNeighbors.back).getAcceleration(s, otherNeighbors.front));
+        if (other_back != -1) {
+            other_lane_diff = (s.getTrafficObject(other_back).getAcceleration(s, this->id) -
+                    s.getTrafficObject(other_back).getAcceleration(s, other_front));
         }
 
 
         double behind_diff = 0;
-        if (ownNeighbors.back != -1) {
-            behind_diff = (s.getTrafficObject(ownNeighbors.back).getAcceleration(s, ownNeighbors.front) -
-                    s.getTrafficObject(ownNeighbors.back).getAcceleration(s, this->id));
+        if (own_back != -1) {
+            behind_diff = (s.getTrafficObject(own_back).getAcceleration(s, own_front) -
+                    s.getTrafficObject(own_back).getAcceleration(s, this->id));
         }
 
         if (own_w_lc > own_wo_lc) {

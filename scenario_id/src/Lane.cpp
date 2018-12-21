@@ -4,14 +4,14 @@
 
 #include "Scenario_id.h"
 
-Lane_id::NeighboringObjects Lane_id::getNeighboringObjects(Scenario_id &s, TrafficObject_id &object) {
+Lane_id::NeighboringObjects Lane_id::getNeighboringObjects(const Scenario_id &s, const TrafficObject_id &object) const {
     // TODO: assert is sorted
     NeighboringObjects result;
 
     TrafficObject_id::Cmp cmp; //  a < b
 
-    TrafficObject_id *closest_gt = nullptr;
-    TrafficObject_id *closest_lt = nullptr;
+    const TrafficObject_id *closest_gt = nullptr;
+    const TrafficObject_id *closest_lt = nullptr;
 
     for(auto &it : s.cars) {
         if(it.getLane() == id && &it != &object) {

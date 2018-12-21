@@ -38,36 +38,36 @@ public:
         Direction direction;
     };
 
-    Junction_id() : id(-1), x(-1), y(-1), signal_begin(-1), signal_count(0),
-                 current_signal_id(-1), current_signal_time_left(-1), incoming(), outgoing()  {
-        for(auto &array : red_traffic_lights_id) array.fill(-1);
-        incoming.fill(-1);
-        outgoing.fill(-1);
+    Junction_id() : id((size_t)-1), x((size_t)-1), y((size_t)-1), signal_begin((size_t)-1), signal_count(0),
+                 current_signal_id((size_t)-1), current_signal_time_left((size_t)-1), incoming(), outgoing()  {
+        for(auto &array : red_traffic_lights_id) array.fill((size_t)-1);
+        incoming.fill((size_t)-1);
+        outgoing.fill((size_t)-1);
     }
 
-    Junction_id(int id, double x, double y, int signal_begin, int signal_count) :
+    Junction_id(size_t id, double x, double y, size_t signal_begin, size_t signal_count) :
             id(id), x(x), y(y), signal_begin(signal_begin), signal_count(signal_count),
-            current_signal_id(-1), current_signal_time_left(-1), incoming(), outgoing() {
+            current_signal_id((size_t)-1), current_signal_time_left((size_t)-1), incoming(), outgoing() {
         for(auto &array : red_traffic_lights_id)
-            array.fill(-1);
-        incoming.fill(-1);
-        outgoing.fill(-1);
+            array.fill((size_t)-1);
+        incoming.fill((size_t)-1);
+        outgoing.fill((size_t)-1);
     };
 
     /**
      * signals to cycle through
      */
-    int signal_begin;
-    int signal_count;
+    size_t signal_begin;
+    size_t signal_count;
 
     /**
      * properties
      */
-    int id;
+    size_t id;
     double x, y;
-    std::array<int, 4> outgoing;
-    std::array<int, 4> incoming;
-    std::array<std::array<int, 3>, 4> red_traffic_lights_ids;
+    std::array<size_t, 4> outgoing;
+    std::array<size_t, 4> incoming;
+    std::array<std::array<size_t, 3>, 4> red_traffic_lights_ids;
 
     /**
      * initialize signals before starting the algorithm. create RedTrafficLight-Objects.
@@ -82,19 +82,19 @@ public:
     /**
      * current signal
      */
-    int current_signal_id;
+    size_t current_signal_id;
 private:
 
 
     /**
      * time left in current signal
      */
-    int current_signal_time_left;
+    size_t current_signal_time_left;
 
     /**
      * red lights for each lane and road.
      */
-    std::array<std::array<int, 3>, 4> red_traffic_lights_id;
+    std::array<std::array<size_t, 3>, 4> red_traffic_lights_id;
 
     void setSignals(Scenario_id &s);
 };

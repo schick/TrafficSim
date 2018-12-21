@@ -58,22 +58,21 @@ Junction_id::Direction calcDirectionOfRoad(Junction_id &from, Junction_id &to) {
 
 void Scenario_id::parseRoads(json &input) {
     roads.resize(2 * input["roads"].size());
-    int road_id = 0;
-    int lane_id = 0;
+    size_t road_id = 0;
+    size_t lane_id = 0;
 
     for (const auto& road : input["roads"]) {
         /* one for each direction */
         for (int j = 0; j < 2; j++) {
-            int from, to;
+            size_t from, to;
             if (j == 0) {
-                from = road["junction1"];
-                to = road["junction2"];
+                from = junction_original_to_working_ids[road["junction1"]];
+                to = junction_original_to_working_ids[road["junction2"]];
             }
             else {
-                from = road["junction2"];
-                to = road["junction1"];
+                from = junction_original_to_working_ids[road["junction2"]];
+                to = junction_original_to_working_ids[road["junction1"]];
             }
-
             double roadLimit = static_cast<double>(road["limit"]) / 3.6;
             double length = fabs(junctions.at(from).x - junctions.at(to).x) + fabs(junctions.at(from).y - junctions.at(to).y);
             Junction_id::Direction roadDir = calcDirectionOfRoad(junctions.at(from), junctions.at(to));

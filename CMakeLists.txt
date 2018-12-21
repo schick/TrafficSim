@@ -10,7 +10,7 @@ option(VISUALIZATION "Disable Visualization to dismiss opencv dependency" OFF)
 option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
 option(BUILD_TESTS "Build Tests" OFF)
-option(WITH_CUDA "use cuda" OFF)
+option(WITH_CUDA "use cuda" ON)
 option(ALL_ALGOS "use all algorithsm - not only preffered" OFF)
 
 option(OKE "Oke's default config" OFF)
@@ -27,7 +27,7 @@ IF(ALL_ALGOS)
 ENDIF()
 
 IF(WITH_CUDA) # enable cuda
-    enable_language(CUDA)
+    # enable_language(CUDA)
 ENDIF()
 
 if(DEBUG_MSGS) # enable debugging in source code
@@ -88,6 +88,10 @@ include_directories(include)
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
 
 target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
+
+IF(WITH_CUDA)
+   target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+ENDIF()
 
 IF(OpenCV_FOUND)
     target_link_libraries(traffic_sim ${OpenCV_LIBS})

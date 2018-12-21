@@ -18,8 +18,8 @@ class ScenarioData_id {
 
 public:
     // junctions.
-    std::unordered_map<int, int> junction_working_to_original_ids;
-    std::unordered_map<int, int> junction_original_to_working_ids;
+    std::unordered_map<size_t , size_t> junction_working_to_original_ids;
+    std::unordered_map<size_t, size_t> junction_original_to_working_ids;
     std::vector<Junction_id> junctions;
     std::vector<Junction_id::Signal> signals;
     std::vector<RedTrafficLight_id> traffic_lights;

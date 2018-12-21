@@ -4,7 +4,7 @@
 
 #include "algorithms/SequentialAlgorithm_id.h"
 
-
+/*
 std::vector<Car_id::AdvanceData> SequentialAlgorithm_id::calculateCarChanges() {
 
     std::vector<Car_id::AdvanceData> changes;
@@ -34,3 +34,4 @@ void SequentialAlgorithm_id::advance(size_t steps) {
         advanceTrafficLights();
     }
 }
+*/

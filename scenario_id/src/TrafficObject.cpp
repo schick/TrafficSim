@@ -10,16 +10,16 @@
 #include "Lane_id.h"
 #include "Road_id.h"
 
-void TrafficObject_id::moveToLane(int lane) {
+void TrafficObject_id::moveToLane(size_t lane) {
     this->lane = lane;
 }
 
 void TrafficObject_id::removeFromLane() {
-    this->lane = -1;
+    this->lane = (size_t ) -1;
 }
 
 
-int TrafficObject_id::getLane() const {
+size_t TrafficObject_id::getLane() const {
     return lane;
 }
 
