@@ -52,9 +52,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
     _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7); \
-    _CREATE_TEST(NAME, PATH, SequentialAlgorithm_id, 7);\
-    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm_id, 7);
-
+    _CREATE_TEST(NAME, PATH, CudaAlgorithm_id, 7);
 
 CREATE_TESTS(zero_timestamp, "00-zero_timestep.json");
 
