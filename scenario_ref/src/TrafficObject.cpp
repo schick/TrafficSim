@@ -20,16 +20,20 @@ double TrafficObject::getPosition() {
 }
 
 void TrafficObject::moveToLane(Lane *lane) {
-    auto a = lane->getTrafficObjects();
+    if (lane != nullptr) {
+        removeFromLane();
+    }
     this->lane = lane;
     lane->mTrafficObjects.push_back(this);
 }
 
 void TrafficObject::removeFromLane() {
-    if (getLane() == nullptr) {
+    
+    if (lane == nullptr) {
         return;
     }
-    auto trafficObjects = getLane()->getTrafficObjects();
-    trafficObjects.erase(std::remove(trafficObjects.begin(), trafficObjects.end(), this), trafficObjects.end());
+    
+    lane ->mTrafficObjects.erase(std::remove(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), this), lane->mTrafficObjects.end());
+    lane = nullptr;
 }
 

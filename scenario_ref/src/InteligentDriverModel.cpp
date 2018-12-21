@@ -1,4 +1,4 @@
-#include <InteligentDriverModel.h>
+#include "InteligentDriverModel.h"
 #include <Car.h>
 #include <Road.h>
 #include <assert.h>
@@ -23,7 +23,7 @@ Car::AdvanceData InteligentDriverModel::nextStep(Car *car) {
     }
 }
 
-void InteligentDriverModel::advanceStep(Car::AdvanceData advancedCar, Car *car) {
+void InteligentDriverModel::advanceStep(Car::AdvanceData &advancedCar, Car *car) {
     updateKinematicState(advancedCar, car);
     updateLane(advancedCar, car);
 }
@@ -56,11 +56,12 @@ void InteligentDriverModel::moveCarAcrossJunction(Car::AdvanceData &data, Car *c
     assert(!car->turns.empty());
 
     Lane *old_lane = car->getLane();
-    car->removeFromLane(); // important to enforce ordering of lanes!
+    //car->removeFromLane(); // important to enforce ordering of lanes!
 
     // subtract moved position on current lane from distance
-    setPosition(car, car->getPosition() - old_lane->road->getLength());
-    car->removeFromLane();
+    auto oldLaneLength = old_lane->road->getLength();
+    setPosition(car, car->getPosition() - oldLaneLength);
+    //car->removeFromLane();
 
     // select direction based on current direction and turn
     int direction = (old_lane->road->getDirection() + car->turns.front() + 2) % 4;

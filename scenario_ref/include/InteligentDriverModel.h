@@ -1,3 +1,6 @@
+
+#ifndef PROJECT_INTELIGENT_DRIVER_MODEL
+#define PROJECT_INTELIGENT_DRIVER_MODEL
 #include <Car.h>
 
 class InteligentDriverModel {
@@ -11,7 +14,7 @@ public:
      * advance car based of data
      * @param data data representing the change
      */
-    void advanceStep(Car::AdvanceData advancedCar, Car *car);
+    void advanceStep(Car::AdvanceData &advancedCar, Car *car);
 
 private:
     void updateKinematicState(Car::AdvanceData &data, Car *car);
@@ -43,4 +46,5 @@ private:
     
 
     void setPosition(TrafficObject *trafficObject, double position);
-};
+}; 
+#endif //PROJECT_INTELIGENT_DRIVER_MODEL

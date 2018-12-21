@@ -9,7 +9,7 @@
 #include "Scenario.h"
 #include "InteligentDriverModel.h"
 #ifdef VISUALIZATION_ENABLED
-#include "Visualization.h"
+#include "Visujalization.h"
 #endif
 
 class SequentialAlgorithm : public AdvanceAlgorithm {

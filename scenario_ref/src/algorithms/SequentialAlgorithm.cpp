@@ -30,8 +30,8 @@ void SequentialAlgorithm::advanceTrafficLights() {
 
 void SequentialAlgorithm::sortLanes() {
     for (auto &lane : getRefScenario()->lanes) {
-        auto trafficObjects = lane->mTrafficObjects;
-        std::sort(trafficObjects.begin(), trafficObjects.end(), TrafficObject::Cmp());
+        //auto trafficObjects = lane->mTrafficObjects;
+        std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
     }
 }
 
