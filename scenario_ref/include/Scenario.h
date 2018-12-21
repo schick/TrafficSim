@@ -22,10 +22,10 @@ using json = nlohmann::json;
 class Scenario : public BaseScenario {
 public:
 
-    std::vector<std::unique_ptr<Junction>> junctions;
-    std::vector<std::unique_ptr<Road>> roads;
-    std::vector<std::unique_ptr<Lane>> lanes;
-    std::vector<std::unique_ptr<Car>> cars;
+    std::vector<std::shared_ptr<Junction>> junctions;
+    std::vector<std::shared_ptr<Road>> roads;
+    std::vector<std::shared_ptr<Lane>> lanes;
+    std::vector<std::shared_ptr<Car>> cars;
 
     void parse(json input);
     json toJson();
@@ -34,7 +34,7 @@ public:
     void parseCars(json & input);
     void parseRoads(json & input);
     void createRoads(const nlohmann::json & road);
-    void createLanesForRoad(const nlohmann::json & road, std::unique_ptr<Road> &road_obj);
+    void createLanesForRoad(const nlohmann::json & road, std::shared_ptr<Road> &road_obj);
     void parseJunctions(json &input);
 
 };

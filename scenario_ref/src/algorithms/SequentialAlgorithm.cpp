@@ -8,7 +8,7 @@
 std::vector<Car::AdvanceData> SequentialAlgorithm::calculateCarChanges() {
 
     std::vector<Car::AdvanceData> changes;
-    for (std::unique_ptr<Car> &c : getRefScenario()->cars) {
+    for (std::shared_ptr<Car> &c : getRefScenario()->cars) {
         changes.emplace_back(c->nextStep());
     }
     return changes;
@@ -22,7 +22,7 @@ void SequentialAlgorithm::advanceCars() {
 }
 
 void SequentialAlgorithm::advanceTrafficLights() {
-    for (std::unique_ptr<Junction> &j : getRefScenario()->junctions) {
+    for (std::shared_ptr<Junction> &j : getRefScenario()->junctions) {
         j->updateSignals();
     }
 }

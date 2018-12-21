@@ -25,7 +25,7 @@ void Visualization::close() {
 void Visualization::initialize() {
     // calculate borders
     Point2d min(10000, 10000), max(-10000, -10000);
-    for (std::unique_ptr<Junction> &junction : scenario->junctions) {
+    for (std::shared_ptr<Junction> &junction : scenario->junctions) {
         if (junction->x < min.x) {
             min.x = junction->x;
         }
@@ -55,14 +55,14 @@ void Visualization::initialize() {
     base_image = Mat::zeros(Point(base_image_size), CV_8UC3);
     base_image.setTo(Scalar(175, 175, 175));
 
-    for (std::unique_ptr<Road> &r: scenario->roads) {
+    for (std::shared_ptr<Road> &r: scenario->roads) {
         size_t count = r->lanes.size() * 2;
         line(base_image, junctionPoint(r->from), junctionPoint(r->to),
              Scalar(50, 50, 50), (int) (lane_width * count * pixel_per_m));
     }
 
     // print junctions
-    for (std::unique_ptr<Junction> &junction : scenario->junctions) {
+    for (std::shared_ptr<Junction> &junction : scenario->junctions) {
         circle(base_image, junctionPoint(junction.get()),
                (int) (35. * pixel_per_m / 2.),
                Scalar(100, 100, 100), -1);
@@ -109,7 +109,7 @@ void Visualization::render_image() {
     numFrame++;
     Mat image = base_image.clone();
 
-    for(std::unique_ptr<Junction> &j: scenario->junctions) {
+    for(std::shared_ptr<Junction> &j: scenario->junctions) {
         for (int i = 0; i < 4; i++) {
             if (j->incoming[i] != nullptr)
                 circle(image, junctionPoint(j.get()) + (directionVector(static_cast<Junction::Direction>(i)) * junction_radius * pixel_per_m), pixel_per_m * 1,
@@ -117,7 +117,7 @@ void Visualization::render_image() {
         }
     }
 
-    for(std::unique_ptr<Car> &car : scenario->cars) {
+    for(std::shared_ptr<Car> &car : scenario->cars) {
         Point2d from = junctionPoint(car->getLane()->road->from);
         Point2d to = junctionPoint(car->getLane()->road->to);
         Point2d dir = (to - from);

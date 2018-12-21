@@ -16,15 +16,17 @@ void Scenario::parse(json input) {
 }
 
 void Scenario::initJunctions() {
-    for (std::unique_ptr<Junction> &j : junctions) {
+    for (std::shared_ptr<Junction> &j : junctions) {
         j->initializeSignals();
     }
 }
 
 void Scenario::parseCars(json &input) {
+    cars.resize(input["cars"].size());
+    int car_idx = 0;
     for (const auto& car : input["cars"]) {
         double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
-        std::unique_ptr<Car> car_obj = std::make_unique<Car>(
+        cars[car_idx] = std::make_shared<Car>(
             car["id"],
             5.,
             target_velocity,
@@ -35,15 +37,17 @@ void Scenario::parseCars(json &input) {
             car["politeness"],
             car["start"]["distance"]);
 
-        auto it = std::find_if(std::begin(roads), std::end(roads), [&](const std::unique_ptr<Road> &road) {
-            return ((road->from->id == car["start"]["from"] && road->to->id == car["start"]["to"])); });
+        uint64_t from = car["start"]["from"];
+        uint64_t to = car["start"]["to"];
+        auto it = std::find_if(std::begin(roads), std::end(roads), [&](const std::shared_ptr<Road> &road) {
+            return ((road->from->id == from && road->to->id == to)); });
         assert(it != roads.end());
 
-        car_obj->moveToLane((*it)->lanes[car["start"]["lane"]]);
+        cars[car_idx]->moveToLane((*it)->lanes[car["start"]["lane"]]);
 
-        for (const auto& route : car["route"]) car_obj->turns.push_back(route);
+        for (const auto& route : car["route"]) cars[car_idx]->turns.push_back(route);
 
-        cars.emplace_back(std::move(car_obj));
+        car_idx++;
     }
 }
 
@@ -70,10 +74,12 @@ Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to) {
 }
 
 void Scenario::createRoads(const nlohmann::json & road) {
+    uint64_t j1 = road["junction1"];
+    uint64_t j2 = road["junction2"];
     auto junction1 = std::find_if(std::begin(junctions), std::end(junctions),
-        [&](const std::unique_ptr<Junction> &v) { return v->id == road["junction1"]; });
+        [&](const std::shared_ptr<Junction> &v) { return v->id == j1; });
     auto junction2 = std::find_if(std::begin(junctions), std::end(junctions),
-        [&](const std::unique_ptr<Junction> &v) { return v->id == road["junction2"]; });
+        [&](const std::shared_ptr<Junction> &v) { return v->id == j2; });
 
     /* one for each direction */
     for (int j = 0; j < 2; j++) {
@@ -93,7 +99,7 @@ void Scenario::createRoads(const nlohmann::json & road) {
         double roadLimit = static_cast<double>(road["limit"]) / 3.6;
         Junction::Direction roadDir = calcDirectionOfRoad(from, to);
 
-        std::unique_ptr<Road> road_obj = std::make_unique<Road>(from, to, roadLimit, roadDir);
+        std::shared_ptr<Road> road_obj = std::make_shared<Road>(from, to, roadLimit, roadDir);
 
         createLanesForRoad(road, road_obj);
 
@@ -104,10 +110,10 @@ void Scenario::createRoads(const nlohmann::json & road) {
     }
 }
 
-void Scenario::createLanesForRoad(const nlohmann::json & road, std::unique_ptr<Road> &road_obj)
+void Scenario::createLanesForRoad(const nlohmann::json & road, std::shared_ptr<Road> &road_obj)
 {
     for (uint8_t lane_id = 0; lane_id < road["lanes"]; lane_id++) {
-        std::unique_ptr<Lane> lane = std::make_unique<Lane>(lane_id, road_obj.get());
+        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, road_obj.get());
         road_obj->lanes.emplace_back(lane.get());
         lanes.emplace_back(std::move(lane));
     }
@@ -117,7 +123,7 @@ void Scenario::parseJunctions(json &input) {
     for (const auto& junction : input["junctions"]) {
         double x = junction["x"];
         double y = junction["y"];
-        std::unique_ptr<Junction> junction_obj = std::make_unique<Junction>(junction["id"], x * 100.0, y * 100.0);
+        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(junction["id"], x * 100.0, y * 100.0);
         for (const auto& signal : junction["signals"]) {
             junction_obj->signals.emplace_back(Junction::Signal({ signal["time"], signal["dir"] }));
         }
