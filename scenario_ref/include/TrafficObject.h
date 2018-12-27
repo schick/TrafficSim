@@ -34,6 +34,7 @@ public:
     double v;
     double a;
     double length;
+    
 
     /**
     * calculate the acceleration with 'leading_vehicle' as lead

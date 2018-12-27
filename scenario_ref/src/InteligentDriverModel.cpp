@@ -3,56 +3,69 @@
 #include <Road.h>
 #include <assert.h>
 
-Car::AdvanceData InteligentDriverModel::nextStep(Car *car) {
-    Lane::NeighboringObjects ownNeighbors = car->getLane()->getNeighboringObjects(car);
-    Road::NeighboringLanes neighboringLanes = car->getLane()->road->getNeighboringLanes(car->getLane());
+void InteligentDriverModel::nextStep(Car *car) {
+    if (car == nullptr) {
+        return;
+    }
+    auto lane = car->getLane();
+    Lane::NeighboringObjects ownNeighbors = getNeighboringObjects(lane, car);
+    Road::NeighboringLanes neighboringLanes = lane->road->getNeighboringLanes(lane);
 
     double m_left = getLaneChangeMetricForLane(car, neighboringLanes.left, ownNeighbors);
     double m_right = getLaneChangeMetricForLane(car, neighboringLanes.right, ownNeighbors);
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
-        return Car::AdvanceData(car, getAcceleration(car, neighboringLanes.left->getNeighboringObjects(car).front), -1);
+        car->new_acceleration = getAcceleration(car, getNeighboringObjects(neighboringLanes.left, car).front);
+        car->new_lane_offset = -1;
+        //return Car::AdvanceData(car, getAcceleration(car, getNeighboringObjects(neighboringLanes.left, car).front), -1);
     }
     else if (m_right > 1 && m_left < m_right) {
         // right go to right lane
-        return Car::AdvanceData(car, getAcceleration(car, neighboringLanes.right->getNeighboringObjects(car).front), 1);
+        car->new_acceleration = getAcceleration(car, getNeighboringObjects(neighboringLanes.right, car).front);
+        car->new_lane_offset = 1;
+        //return Car::AdvanceData(car, getAcceleration(car, getNeighboringObjects(neighboringLanes.right, car).front), 1);
     }
     else {
         // stay on lane
-        return Car::AdvanceData(car, getAcceleration(car, ownNeighbors.front), 0);
+        car->new_acceleration = getAcceleration(car, ownNeighbors.front);
+        car->new_lane_offset = 0;
+        //return Car::AdvanceData(car, getAcceleration(car, ownNeighbors.front), 0);
     }
 }
 
-void InteligentDriverModel::advanceStep(Car::AdvanceData &advancedCar, Car *car) {
-    updateKinematicState(advancedCar, car);
-    updateLane(advancedCar, car);
+void InteligentDriverModel::advanceStep(Car *car) {
+    if (car == nullptr) {
+        return;
+    }
+    updateKinematicState(car);
+    updateLane(car);
 }
 
-void InteligentDriverModel::updateKinematicState(Car::AdvanceData &data, Car *car) {
-    assert(data.car == car);
-    car->a = data.acceleration;
+void InteligentDriverModel::updateKinematicState(Car *car) {
+    //assert(data.car == car);
+    car->a = car->new_acceleration;
     car->v = std::max(car->v + car->a, 0.);
     setPosition(car, car->getPosition() + car->v);
 }
 
-void InteligentDriverModel::updateLane(Car::AdvanceData &data, Car *car) {
-    assert(data.car == car);
+void InteligentDriverModel::updateLane(Car *car) {
+    //assert(data.car == car);
 
     // check for junction
     if (isCarOverJunction(car)) {
-        moveCarAcrossJunction(data, car);
+        moveCarAcrossJunction(car);
     }
     else {
         // just do a lane change if wanted
-        if (data.lane_offset != 0) {
+        if (car->new_lane_offset != 0) {
             // lane_offset should be validated in this case
-            assert(car->getLane()->road->lanes.size() > car->getLane()->lane + data.lane_offset);
-            car->moveToLane(car->getLane()->road->lanes[car->getLane()->lane + data.lane_offset]);
+            assert(car->getLane()->road->lanes.size() > car->getLane()->lane + car->new_lane_offset);
+            car->moveToLane(car->getLane()->road->lanes[car->getLane()->lane + car->new_lane_offset]);
         }
     }
 }
 
-void InteligentDriverModel::moveCarAcrossJunction(Car::AdvanceData &data, Car *car) {
+void InteligentDriverModel::moveCarAcrossJunction(Car *car) {
     assert(!car->turns.empty());
 
     Lane *old_lane = car->getLane();
@@ -71,8 +84,8 @@ void InteligentDriverModel::moveCarAcrossJunction(Car::AdvanceData &data, Car *c
     while ((nextRoad = old_lane->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
 
     // move car to same or the right lane AFTER lane change
-    int8_t indexOfNextLane = std::min((int8_t)nextRoad->lanes.size() - 1, (int8_t)old_lane->lane + data.lane_offset);
-    indexOfNextLane = std::max((int8_t)0, indexOfNextLane);
+    int indexOfNextLane = std::min((int) nextRoad->lanes.size() - 1, old_lane->lane + car->new_lane_offset);
+    indexOfNextLane = std::max(0, indexOfNextLane);
 
     car->moveToLane(nextRoad->lanes[indexOfNextLane]);
 
@@ -87,7 +100,7 @@ bool InteligentDriverModel::isCarOverJunction(Car *car) {
 
 double InteligentDriverModel::getLaneChangeMetricForLane(Car *car, Lane *neighboringLane, const Lane::NeighboringObjects &ownNeighbors) {
     if (neighboringLane != nullptr) {
-        Lane::NeighboringObjects neighbors = neighboringLane->getNeighboringObjects(car);
+        Lane::NeighboringObjects neighbors = getNeighboringObjects(neighboringLane, car);
         return laneChangeMetric(car, ownNeighbors, neighbors);
     }
     return 0;
@@ -141,5 +154,26 @@ double InteligentDriverModel::laneChangeMetric(Car *car, Lane::NeighboringObject
 
 void InteligentDriverModel::setPosition(TrafficObject *car, double position) {
     car->setPosition(position);    
+}
+
+Lane::NeighboringObjects InteligentDriverModel::getNeighboringObjects(Lane *lane, TrafficObject *trafficObject) {
+    // TODO: assert is sorted
+    auto trafficObjects = lane->mTrafficObjects;
+    if (trafficObjects.size() == 0) return Lane::NeighboringObjects();
+    auto it = std::lower_bound(trafficObjects.begin(), trafficObjects.end(), trafficObject, TrafficObject::Cmp());
+    Lane::NeighboringObjects result;
+
+    if (it != trafficObjects.begin())
+        result.back = *(it - 1);
+
+    if (trafficObjects.end() == it || *it != trafficObject) {
+        if (it != trafficObjects.end())
+            result.front = *it;
+    }
+    else {
+        if (it + 1 != trafficObjects.end())
+            result.front = *(it + 1);
+    }
+    return result;
 }
 

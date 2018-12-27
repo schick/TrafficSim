@@ -9,19 +9,19 @@ public:
      * calculate advance-data for next step
      * @return data representing the change
      */
-    Car::AdvanceData nextStep(Car *car);
+    void nextStep(Car *car);
     /**
      * advance car based of data
      * @param data data representing the change
      */
-    void advanceStep(Car::AdvanceData &advancedCar, Car *car);
+    void advanceStep(Car *car);
 
 private:
-    void updateKinematicState(Car::AdvanceData &data, Car *car);
+    void updateKinematicState(Car *car);
 
-    void updateLane(Car::AdvanceData &data, Car *car);
+    void updateLane(Car *car);
 
-    void moveCarAcrossJunction(Car::AdvanceData &data, Car *car);
+    void moveCarAcrossJunction(Car *car);
 
     bool isCarOverJunction(Car *car);
 
@@ -46,5 +46,13 @@ private:
     
 
     void setPosition(TrafficObject *trafficObject, double position);
+
+    /**
+     * get neighboring objects on this lane
+     * @param object find neigbhoring objects for this object. may actually be on a different lane.
+     *      this algorithm treats all objects as if there where on this lane.
+     * @return neighboring objects
+     */
+    Lane::NeighboringObjects getNeighboringObjects(Lane *lane, TrafficObject *trafficObject);
 }; 
 #endif //PROJECT_INTELIGENT_DRIVER_MODEL

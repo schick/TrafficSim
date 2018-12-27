@@ -15,20 +15,7 @@ class Car : public TrafficObject {
 
 public:
 
-    /**
-     * Data representing next advance of a car
-     */
-    struct AdvanceData {
-        AdvanceData() = default;
-        AdvanceData(Car *car, double acceleration, int lane_offset)
-            : car(car), acceleration(acceleration), lane_offset(lane_offset) {};
-        Car *car = nullptr;
-        double acceleration = 0;
-        int8_t lane_offset = 0;
-    };
-
-
-    /**
+     /**
      * data representing a turn at an intersection
      */
     enum TurnDirection {
@@ -71,6 +58,8 @@ public:
     const double min_s = 0.001;
     double target_headway;
     double politeness;
+    double new_acceleration = 0;
+    int new_lane_offset  = 0;
 
 
     std::list<TurnDirection> turns;
