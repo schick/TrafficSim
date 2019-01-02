@@ -8,8 +8,22 @@
 void SequentialAlgorithm::calculateCarChanges() {
     for (std::unique_ptr<Road> &r : getRefScenario()->roads) {
         for (auto &l : r.get()->lanes) {
-            for (auto c : l->mTrafficObjects) {
-                idm.nextStep(dynamic_cast<Car*>(c));
+            for (auto it = l->mTrafficObjects.begin(); it != l->mTrafficObjects.end(); ++it) {
+                //Iterate over cars of lane. neighbors are it+1 and it-1.
+                Lane::NeighboringObjects neighbors;
+
+                if (it != l->mTrafficObjects.begin())
+                    neighbors.back = *(it - 1);
+
+                if (l->mTrafficObjects.end() == it) {
+                    if (it != l->mTrafficObjects.end())
+                        neighbors.front = *it;
+                }
+                else {
+                    if (it + 1 != l->mTrafficObjects.end())
+                        neighbors.front = *(it + 1);
+                }
+                idm.nextStep(dynamic_cast<Car*>(*it), neighbors);
             }
         }
     }
@@ -17,9 +31,7 @@ void SequentialAlgorithm::calculateCarChanges() {
 
 void SequentialAlgorithm::advanceCars() {
     for (std::unique_ptr<Car> &car : getRefScenario()->cars) {
-
         idm.advanceStep(car.get());
-        //car->new_lane_offset = 0;
     }
 }
 

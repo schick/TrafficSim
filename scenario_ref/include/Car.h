@@ -59,6 +59,9 @@ public:
     double target_headway;
     double politeness;
     double new_acceleration = 0;
+    double new_acceleration_same = 0;
+    double new_acceleration_left = 0;
+    double new_acceleration_right = 0;
     int new_lane_offset  = 0;
 
 

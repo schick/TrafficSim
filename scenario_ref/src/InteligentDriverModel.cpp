@@ -3,7 +3,7 @@
 #include <Road.h>
 #include <assert.h>
 
-void InteligentDriverModel::nextStep(Car *car) {
+void InteligentDriverModel::nextStep(Car *car, Lane::NeighboringObjects neighbors) {
     if (car == nullptr) {
         return;
     }
@@ -11,25 +11,24 @@ void InteligentDriverModel::nextStep(Car *car) {
     Lane::NeighboringObjects ownNeighbors = getNeighboringObjects(lane, car);
     Road::NeighboringLanes neighboringLanes = lane->road->getNeighboringLanes(lane);
 
-    double m_left = getLaneChangeMetricForLane(car, neighboringLanes.left, ownNeighbors);
-    double m_right = getLaneChangeMetricForLane(car, neighboringLanes.right, ownNeighbors);
+    auto leftNeighbors = getNeighboringObjects(neighboringLanes.left, car);
+    double m_left = getLaneChangeMetricForLane(car, neighboringLanes.left, leftNeighbors, ownNeighbors);
+    auto rightNeighbors = getNeighboringObjects(neighboringLanes.right, car);
+    double m_right = getLaneChangeMetricForLane(car, neighboringLanes.right, rightNeighbors, ownNeighbors);
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
-        car->new_acceleration = getAcceleration(car, getNeighboringObjects(neighboringLanes.left, car).front);
+        car->new_acceleration = getAcceleration(car, leftNeighbors.front);
         car->new_lane_offset = -1;
-        //return Car::AdvanceData(car, getAcceleration(car, getNeighboringObjects(neighboringLanes.left, car).front), -1);
     }
     else if (m_right > 1 && m_left < m_right) {
         // right go to right lane
-        car->new_acceleration = getAcceleration(car, getNeighboringObjects(neighboringLanes.right, car).front);
+        car->new_acceleration = getAcceleration(car, rightNeighbors.front);
         car->new_lane_offset = 1;
-        //return Car::AdvanceData(car, getAcceleration(car, getNeighboringObjects(neighboringLanes.right, car).front), 1);
     }
     else {
         // stay on lane
         car->new_acceleration = getAcceleration(car, ownNeighbors.front);
         car->new_lane_offset = 0;
-        //return Car::AdvanceData(car, getAcceleration(car, ownNeighbors.front), 0);
     }
 }
 
@@ -69,12 +68,10 @@ void InteligentDriverModel::moveCarAcrossJunction(Car *car) {
     assert(!car->turns.empty());
 
     Lane *old_lane = car->getLane();
-    //car->removeFromLane(); // important to enforce ordering of lanes!
 
     // subtract moved position on current lane from distance
     auto oldLaneLength = old_lane->road->getLength();
     setPosition(car, car->getPosition() - oldLaneLength);
-    //car->removeFromLane();
 
     // select direction based on current direction and turn
     int direction = (old_lane->road->getDirection() + car->turns.front() + 2) % 4;
@@ -98,9 +95,8 @@ bool InteligentDriverModel::isCarOverJunction(Car *car) {
     return car->getPosition() >= car->getLane()->getLength();
 }
 
-double InteligentDriverModel::getLaneChangeMetricForLane(Car *car, Lane *neighboringLane, const Lane::NeighboringObjects &ownNeighbors) {
+double InteligentDriverModel::getLaneChangeMetricForLane(Car *car, Lane *neighboringLane, Lane::NeighboringObjects &neighbors, const Lane::NeighboringObjects &ownNeighbors) {
     if (neighboringLane != nullptr) {
-        Lane::NeighboringObjects neighbors = getNeighboringObjects(neighboringLane, car);
         return laneChangeMetric(car, ownNeighbors, neighbors);
     }
     return 0;
@@ -125,7 +121,7 @@ double InteligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_v
     return acceleration;
 }
 
-double InteligentDriverModel::laneChangeMetric(Car *car, Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors) {
+double InteligentDriverModel::laneChangeMetric(Car *car, const Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors) {
 
     if ((otherNeighbors.front == nullptr || (otherNeighbors.front->getPosition() - car->getPosition()) >= (car->length / 2)) &&
         (otherNeighbors.back == nullptr || (car->getPosition() - otherNeighbors.back->getPosition()) >= (car->length / 2) + car->min_distance)) {
@@ -158,6 +154,9 @@ void InteligentDriverModel::setPosition(TrafficObject *car, double position) {
 
 Lane::NeighboringObjects InteligentDriverModel::getNeighboringObjects(Lane *lane, TrafficObject *trafficObject) {
     // TODO: assert is sorted
+    if (lane == nullptr) {
+        return Lane::NeighboringObjects();
+    }
     auto trafficObjects = lane->mTrafficObjects;
     if (trafficObjects.size() == 0) return Lane::NeighboringObjects();
     auto it = std::lower_bound(trafficObjects.begin(), trafficObjects.end(), trafficObject, TrafficObject::Cmp());

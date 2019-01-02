@@ -9,7 +9,7 @@ public:
      * calculate advance-data for next step
      * @return data representing the change
      */
-    void nextStep(Car *car);
+    void nextStep(Car *car, Lane::NeighboringObjects neighbors);
     /**
      * advance car based of data
      * @param data data representing the change
@@ -25,7 +25,7 @@ private:
 
     bool isCarOverJunction(Car *car);
 
-    double getLaneChangeMetricForLane(Car *car, Lane *neighboringLane, const Lane::NeighboringObjects &ownNeighbors);
+    double getLaneChangeMetricForLane(Car *car, Lane *neighboringLane, Lane::NeighboringObjects &neighbors, const Lane::NeighboringObjects &ownNeighbors);
 
     /**
      * calculate the desired acceleration. base calculation on leading object
@@ -41,7 +41,7 @@ private:
      * @param otherNeighbors neighbors on other lane
      * @return metric value in m/s^2
      */
-    double laneChangeMetric(Car *car, Lane::NeighboringObjects ownNeighbors, Lane::NeighboringObjects otherNeighbors);
+    double laneChangeMetric(Car *car, const Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors);
 
     
 
