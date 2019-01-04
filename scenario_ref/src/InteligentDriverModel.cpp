@@ -2,6 +2,7 @@
 #include <Car.h>
 #include <Road.h>
 #include <assert.h>
+#include <math.h>
 
 void InteligentDriverModel::nextStep(Car *car, Lane::NeighboringObjects neighbors) {
     if (car == nullptr) {
