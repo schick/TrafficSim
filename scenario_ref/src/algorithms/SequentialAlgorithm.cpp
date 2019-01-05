@@ -5,19 +5,30 @@
 #include "algorithms/SequentialAlgorithm.h"
 
 
-std::vector<Car::AdvanceData> SequentialAlgorithm::calculateCarChanges() {
+void SequentialAlgorithm::calculateCarChanges() {
+    for (std::shared_ptr<Road> &r : getRefScenario()->roads) {
+        for (auto &l : r.get()->lanes) {
+            for (auto it = l->mTrafficObjects.begin(); it != l->mTrafficObjects.end(); ++it) {
+                //Iterate over cars of lane. neighbors are it+1 and it-1.
+                Lane::NeighboringObjects neighbors;
 
-    std::vector<Car::AdvanceData> changes;
-    for (std::shared_ptr<Car> &c : getRefScenario()->cars) {
-        changes.emplace_back(c->nextStep());
+                //set preceding car for all cars except the first one
+                if (it != l->mTrafficObjects.begin())
+                    neighbors.back = *(it - 1);
+
+                //set next car for all cars except the last one
+                if (it != l->mTrafficObjects.end())
+                    neighbors.front = *(it + 1);
+
+                idm.nextStep(dynamic_cast<Car*>(*it), neighbors);
+            }
+        }
     }
-    return changes;
 };
 
 void SequentialAlgorithm::advanceCars() {
-    std::vector<Car::AdvanceData> changes = calculateCarChanges();
-    for (Car::AdvanceData &d : changes) {
-        d.car->advanceStep(d);
+    for (std::shared_ptr<Car> &car : getRefScenario()->cars) {
+        idm.advanceStep(car.get());
     }
 }
 
@@ -27,9 +38,18 @@ void SequentialAlgorithm::advanceTrafficLights() {
     }
 }
 
+void SequentialAlgorithm::sortLanes() {
+    for (auto &lane : getRefScenario()->lanes) {
+        //auto trafficObjects = lane->mTrafficObjects;
+        std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
+    }
+}
+
 
 void SequentialAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
+        sortLanes();
+        calculateCarChanges();
         advanceCars();
         advanceTrafficLights();
     }

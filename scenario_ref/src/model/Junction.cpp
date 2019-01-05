@@ -4,8 +4,8 @@
 
 #include <assert.h>
 
-#include "Junction.h"
-#include "Road.h"
+#include "model/Junction.h"
+#include "model/Road.h"
 
 
 void Junction::initializeSignals() {

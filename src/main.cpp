@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "util/SimpleArgumentParser.h"
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "AdvanceAlgorithm.h"
 
 #include "register_algorithms.h"
@@ -87,14 +87,14 @@ int main(int argc, char* argv[])
 #endif
 
     json output = advancer->getScenario()->toJson();
-    std::cout << output.dump() << "\n";
+    std::cout << "Result:   " << output.dump() << "\n";
 
 #ifndef USE_CIN
 #ifdef DEBUG_MSGS
     if (json_file_out.good()) {
-        std::cout << loesung.dump() << "\n";
-        if(output != loesung) {
-            printf("Lösungen nicht gleich...\n");
+        std::cout << "Expected: " << loesung.dump() << "\n";
+        if(output.dump() != loesung.dump()) {
+            printf("Not equal!\n");
         }
     }
 #endif

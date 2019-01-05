@@ -2,7 +2,7 @@
 // Created by oke on 07.12.18.
 //
 
-#include "RedTrafficLight.h"
+#include "model/RedTrafficLight.h"
 
 void RedTrafficLight::switchOff() {
     removeFromLane();
