@@ -1,7 +1,7 @@
 
 #ifndef PROJECT_INTELIGENT_DRIVER_MODEL
 #define PROJECT_INTELIGENT_DRIVER_MODEL
-#include <Car.h>
+#include <model/Car.h>
 
 class InteligentDriverModel {
 public:

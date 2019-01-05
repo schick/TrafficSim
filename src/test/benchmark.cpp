@@ -3,7 +3,7 @@
 //
 
 #include "register_algorithms.h"
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include <chrono>
 #include <fstream>
 

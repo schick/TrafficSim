@@ -2,12 +2,12 @@
 // Created by oke on 07.12.18.
 //
 
-#include "Car.h"
-#include "Road.h"
+#include "model/Car.h"
+#include "model/Road.h"
 #include <iostream>
 #include <math.h>
 #include <assert.h>
-#include "Junction.h"
+#include "model/Junction.h"
 
 /*Car::AdvanceData Car::nextStep() {
 

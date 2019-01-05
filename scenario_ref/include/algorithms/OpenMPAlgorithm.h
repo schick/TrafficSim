@@ -6,8 +6,8 @@
 #define PROJECT_OPENMPALGORITHM_H
 
 #include "AdvanceAlgorithm.h"
-#include "Scenario.h"
-//#include "Visualization.h"
+#include "model/Scenario.h"
+#include "Visualization.h"
 #include "../InteligentDriverModel.h"
 
 class OpenMPAlgorithm : public AdvanceAlgorithm {

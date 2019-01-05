@@ -2,7 +2,7 @@
 // Created by oke on 07.12.18.
 //
 
-#include "Scenario.h"
+#include "model/Scenario.h"
 
 void Scenario::parse(json input) {
 

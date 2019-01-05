@@ -1,6 +1,6 @@
 #include "InteligentDriverModel.h"
-#include <Car.h>
-#include <Road.h>
+#include <model/Car.h>
+#include <model/Road.h>
 #include <assert.h>
 #include <math.h>
 
@@ -14,8 +14,10 @@ void InteligentDriverModel::nextStep(Car *car, Lane::NeighboringObjects neighbor
 
     auto leftNeighbors = getNeighboringObjects(neighboringLanes.left, car);
     double m_left = getLaneChangeMetricForLane(car, neighboringLanes.left, leftNeighbors, ownNeighbors);
+
     auto rightNeighbors = getNeighboringObjects(neighboringLanes.right, car);
     double m_right = getLaneChangeMetricForLane(car, neighboringLanes.right, rightNeighbors, ownNeighbors);
+
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
         car->new_acceleration = getAcceleration(car, leftNeighbors.front);

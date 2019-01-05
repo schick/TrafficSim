@@ -6,9 +6,9 @@
 #include <assert.h>
 #include <mutex>
 
-#include "TrafficObject.h"
-#include "Lane.h"
-#include "Road.h"
+#include "model/TrafficObject.h"
+#include "model/Lane.h"
+#include "model/Road.h"
 
 
 Lane *TrafficObject::getLane() {

@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "util/json.hpp"
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "algorithms/SequentialAlgorithm.h"
 #include "register_algorithms.h"
 

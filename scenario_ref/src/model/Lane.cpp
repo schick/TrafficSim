@@ -2,9 +2,9 @@
 // Created by oke on 07.12.18.
 //
 
-#include "TrafficObject.h"
-#include "Lane.h"
-#include "Road.h"
+#include "model/TrafficObject.h"
+#include "model/Lane.h"
+#include "model/Road.h"
 #include <stdexcept>
 
 std::vector<TrafficObject*> Lane::getTrafficObjects() {

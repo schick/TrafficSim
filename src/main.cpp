@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "util/SimpleArgumentParser.h"
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "AdvanceAlgorithm.h"
 
 #include "register_algorithms.h"

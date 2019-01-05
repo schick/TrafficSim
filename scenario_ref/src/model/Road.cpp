@@ -2,10 +2,10 @@
 // Created by oke on 07.12.18.
 //
 
-#include "Road.h"
+#include "model/Road.h"
 #include <stdexcept>
-#include "Lane.h"
-#include "Junction.h"
+#include "model/Lane.h"
+#include "model/Junction.h"
 
 Road::NeighboringLanes Road::getNeighboringLanes(Lane* lane) {
     NeighboringLanes lanes;

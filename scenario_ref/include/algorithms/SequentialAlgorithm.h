@@ -6,10 +6,10 @@
 #define PROJECT_SEQUENTIALALGORITHM_H
 
 #include "AdvanceAlgorithm.h"
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "InteligentDriverModel.h"
 #ifdef VISUALIZATION_ENABLED
-#include "Visujalization.h"
+#include "Visualization.h"
 #endif
 
 class SequentialAlgorithm : public AdvanceAlgorithm {
@@ -30,8 +30,6 @@ public:
     void sortLanes();
 
     InteligentDriverModel idm;
-
-
 };
 
 #endif //PROJECT_SEQUENTIALALGORITHM_H
