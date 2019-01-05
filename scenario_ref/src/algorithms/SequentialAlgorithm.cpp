@@ -12,17 +12,14 @@ void SequentialAlgorithm::calculateCarChanges() {
                 //Iterate over cars of lane. neighbors are it+1 and it-1.
                 Lane::NeighboringObjects neighbors;
 
+                //set preceding car for all cars except the first one
                 if (it != l->mTrafficObjects.begin())
                     neighbors.back = *(it - 1);
 
-                if (l->mTrafficObjects.end() == it) {
-                    if (it != l->mTrafficObjects.end())
-                        neighbors.front = *it;
-                }
-                else {
-                    if (it + 1 != l->mTrafficObjects.end())
-                        neighbors.front = *(it + 1);
-                }
+                //set next car for all cars except the last one
+                if (it != l->mTrafficObjects.end())
+                    neighbors.front = *(it + 1);
+
                 idm.nextStep(dynamic_cast<Car*>(*it), neighbors);
             }
         }

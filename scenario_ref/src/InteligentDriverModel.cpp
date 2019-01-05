@@ -156,12 +156,18 @@ void InteligentDriverModel::setPosition(TrafficObject *car, double position) {
 }
 
 Lane::NeighboringObjects InteligentDriverModel::getNeighboringObjects(Lane *lane, TrafficObject *trafficObject) {
-    // TODO: assert is sorted
-    if (lane == nullptr) {
-        return Lane::NeighboringObjects();
-    }
+    //create empty neighboringObjects struct
+    auto neighboringObjects = Lane::NeighboringObjects();
+
+    //if null reference return empty struct
+    if (lane == nullptr)
+        return neighboringObjects;
+
     auto trafficObjects = lane->mTrafficObjects;
-    if (trafficObjects.size() == 0) return Lane::NeighboringObjects();
+    //if lane is empty return empty struct
+    if (trafficObjects.size() == 0)
+        return Lane::NeighboringObjects();
+
     auto it = std::lower_bound(trafficObjects.begin(), trafficObjects.end(), trafficObject, TrafficObject::Cmp());
     Lane::NeighboringObjects result;
 
