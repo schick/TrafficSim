@@ -23,10 +23,9 @@ private:
     /**
      * object on this lane. currently not sorted.
      */
-    std::vector<TrafficObject *> mTrafficObjects;
-    std::mutex mTrafficObjectsMutex;
 
 public:
+    std::vector<TrafficObject *> mTrafficObjects;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.
@@ -38,13 +37,14 @@ public:
     };
 
 
-    Lane(uint8_t lane, Road* road) : lane(lane), road(road), mTrafficObjects(), mTrafficObjectsMutex() {};
+    Lane(int lane, Road* road) : lane(lane), road(road), mTrafficObjects() {};
 
     /**
      * properties
      */
-    uint8_t lane;
+    int lane;
     Road* road;
+    std::mutex laneLock;
 
     /**
      * get current all objects on lane
@@ -52,13 +52,7 @@ public:
      */
     std::vector<TrafficObject*> getTrafficObjects();
 
-    /**
-     * get neighboring objects on this lane
-     * @param object find neigbhoring objects for this object. may actually be on a different lane.
-     *      this algorithm treats all objects as if there where on this lane.
-     * @return neighboring objects
-     */
-    NeighboringObjects getNeighboringObjects(TrafficObject *object);
+    
 
     /**
      * get length of lane

@@ -2,10 +2,11 @@
 include_directories(include)
 
 # add library with all logic
-SET(SOURCE_FILES src/Car.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight.cpp
-        src/Road.cpp src/Scenario.cpp src/TrafficObject.cpp
+SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src/model/RedTrafficLight.cpp
+        src/model/Road.cpp src/model/Scenario.cpp src/model/TrafficObject.cpp
         src/algorithms/SequentialAlgorithm.cpp
-        src/algorithms/OpenMPAlgorithm.cpp)
+        src/algorithms/OpenMPAlgorithm.cpp
+        src/IntelligentDriverModel.cpp include/NeighborFinder.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)

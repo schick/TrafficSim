@@ -6,7 +6,8 @@
 #define PROJECT_SEQUENTIALALGORITHM_H
 
 #include "AdvanceAlgorithm.h"
-#include "Scenario.h"
+#include "model/Scenario.h"
+#include "IntelligentDriverModel.h"
 #ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
 #endif
@@ -18,15 +19,15 @@ public:
 
     explicit SequentialAlgorithm(std::shared_ptr<BaseScenario>scenario) : AdvanceAlgorithm(scenario) {};
 
-    std::vector<Car::AdvanceData> calculateCarChanges();
+    void calculateCarChanges();
 
     Scenario* getRefScenario() {
         return dynamic_cast<Scenario*>(getScenario().get());
     }
     void advanceCars();
     void advanceTrafficLights();
-    void advance(size_t steps) override;
-
+    void advance(std::size_t steps) override;
+    void sortLanes();
 };
 
 #endif //PROJECT_SEQUENTIALALGORITHM_H

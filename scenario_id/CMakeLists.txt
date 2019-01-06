@@ -14,23 +14,25 @@ ENDIF(OpenCV_FOUND)
 
 # For compilation ...
 # Specify target & source files to compile it from
-find_package(CUDA 9.0 REQUIRED)
+IF(WITH_CUDA)
+    find_package(CUDA 9.0 REQUIRED)
+ENDIF()
 
 # Pass options to NVCC
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++11)
 
+add_library(scenario_id ${SOURCE_FILES_BY_ID})
 
 IF(WITH_CUDA)
     add_definitions(-DCUDA)
     # TODO: add cuda files
-    ELSE()
+    cuda_add_library(cuda_container src/cudacontainer.cu)
+    target_link_libraries(scenario_id cuda_container)
+
+ELSE()
     message(WARNING "No cuda")
 ENDIF()
 
-cuda_add_library(cuda_container src/cudacontainer.cu)
 
-add_library(scenario_id ${SOURCE_FILES_BY_ID})
-
-target_link_libraries(scenario_id cuda_container)
 
 target_link_libraries(scenario_id scenario_base)
