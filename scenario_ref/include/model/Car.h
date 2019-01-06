@@ -9,7 +9,6 @@
 #include <inttypes.h>
 
 #include "TrafficObject.h"
-#include "Lane.h"
 
 class Car : public TrafficObject {
 
@@ -66,6 +65,8 @@ public:
 
 
     std::list<TurnDirection> turns;
+
+    void nextStep(Lane::NeighboringObjects sameNeighbors);
 
 };
 

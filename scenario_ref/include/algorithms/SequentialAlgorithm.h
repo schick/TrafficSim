@@ -7,7 +7,7 @@
 
 #include "AdvanceAlgorithm.h"
 #include "model/Scenario.h"
-#include "InteligentDriverModel.h"
+#include "IntelligentDriverModel.h"
 #ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
 #endif
@@ -26,10 +26,8 @@ public:
     }
     void advanceCars();
     void advanceTrafficLights();
-    void advance(size_t steps) override;
+    void advance(std::size_t steps) override;
     void sortLanes();
-
-    InteligentDriverModel idm;
 };
 
 #endif //PROJECT_SEQUENTIALALGORITHM_H

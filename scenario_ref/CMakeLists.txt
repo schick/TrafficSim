@@ -6,7 +6,7 @@ SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src
         src/model/Road.cpp src/model/Scenario.cpp src/model/TrafficObject.cpp
         src/algorithms/SequentialAlgorithm.cpp
         src/algorithms/OpenMPAlgorithm.cpp
-        src/InteligentDriverModel.cpp)
+        src/IntelligentDriverModel.cpp include/NeighborFinder.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)

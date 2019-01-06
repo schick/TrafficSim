@@ -8,19 +8,19 @@
 void SequentialAlgorithm::calculateCarChanges() {
     for (std::shared_ptr<Road> &r : getRefScenario()->roads) {
         for (auto &l : r.get()->lanes) {
-            for (auto it = l->mTrafficObjects.begin(); it != l->mTrafficObjects.end(); ++it) {
+            for (std::size_t i = 0; i < l->mTrafficObjects.size(); i++) {
                 //Iterate over cars of lane. neighbors are it+1 and it-1.
                 Lane::NeighboringObjects neighbors;
 
                 //set preceding car for all cars except the first one
-                if (it != l->mTrafficObjects.begin())
-                    neighbors.back = *(it - 1);
+                if (i != 0)
+                    neighbors.back = l->mTrafficObjects.at(i - 1);
 
                 //set next car for all cars except the last one
-                if (it != l->mTrafficObjects.end())
-                    neighbors.front = *(it + 1);
+                if (i != l->mTrafficObjects.size() - 1)
+                    neighbors.front = l->mTrafficObjects.at(i + 1);
 
-                idm.nextStep(dynamic_cast<Car*>(*it), neighbors);
+                l->mTrafficObjects.at(i)->nextStep(neighbors);
             }
         }
     }
@@ -28,7 +28,7 @@ void SequentialAlgorithm::calculateCarChanges() {
 
 void SequentialAlgorithm::advanceCars() {
     for (std::shared_ptr<Car> &car : getRefScenario()->cars) {
-        idm.advanceStep(car.get());
+        IntelligentDriverModel::advanceStep(car.get());
     }
 }
 
@@ -40,7 +40,6 @@ void SequentialAlgorithm::advanceTrafficLights() {
 
 void SequentialAlgorithm::sortLanes() {
     for (auto &lane : getRefScenario()->lanes) {
-        //auto trafficObjects = lane->mTrafficObjects;
         std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
     }
 }

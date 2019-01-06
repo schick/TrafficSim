@@ -8,7 +8,7 @@
 #include "AdvanceAlgorithm.h"
 #include "model/Scenario.h"
 #include "Visualization.h"
-#include "../InteligentDriverModel.h"
+#include "IntelligentDriverModel.h"
 
 class OpenMPAlgorithm : public AdvanceAlgorithm {
 
@@ -18,13 +18,15 @@ public:
 
     explicit OpenMPAlgorithm( std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
+    void calculateCarChanges();
+
     Scenario* getRefScenario() {
         return dynamic_cast<Scenario*>(getScenario().get());
     }
-
+    void advanceCars();
+    void advanceTrafficLights();
     void advance(size_t steps) override;
-
-    InteligentDriverModel idm;
+    void sortLanes();
 };
 
 #endif //PROJECT_OPENMPALGORITHM_H

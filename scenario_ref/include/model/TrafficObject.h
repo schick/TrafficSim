@@ -35,14 +35,7 @@ public:
     double a;
     double length;
     
-
-    /**
-    * calculate the acceleration with 'leading_vehicle' as lead
-    * it will be assumed that 'leading_vehicle' is on current lane
-    * @param leading_vehicle the leading vehicle
-    * @return acceleration for t + 1
-    */
-    virtual double getAcceleration(TrafficObject *leading_vehicle) { return 0; } 
+    
 
     /**
      * get currently assigned lane
@@ -64,7 +57,14 @@ public:
      * remove object from any lane it may be assigned to
      */
     void removeFromLane();
-  
+
+    /**
+     * do next step
+     * @param sameNeighbors
+     */
+    virtual void nextStep(Lane::NeighboringObjects sameNeighbors){};
+
+
 
 private:
     /**

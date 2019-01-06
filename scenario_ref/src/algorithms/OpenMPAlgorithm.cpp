@@ -4,37 +4,53 @@
 
 #include "algorithms/OpenMPAlgorithm.h"
 
+
+void OpenMPAlgorithm::calculateCarChanges() {
+    for (std::shared_ptr<Road> &r : getRefScenario()->roads) {
+        for (auto &l : r.get()->lanes) {
+            for (auto it = l->mTrafficObjects.begin(); it != l->mTrafficObjects.end(); ++it) {
+                //Iterate over cars of lane. neighbors are it+1 and it-1.
+                Lane::NeighboringObjects neighbors;
+
+                //set preceding car for all cars except the first one
+                if (it != l->mTrafficObjects.begin())
+                    neighbors.back = *(it - 1);
+
+                //set next car for all cars except the last one
+                if (it != l->mTrafficObjects.end())
+                    neighbors.front = *(it + 1);
+
+                (*it)->nextStep(neighbors);
+            }
+        }
+    }
+};
+
+void OpenMPAlgorithm::advanceCars() {
+    for (std::shared_ptr<Car> &car : getRefScenario()->cars) {
+        IntelligentDriverModel::advanceStep(car.get());
+    }
+}
+
+void OpenMPAlgorithm::advanceTrafficLights() {
+    for (std::shared_ptr<Junction> &j : getRefScenario()->junctions) {
+        j->updateSignals();
+    }
+}
+
+void OpenMPAlgorithm::sortLanes() {
+    for (auto &lane : getRefScenario()->lanes) {
+        //auto trafficObjects = lane->mTrafficObjects;
+        std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
+    }
+}
+
+
 void OpenMPAlgorithm::advance(size_t steps) {
-
-    auto &cars = getRefScenario()->cars;
-    auto &lights = getRefScenario()->junctions;
-    auto &lanes = getRefScenario()->lanes;
-    //std::vector<Car::AdvanceData> changes(cars.size());
-    //#pragma omp parallel shared(cars, changes)
-    {
-        /*for (int i = 0; i < steps; i++) {
-            
-            
-            #pragma omp parallel for //shared(lanes)
-            for (int i = 0; i < lanes.size(); i++) {
-                //auto trafficObjects = lane->mTrafficObjects;
-                std::sort(lanes[i]->mTrafficObjects.begin(), lanes[i]->mTrafficObjects.end(), TrafficObject::Cmp());
-            }
-
-            #pragma omp parallel for //shared(changes, cars)
-            for (int i = 0; i < cars.size(); i++) {
-                changes[i] = idm.nextStep(cars[i].get());
-            }
-
-            #pragma omp parallel for //shared(changes)
-            for (int i = 0; i < changes.size(); i++) {
-                idm.advanceStep(changes[i], changes[i].car);
-            }
-
-            #pragma omp parallel for //shared(lights)
-            for (int i = 0; i < lights.size(); i++) {
-                lights[i]->updateSignals();
-            }
-        }*/
+    for (int i = 0; i < steps; i++) {
+        sortLanes();
+        calculateCarChanges();
+        advanceCars();
+        advanceTrafficLights();
     }
 }
