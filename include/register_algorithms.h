@@ -13,7 +13,7 @@
 #include "../scenario_id/include/algorithms/CudaAlgorithm_id.h"
 
 REGISTER_ALGORITHM(SequentialAlgorithm);
-//REGISTER_ALGORITHM(OpenMPAlgorithm);
+REGISTER_ALGORITHM(OpenMPAlgorithm);
 
 #ifdef WITH_CUDA
     REGISTER_ALGORITHM(CudaAlgorithm_id);

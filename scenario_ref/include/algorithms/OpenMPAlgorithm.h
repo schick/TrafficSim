@@ -16,7 +16,7 @@ public:
     ADVANCE_ALGO_INIT(OpenMPAlgorithm, Scenario, Visualization);
 
 
-    explicit OpenMPAlgorithm( std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
+    explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
     void calculateCarChanges();
 
