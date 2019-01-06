@@ -87,12 +87,12 @@ int main(int argc, char* argv[])
 #endif
 
     json output = advancer->getScenario()->toJson();
-    std::cout << "Result:   " << output.dump() << "\n";
+    std::cout << output.dump() << "\n";
 
 #ifndef USE_CIN
 #ifdef DEBUG_MSGS
     if (json_file_out.good()) {
-        std::cout << "Expected: " << loesung.dump() << "\n";
+        std::cout << loesung.dump() << "\n";
         if(output.dump() != loesung.dump()) {
             printf("Not equal!\n");
         }
