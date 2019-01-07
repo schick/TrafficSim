@@ -2,7 +2,7 @@
 // Created by oke on 07.12.18.
 //
 
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "util/json.hpp"
 
 void Scenario::parse(json input) {
@@ -28,15 +28,15 @@ void Scenario::parseCars(json &input) {
     for (const auto& car : input["cars"]) {
         double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
         cars[car_idx] = std::make_shared<Car>(
-            car["id"],
-            5.,
-            target_velocity,
-            car["max_acceleration"],
-            car["target_deceleration"],
-            car["min_distance"],
-            car["target_headway"],
-            car["politeness"],
-            car["start"]["distance"]);
+                car["id"],
+                5.,
+                target_velocity,
+                car["max_acceleration"],
+                car["target_deceleration"],
+                car["min_distance"],
+                car["target_headway"],
+                car["politeness"],
+                car["start"]["distance"]);
 
         uint64_t from = car["start"]["from"];
         uint64_t to = car["start"]["to"];
@@ -78,9 +78,9 @@ void Scenario::createRoads(const nlohmann::json & road) {
     uint64_t j1 = road["junction1"];
     uint64_t j2 = road["junction2"];
     auto junction1 = std::find_if(std::begin(junctions), std::end(junctions),
-        [&](const std::shared_ptr<Junction> &v) { return v->id == j1; });
+                                  [&](const std::shared_ptr<Junction> &v) { return v->id == j1; });
     auto junction2 = std::find_if(std::begin(junctions), std::end(junctions),
-        [&](const std::shared_ptr<Junction> &v) { return v->id == j2; });
+                                  [&](const std::shared_ptr<Junction> &v) { return v->id == j2; });
 
     /* one for each direction */
     for (int j = 0; j < 2; j++) {

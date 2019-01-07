@@ -2,7 +2,6 @@
 #include <cudacontainer.h>
 #include <Road_id.h>
 #include "Junction_id.h"
-#include "RedTrafficLight.h"
 #include "Car_id.h"
 #include "cuda/cuda_utils.h"
 

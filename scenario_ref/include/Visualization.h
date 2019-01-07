@@ -7,7 +7,7 @@
 
 #ifdef VISUALIZATION_ENABLED
 #include <opencv2/opencv.hpp>
-#include "Scenario.h"
+#include "model/Scenario.h"
 #include "BaseVisualizationEngine.h"
 
 using namespace cv;

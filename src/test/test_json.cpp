@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 
 #include "util/json.hpp"
-#include "Scenario.h"
 #include "algorithms/SequentialAlgorithm.h"
 #include "register_algorithms.h"
 
@@ -59,10 +58,17 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
     test_file(STR(ALGO), JSON_TEST_PATH + PATH, 1e-##ACCURACY);\
 }
 
+
+#ifdef WITH_CUDA
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
-    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7); \
+    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);\
     _CREATE_TEST(NAME, PATH, CudaAlgorithm2_id, 7);
+#else
+#define CREATE_TESTS(NAME, PATH) \
+    _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
+    _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);
+#endif
 
 CREATE_TESTS(zero_timestamp, "00-zero_timestep.json");
 

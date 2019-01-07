@@ -15,6 +15,7 @@ IF(OpenCV_FOUND)
 ENDIF(OpenCV_FOUND)
 
 IF(WITH_CUDA)
+    message(STATUS "with cuda")
     enable_language(CUDA)
 
     # For compilation ...
@@ -25,14 +26,14 @@ IF(WITH_CUDA)
     set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++11)
     list(APPEND CUDA_NVCC_FLAGS "-O3")
 
-    add_definitions(-DCUDA)
+    add_definitions(-DWITH_CUDA)
 
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
             src/cudacontainer.cu
             src/AlgorithmWrapper.cu
             src/algorithms/CudaAlgorithm2_id.cu)
 ELSE()
-    message(WARNING "No cuda")
+    message(STATUS "WITHOUT cuda")
 ENDIF()
 
 add_library(scenario_id ${SOURCE_FILES_BY_ID})

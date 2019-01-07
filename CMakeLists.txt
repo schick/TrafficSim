@@ -88,9 +88,12 @@ include_directories(include)
 
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
 
+
 IF(WITH_CUDA)
     set_property(TARGET traffic_sim PROPERTY CUDA_SEPARABLE_COMPILATION ON)
     target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+    add_definitions(-DWITH_CUDA)
+ELSE()
 ENDIF()
 
 target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)

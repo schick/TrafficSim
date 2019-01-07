@@ -5,7 +5,7 @@
 #ifndef TRAFFIC_SIM_CUDA_ALGORITHMS_ID_H
 #define TRAFFIC_SIM_CUDA_ALGORITHMS_ID_H
 
-#include "../../../scenario_ref/include/Scenario.h"
+#include "Scenario_id.h"
 
 void next(Scenario &s);
 

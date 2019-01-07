@@ -2,7 +2,6 @@
 // Created by oke on 16.12.18.
 //
 
-#include <Car.h>
 #include "algorithms/CudaAlgorithm2_id.h"
 #include "cuda/cuda_utils.h"
 
