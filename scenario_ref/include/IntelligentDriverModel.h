@@ -40,8 +40,7 @@ private:
 
     static double laneChangeMetric(Car *car, const Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors);
 
-    static void setPosition(TrafficObject *trafficObject, double position);
-
-
 };
+
+
 #endif //PROJECT_INTELIGENT_DRIVER_MODEL

@@ -16,7 +16,7 @@ void IntelligentDriverModel::updateKinematicState(Car *car) {
     //assert(data.car == car);
     car->a = car->new_acceleration;
     car->v = std::max(car->v + car->a, 0.);
-    setPosition(car, car->getPosition() + car->v);
+    car->setPosition(car->getPosition() + car->v);
 }
 
 void IntelligentDriverModel::updateLane(Car *car) {
@@ -43,7 +43,7 @@ void IntelligentDriverModel::moveCarAcrossJunction(Car *car) {
 
     // subtract moved position on current lane from distance
     auto oldLaneLength = old_lane->road->getLength();
-    setPosition(car, car->getPosition() - oldLaneLength);
+    car->setPosition(car->getPosition() - oldLaneLength);
 
     // select direction based on current direction and turn
     int direction = (old_lane->road->getDirection() + car->turns.front() + 2) % 4;
@@ -106,7 +106,6 @@ double IntelligentDriverModel::laneChangeMetric(Car *car, const Lane::Neighborin
                getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), otherNeighbors.front));
         }
 
-
         double behind_diff = 0;
         if (ownNeighbors.back != nullptr) {
             behind_diff = (getAcceleration(dynamic_cast<Car *>(ownNeighbors.back), ownNeighbors.front) -
@@ -118,8 +117,4 @@ double IntelligentDriverModel::laneChangeMetric(Car *car, const Lane::Neighborin
         }
     }
     return 0;
-}
-
-void IntelligentDriverModel::setPosition(TrafficObject *car, double position) {
-    car->setPosition(position);    
 }
