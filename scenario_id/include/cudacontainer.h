@@ -14,6 +14,10 @@
 #include <thread>
 
 #include "TrafficObject_id.h"
+#include "ScenarioData_id.h"
+
+void do_something(ScenarioData_id &scenario);
+
 
 class SortedUniqueObjectContainer {
 public:

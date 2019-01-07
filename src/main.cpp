@@ -6,7 +6,7 @@
 #include "AdvanceAlgorithm.h"
 
 #include "register_algorithms.h"
-
+#include "util/json.hpp"
 
 #ifdef VISUALIZATION_ENABLED
 #include "BaseVisualizationEngine.h"
@@ -93,8 +93,20 @@ int main(int argc, char* argv[])
 #ifdef DEBUG_MSGS
     if (json_file_out.good()) {
         std::cout << loesung.dump() << "\n";
-        if(output != loesung) {
-            printf("Lösungen nicht gleich...\n");
+
+        for (auto &car_json : output["cars"]) {
+            bool found_car = false;
+            for (auto &cmp_car_json : loesung["cars"]) {
+                if (cmp_car_json["id"] == car_json["id"] &&
+                    cmp_car_json["to"] == car_json["to"] &&
+                    cmp_car_json["from"] == car_json["from"] &&
+                    abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= 1e-7 &&
+                    cmp_car_json["lane"] == car_json["lane"]) {
+                    found_car = true;
+                    break;
+                }
+            }
+            if (!found_car) fprintf(stderr, "Car(%d) is not correct.\n", (int) car_json["id"]);
         }
     }
 #endif

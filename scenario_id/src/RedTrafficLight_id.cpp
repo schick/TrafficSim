@@ -6,8 +6,8 @@
 #include "Scenario_id.h"
 
 
-RedTrafficLight_id::RedTrafficLight_id(int id, int lane, double position)
-    : mAssociatedLane(lane), TrafficObject_id(id, 0, -1, position) {}
+RedTrafficLight_id::RedTrafficLight_id(size_t id, size_t lane, double position)
+    : mAssociatedLane(lane), TrafficObject_id(id, 0, (size_t ) -1, position) {}
 
 
 void RedTrafficLight_id::switchOff() {

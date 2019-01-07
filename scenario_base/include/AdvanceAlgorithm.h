@@ -10,8 +10,16 @@
 #include <unordered_map>
 
 #include "BaseScenario.h"
-#include "util/json.hpp"
+#include "util/json_fwd.hpp"
 #include "BaseVisualizationEngine.h"
+
+
+#ifdef __CUDACC__
+#define CUDA_HOSTDEV __host__ __device__
+#else
+#define CUDA_HOSTDEV
+#endif
+
 
 using json = nlohmann::json;
 

@@ -3,6 +3,7 @@
 //
 
 #include "Scenario.h"
+#include "util/json.hpp"
 
 void Scenario::parse(json input) {
 

@@ -1,6 +1,10 @@
-
+#include <RedTrafficLight_id.h>
 #include <cudacontainer.h>
-
+#include <Road_id.h>
+#include "Junction_id.h"
+#include "RedTrafficLight.h"
+#include "Car_id.h"
+#include "cuda/cuda_utils.h"
 
 template<typename T>
 __device__ void cuda_swap(T &t1, T &t2) { T t = t1; t1 = t2; t2 = t; }
@@ -41,21 +45,6 @@ __global__ void bitonic_sort_merge(T* values, int k, int n) {
         cuda_swap(values[i], values[i + k]);
 }
 
-
-/**
- * Inplace bitonic sort using CUDA.
- */
-#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
-{
-    if (code != cudaSuccess)
-    {
-        fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-        if (abort) exit(code);
-    }
-}
-
-
 #define THREADS 512 // 2^9
 template <typename T>
 void dev_mem_bitonic_sort(T *device_values, unsigned long n) {
@@ -88,11 +77,11 @@ void dev_mem_bitonic_sort(T *device_values, unsigned long n) {
 
 __global__ void lower_bound(const TrafficObject_id *find_values, size_t *nearest_font, size_t *nearest_back, size_t find_n, const TrafficObject_id* value, size_t n) {
     size_t i = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
-    size_t iinv = -1;
+    size_t iinv = (size_t )-1;
     if (i >= find_n)
         return;
     const TrafficObject_id &find = find_values[i];
-    if (find.lane == -1) {
+    if (find.lane == (size_t )-1) {
         if(find_values[i].id == iinv) {
             printf("Find(%lu): %lu/%.2f, No lane...\n", find.id, find.lane, find.x);
         }
@@ -161,7 +150,7 @@ __global__ void put_on_lane_device_kernel(TrafficObject_id *out, const TrafficOb
     size_t i = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
     out[i] = device_objects[i];
     for(uint8_t idx = 0; idx < offset; idx++) {
-        if (i < n && other_lane_id[out[i].lane] != (size_t) -1 && out[i].lane != -1) {
+        if (i < n && other_lane_id[out[i].lane] != (size_t) -1 && out[i].lane != (size_t )-1) {
             // printf("New Lane of Car %lu is %lu\n", out[i].id, other_lane_id[out[i].lane]);
             out[i].lane = (int) other_lane_id[out[i].lane];
         } else {
@@ -171,7 +160,7 @@ __global__ void put_on_lane_device_kernel(TrafficObject_id *out, const TrafficOb
     }
 }
 
-TrafficObject_id MAX_TOBJ(std::numeric_limits<int>::min(), 0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+TrafficObject_id MAX_TOBJ(std::numeric_limits<size_t>::min(), 0, std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max());
 
 
 
@@ -419,3 +408,8 @@ void host_mem_bitonic_sort(T *values, size_t n, T max)
     cudaFree(back);
     cudaFree(dev_values);
 }
+/**
+get_nearest_objects_
+cars[i].nextStep
+advanceStep
+*/

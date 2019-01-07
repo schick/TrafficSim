@@ -5,7 +5,7 @@
 #ifndef TRAFFIC_SIM_BASESCENARIO_H
 #define TRAFFIC_SIM_BASESCENARIO_H
 
-#include "util/json.hpp"
+#include "util/json_fwd.hpp"
 
 using json = nlohmann::json;
 

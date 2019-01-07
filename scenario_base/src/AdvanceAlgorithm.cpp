@@ -3,6 +3,7 @@
 //
 
 #include "AdvanceAlgorithm.h"
+#include "util/json.hpp"
 
 void AdvanceAlgorithm::registrate(std::string const & name, create_f * fp, create_scenario_f * sc)
 {

@@ -6,7 +6,7 @@
 #define PROJECT_CAR_ID_H
 
 #include "TrafficObject_id.h"
-
+class CudaScenario_id;
 class Car_id : public TrafficObject_id {
 
 private:
@@ -32,9 +32,9 @@ public:
     double target_headway;
     double politeness;
 
-    int turns_begin;
-    int turns_count;
-    int current_turn_offset;
+    size_t turns_begin;
+    size_t turns_count;
+    size_t current_turn_offset;
 
     //definition from ilias:
     static constexpr double min_s = 0.001;
@@ -44,9 +44,9 @@ public:
      */
     struct AdvanceData {
         AdvanceData() = default;
-        AdvanceData(int car, double acceleration, int lane_offset)
+        CUDA_HOSTDEV AdvanceData(size_t car, double acceleration, int8_t lane_offset)
             : car(car), acceleration(acceleration), lane_offset(lane_offset) {};
-        int car = -1;
+        size_t car = (size_t )-1;
         double acceleration = 0;
         int8_t lane_offset = 0;
     };
@@ -76,9 +76,9 @@ public:
      * @param v
      * @param a
      */
-    explicit Car_id(int id=-1, double length=0, double target_velocity=0, double max_acceleration=0,
+    explicit Car_id(size_t id=(size_t)-1, double length=0, double target_velocity=0, double max_acceleration=0,
             double target_deceleration=0, double min_distance=0, double target_headway=0, double politeness=0,
-            int turns_begin=-1, int turns_count=0, int lane=-1, double x=0, double v=0, double a=0)
+                    size_t turns_begin=(size_t )-1, size_t turns_count=0, size_t lane=(size_t)-1, double x=0, double v=0, double a=0)
                 : length(length), target_velocity(target_velocity), max_acceleration(max_acceleration),
                     target_deceleration(target_deceleration), min_distance(min_distance),
                     target_headway(target_headway), politeness(politeness), turns_begin(turns_begin),

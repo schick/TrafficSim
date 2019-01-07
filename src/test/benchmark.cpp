@@ -5,6 +5,7 @@
 #include "register_algorithms.h"
 #include "Scenario.h"
 #include <chrono>
+#include "util/json.hpp"
 #include <fstream>
 
 int main() {

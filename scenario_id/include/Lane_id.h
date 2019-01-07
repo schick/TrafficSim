@@ -8,6 +8,12 @@
 #include <inttypes.h>
 #include <vector>
 
+#ifdef __CUDACC__
+#define CUDA_HOSTDEV __host__ __device__
+#else
+#define CUDA_HOSTDEV
+#endif
+
 class Scenario_id;
 class TrafficObject_id;
 
@@ -27,7 +33,8 @@ public:
      * stores neighboring objects on a lane based on a given position on lane.
      */
     struct NeighboringObjects {
-        NeighboringObjects() : front((size_t)-1), back((size_t)-1) {};
+        CUDA_HOSTDEV NeighboringObjects() : front((size_t)-1), back((size_t)-1) {};
+        CUDA_HOSTDEV NeighboringObjects(size_t front, size_t back) : front(front), back(back) {};
         size_t front = (size_t)-1;
         size_t back = (size_t)-1;
     };

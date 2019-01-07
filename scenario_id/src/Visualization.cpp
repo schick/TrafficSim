@@ -145,7 +145,7 @@ void Visualization_id::render_image() {
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
 
         circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
-        putText(image, std::to_string(car.id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
+        putText(image, std::to_string(scenario->car_working_to_original_ids[car.id]) + "(" + std::to_string(car.id) + ")", start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem
@@ -154,6 +154,7 @@ void Visualization_id::render_image() {
     }
     if (imageBasePath.length() > 0){
         std::string fn = imageBasePath + std::to_string(numFrame) + ".jpg";
+        printf("write image: %s\n", fn.c_str());
         imwrite(fn, image);
     }
 }

@@ -27,7 +27,7 @@ public:
      * compare object to compare Traffic objects by
      */
     struct Cmp {
-        bool operator () (const TrafficObject_id *lhs, const TrafficObject_id *rhs) {
+        CUDA_HOSTDEV bool operator () (const TrafficObject_id *lhs, const TrafficObject_id *rhs) {
             if(lhs->x == rhs->x)
                 return lhs->id > rhs->id;
             return lhs->x < rhs->x;

@@ -27,20 +27,30 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
     json output = advancer->getScenario()->toJson();
 
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());
-    for (auto &car_json : output["cars"]) {
-        bool found_car = false;
-        for (auto cmp_car_json : loesung["cars"]) {
-            if (cmp_car_json["id"] == car_json["id"] &&
-                cmp_car_json["to"] == car_json["to"] &&
-                cmp_car_json["from"] == car_json["from"] &&
-                abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= genauigkeit &&
-                cmp_car_json["lane"] == car_json["lane"]) {
-                found_car = true;
-                break;
+    bool error = false;
+    for(auto &car : output["cars"]) {
+        for (auto &lcar : loesung["cars"]) {
+            if (car["id"] == lcar["id"]) {
+                if (car["from"] != lcar["from"] || car["to"] != car["to"]) {
+                    printf("Car(%d) is at wrong road\n", (int) car["id"]);
+                    error = true;
+                    continue;
+                }
+
+                if(car["lane"] != lcar["lane"]) {
+                    printf("Car(%d) is at wrong lane\n", (int) car["id"]);
+                    error = true;
+                    continue;
+                }
+
+                if(fabs((double) car["position"] - (double) lcar["position"]) > genauigkeit) {
+                    printf("Car(%d) is at wrong position (error: %f)\n", (int) car["id"], fabs((double) car["position"] - (double) lcar["position"]));
+                    error = true;
+                }
             }
         }
-        ASSERT_TRUE(found_car);
     }
+    ASSERT_FALSE(error);
 }
 
 #define JSON_TEST_PATH std::string("tests/")
@@ -52,7 +62,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
     _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7); \
-    _CREATE_TEST(NAME, PATH, CudaAlgorithm_id, 7);
+    _CREATE_TEST(NAME, PATH, CudaAlgorithm2_id, 7);
 
 CREATE_TESTS(zero_timestamp, "00-zero_timestep.json");
 
