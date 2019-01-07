@@ -11,7 +11,7 @@
 
 int main() {
     nlohmann::json input;
-    std::string file_name("../tests/44-tiny_400timestep.json");
+    std::string file_name("../tests/own_tests/16x16.json");
     std::ifstream json_file(file_name);
     try {
         json_file >> input;
@@ -21,16 +21,19 @@ int main() {
     }
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate("SequentialAlgorithm", input);
-    std::shared_ptr<AdvanceAlgorithm> advancer2 = AdvanceAlgorithm::instantiate("SequentialCudaDataAlgorithm_id", input);
-
+    std::shared_ptr<AdvanceAlgorithm> advancer2 = AdvanceAlgorithm::instantiate("CudaAlgorithm2_id", input);
+    assert(advancer.get() != nullptr);
+    assert(advancer2.get() != nullptr);
 
     std::shared_ptr<BaseVisualizationEngine> visualization1 = advancer->createVisualizationEngine(advancer->getScenario());
+    assert(visualization1.get() != nullptr);
     std::string video_fn("/home/oke/Desktop/testimages/output");
     visualization1->setImageBasePath(video_fn);
     visualization1->render_image();
 
 
     std::shared_ptr<BaseVisualizationEngine> visualization2 = advancer2->createVisualizationEngine(advancer2->getScenario());
+    assert(visualization2.get() != nullptr);
     std::string video_fn2("/home/oke/Desktop/testimages/output_new");
     visualization2->setImageBasePath(video_fn2);
     visualization2->render_image();
