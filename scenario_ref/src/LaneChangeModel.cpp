@@ -31,17 +31,14 @@ double LaneChangeModel::calculateLaneChangeMetric(Car *car, Lane::NeighboringObj
 
             double other_lane_diff = 0;
             if (otherNeighbors.back != nullptr) {
-                other_lane_diff = (
-                        IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), car) -
-                        IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back),
-                                                                otherNeighbors.front));
+                other_lane_diff = IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), car) -
+                        otherNeighbors.back->getSameLaneAcceleration();
             }
 
             double behind_diff = 0;
             if (sameNeighbors.back != nullptr) {
-                behind_diff = (IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back),
-                                                                       sameNeighbors.front) -
-                               IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back), car));
+                behind_diff = IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back), sameNeighbors.front) -
+                               sameNeighbors.back->getSameLaneAcceleration();
             }
 
             return otherLaneAcceleration - sameLaneAcceleration + car->politeness * (behind_diff + other_lane_diff);
