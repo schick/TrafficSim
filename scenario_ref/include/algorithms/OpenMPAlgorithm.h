@@ -26,7 +26,7 @@ public:
     void advanceCars();
     void advanceTrafficLights();
     void advance(size_t steps) override;
-    void sortLanes();
+    void sortLanesAndCalculateAcceleration();
 };
 
 #endif //PROJECT_OPENMPALGORITHM_H

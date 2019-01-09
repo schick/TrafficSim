@@ -8,7 +8,7 @@
 #include <memory>
 #include <BaseScenario.h>
 
-#include "util/json.hpp"
+#include "util/json_fwd.hpp"
 
 #include "BaseScenario.h"
 #include "Car.h"

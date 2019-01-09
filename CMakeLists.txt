@@ -27,7 +27,7 @@ IF(ALL_ALGOS)
 ENDIF()
 
 IF(WITH_CUDA) # enable cuda
-    # enable_language(CUDA)
+    enable_language(CUDA)
 ENDIF()
 
 if(DEBUG_MSGS) # enable debugging in source code
@@ -85,13 +85,18 @@ add_subdirectory(scenario_id)
 # create final executable
 include_directories(include)
 
+
 add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
 
-target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
 
 IF(WITH_CUDA)
-   target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+    set_property(TARGET traffic_sim PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+    add_definitions(-DWITH_CUDA)
+ELSE()
 ENDIF()
+
+target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
 
 IF(OpenCV_FOUND)
     target_link_libraries(traffic_sim ${OpenCV_LIBS})
@@ -111,3 +116,7 @@ IF (BUILD_TESTS)
 ELSE()
     message(STATUS "not building tests")
 ENDIF()
+
+
+add_executable(compare src/compare_algorithms.cpp)
+target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})

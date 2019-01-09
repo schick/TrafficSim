@@ -5,18 +5,17 @@
 #ifndef TRAFFIC_SIM_ALGORITHMS_H
 #define TRAFFIC_SIM_ALGORITHMS_H
 
-#include "../scenario_id/include/algorithms/SequentialAlgorithm_id.h"
-#include "../scenario_id/include/algorithms/OpenMPAlgorithm_id.h"
-#include "../scenario_ref/include/algorithms/SequentialAlgorithm.h"
-#include "../scenario_ref/include/algorithms/OpenMPAlgorithm.h"
-
-#include "../scenario_id/include/algorithms/CudaAlgorithm_id.h"
+#include "algorithms/SequentialAlgorithm.h"
+#include "algorithms/SequentialAlgorithm_id.h"
+#include "algorithms/OpenMPAlgorithm.h"
+#include "algorithms/OpenMPAlgorithm_id.h"
+#include "algorithms/CudaAlgorithm2_id.h"
 
 REGISTER_ALGORITHM(SequentialAlgorithm);
 REGISTER_ALGORITHM(OpenMPAlgorithm);
 
 #ifdef WITH_CUDA
-    REGISTER_ALGORITHM(CudaAlgorithm_id);
+    REGISTER_ALGORITHM(CudaAlgorithm2_id);
 #endif
 
 #ifdef ALL_ALGORITHMS

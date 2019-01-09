@@ -18,7 +18,7 @@ public:
     size_t to;
     double limit;
     double length;
-    std::array<size_t , 3> lanes;
+    size_t lanes[3];
     Junction_id::Direction roadDir;
 
 
@@ -29,10 +29,10 @@ public:
 
     Road_id(size_t id, size_t from_id, size_t to_id, double limit, double length, Junction_id::Direction roadDir) :
             id(id), from(from_id), to(to_id), length(length), limit(limit), roadDir(roadDir), lanes() {
-        lanes.fill((size_t )-1);
+        for(int i=0; i < 3; i++) lanes[i] = (size_t )-1;
     };
     Road_id() : id((size_t )-1), from((size_t )-1), to((size_t )-1), length(0), limit(0), roadDir(Junction_id::Direction::NORTH), lanes() {
-        lanes.fill((size_t )-1);
+        for(int i=0; i < 3; i++) lanes[i] = (size_t )-1;
     };
 
     /**

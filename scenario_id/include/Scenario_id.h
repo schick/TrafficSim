@@ -2,7 +2,6 @@
 #ifndef PROJECT_SCENARIO_ID_H
 #define PROJECT_SCENARIO_ID_H
 
-#include "util/json.hpp"
 #include "ScenarioData_id.h"
 #include "BaseScenario.h"
 

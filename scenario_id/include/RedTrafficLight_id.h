@@ -10,11 +10,12 @@
 
 class RedTrafficLight_id : public TrafficObject_id {
 
-    int mAssociatedLane;
-
 public:
+
+    size_t mAssociatedLane;
+
     // traffic lights have -1 id, because traffic lights are always at the end of road.
-    RedTrafficLight_id(int id, int lane, double position);
+    RedTrafficLight_id(size_t id, size_t lane, double position);
     /**
      * switch this light off.
      */

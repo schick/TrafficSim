@@ -12,6 +12,7 @@
 #include "Scenario_id.h"
 #include "Visualization_id.h"
 #include "cudacontainer.h"
+#include "AlgorithmWrapper.h"
 
 class CudaAlgorithm_id : public AdvanceAlgorithm {
 
@@ -95,6 +96,9 @@ private:
                 assert(front.at(i) != (size_t) -1 && container_objects.at(front.at(i)).id == neig.front);
             }
         }
+
+
+
         printf("passed left lc test.\n");
     }
 

@@ -7,7 +7,7 @@
 //
 
 #include <algorithm>
-
+#include "util/json.hpp"
 #include "Scenario_id.h"
 
 void Scenario_id::parse(json input) {
@@ -81,12 +81,12 @@ void Scenario_id::parseRoads(json &input) {
             // create lanes
             for (uint8_t lane_num = 0; lane_num < road["lanes"]; lane_num++) {
                 lanes.emplace_back(Lane_id(lane_num, road_id, lane_id, length));
-                roads.at(road_id).lanes.at(lane_num) = lane_id;
+                roads.at(road_id).lanes[lane_num] = lane_id;
                 lane_id++;
             }
 
-            junctions.at(from).outgoing.at(roadDir) = road_id;
-            junctions.at(to).incoming.at((roadDir + 2) % 4) = road_id;
+            junctions.at(from).outgoing[roadDir] = road_id;
+            junctions.at(to).incoming[(roadDir + 2) % 4] = road_id;
             road_id++;
         }
     }
@@ -98,13 +98,14 @@ void Scenario_id::parseCars(json &input) {
     for (const auto& car : input["cars"]) {
         double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
         car_original_to_working_ids[car["id"]] = new_car_id;
+        car_working_to_original_ids[new_car_id] = car["id"];
 
         int from_id = junction_original_to_working_ids[car["start"]["from"]];
         int to_id = junction_original_to_working_ids[car["start"]["to"]];
         auto it = std::find_if(std::begin(roads), std::end(roads), [&](const Road_id &road) {
             return (road.from == from_id && road.to == to_id); });
         assert(it != roads.end());
-        int lane_id = (*it).lanes.at(car["start"]["lane"]);
+        int lane_id = (*it).lanes[(int) car["start"]["lane"]];
         assert(lane_id != -1);
         Car_id &car_obj = cars[new_car_id] = Car_id(
                 new_car_id,
@@ -124,22 +125,26 @@ void Scenario_id::parseCars(json &input) {
 }
 
 void Scenario_id::initJunctions() {
-    int red_traffic_id = (int) cars.size();
+    size_t red_traffic_id = (int) cars.size();
     for (auto &junction : junctions) {
         for(int i = 0; i < 4; i++) {
-            if (junction.incoming.at(i) != -1) {
-                Road_id &road = roads.at(junction.incoming.at(i));
+            if (junction.incoming[i] != -1) {
+                Road_id &road = roads.at(junction.incoming[i]);
                 int j = 0;
-                for(; j < road.lanes.size(); j++) {
-                    traffic_lights.emplace_back(RedTrafficLight_id(red_traffic_id, road.lanes.at(j), road.length - 35. / 2.));
-                    junction.red_traffic_lights_ids.at(i).at(j) = red_traffic_id;
-                    red_traffic_id++;
+                for(; j < 3; j++) {
+                    if (road.lanes[j] != -1) {
+                        traffic_lights.emplace_back(RedTrafficLight_id(red_traffic_id, road.lanes[j], road.length - 35. / 2.));
+                        junction.red_traffic_lights_ids[i][j] = red_traffic_id;
+                        red_traffic_id++;
+                    } else {
+                        junction.red_traffic_lights_ids[i][j] = -1;
+                    }
                 }
                 for(;j < 3; j++) {
-                    junction.red_traffic_lights_ids.at(i).at(j) = -1;
+                    junction.red_traffic_lights_ids[i][j] = -1;
                 }
             } else {
-                junction.red_traffic_lights_ids.at(i).fill(-1);
+                for(auto &i : junction.red_traffic_lights_ids[i]) i = (size_t ) -1;
             }
         }
         junction.initializeSignals(*this);

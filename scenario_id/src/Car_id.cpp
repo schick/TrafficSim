@@ -50,7 +50,7 @@ void Car_id::updateLane(Scenario_id &s, AdvanceData &data) {
         // just do a lane change if wanted
         if (data.lane_offset != 0) {
             // lane_offset should be validated in this case
-            assert(s.roads.at(s.lanes.at(getLane()).road).lanes.size() > s.lanes.at(getLane()).lane_num + data.lane_offset);
+            assert(3 > s.lanes.at(getLane()).lane_num + data.lane_offset);
             moveToLane(s.roads.at(s.lanes.at(getLane()).road).lanes[s.lanes.at(getLane()).lane_num + data.lane_offset]);
         }
     }
@@ -78,10 +78,10 @@ void Car_id::moveCarAcrossJunction(Scenario_id &s, Car_id::AdvanceData &data) {
     while ((nextRoad = s.junctions.at(road.to).outgoing[direction]) == -1) direction = (++direction) % 4;
 
     // move car to same or the right lane AFTER lane change
-    int8_t indexOfNextLane = std::min((int8_t)s.roads.at(nextRoad).lanes.size() - 1, (int8_t)old_lane.lane_num + data.lane_offset);
+    int8_t indexOfNextLane = std::min(2, (int8_t)old_lane.lane_num + data.lane_offset);
     indexOfNextLane = std::max((int8_t)0, indexOfNextLane);
-    while(s.roads.at(nextRoad).lanes.at(indexOfNextLane) == -1) indexOfNextLane--;
-    moveToLane(s.roads.at(nextRoad).lanes.at(indexOfNextLane));
+    while(s.roads.at(nextRoad).lanes[indexOfNextLane] == -1) indexOfNextLane--;
+    moveToLane(s.roads.at(nextRoad).lanes[indexOfNextLane]);
 
     // update next turns
     current_turn_offset = (current_turn_offset + 1) % turns_count;

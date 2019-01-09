@@ -57,16 +57,19 @@ public:
     const double min_s = 0.001;
     double target_headway;
     double politeness;
+    double leftLaneAcceleration = 0;
+    double sameLaneAcceleration = 0;
+    double rightLaneAcceleration = 0;
     double new_acceleration = 0;
-    double new_acceleration_same = 0;
-    double new_acceleration_left = 0;
-    double new_acceleration_right = 0;
     int new_lane_offset  = 0;
 
 
     std::list<TurnDirection> turns;
 
     void nextStep(Lane::NeighboringObjects sameNeighbors);
+
+    void calcSameLaneAcceleration(TrafficObject *leadingObject);
+    double getSameLaneAcceleration();
 
 };
 
