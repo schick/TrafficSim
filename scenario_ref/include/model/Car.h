@@ -69,6 +69,7 @@ public:
     void nextStep(Lane::NeighboringObjects sameNeighbors);
 
     void calcSameLaneAcceleration(TrafficObject *leadingObject);
+    double getSameLaneAcceleration();
 
 };
 

@@ -32,11 +32,15 @@ void Car::nextStep(Lane::NeighboringObjects sameNeighbors) {
     }
     else {
         // stay on lane
-        new_acceleration = IntelligentDriverModel::getAcceleration(this, sameNeighbors.front);
+        new_acceleration = sameLaneAcceleration;
         new_lane_offset = 0;
     }
 }
 
 void Car::calcSameLaneAcceleration(TrafficObject *leadingObject) {
     sameLaneAcceleration = IntelligentDriverModel::getAcceleration(this, leadingObject);
+}
+
+double Car::getSameLaneAcceleration() {
+    return sameLaneAcceleration;
 }

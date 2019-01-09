@@ -18,7 +18,7 @@ double LaneChangeModel::calculateLaneChangeMetric(Car *car, Lane::NeighboringObj
 
     if (hasFrontSpaceOnOtherLane(car, otherNeighbors) && hasBackSpaceOnOtherLane(car, otherNeighbors)) {
 
-        double sameLaneAcceleration = car->sameLaneAcceleration;
+        double sameLaneAcceleration = car->getSameLaneAcceleration();
         double otherLaneAcceleration = IntelligentDriverModel::getAcceleration(car, otherNeighbors.front);
 
         if (otherLaneAcceleration > sameLaneAcceleration) {
