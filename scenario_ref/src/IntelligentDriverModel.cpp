@@ -25,8 +25,7 @@ void IntelligentDriverModel::updateLane(Car *car) {
     // check for junction
     if (isCarOverJunction(car)) {
         moveCarAcrossJunction(car);
-    }
-    else {
+    } else {
         // just do a lane change if wanted
         if (car->new_lane_offset != 0) {
             // lane_offset should be validated in this case
@@ -67,13 +66,6 @@ bool IntelligentDriverModel::isCarOverJunction(Car *car) {
     return car->getPosition() >= car->getLane()->getLength();
 }
 
-double IntelligentDriverModel::getLaneChangeMetric(Car *car, Lane *neighboringLane, Lane::NeighboringObjects &neighbors, Lane::NeighboringObjects &ownNeighbors) {
-    if (neighboringLane != nullptr) {
-        return laneChangeMetric(car, ownNeighbors, neighbors);
-    }
-    return 0;
-}
-
 double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_vehicle) {
     if (car == nullptr) {
         return 0;
@@ -86,35 +78,9 @@ double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_
         double delta_v = car->v - leading_vehicle->v;
         double s = std::max(leading_vehicle->getPosition() - car->getPosition() - leading_vehicle->length, car->min_s);
         with_lead = (car->min_distance + car->v * car->target_headway +
-            (car->v * delta_v) / (2. * sqrt(car->max_acceleration * car->target_deceleration))) / s;
+                     (car->v * delta_v) / (2. * sqrt(car->max_acceleration * car->target_deceleration))) / s;
         with_lead = with_lead * with_lead; // faster than pow
     }
     double acceleration = car->max_acceleration * (without_lead - with_lead);
     return acceleration;
-}
-
-double IntelligentDriverModel::laneChangeMetric(Car *car, const Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors) {
-
-    if ((otherNeighbors.front == nullptr || (otherNeighbors.front->getPosition() - car->getPosition()) >= (car->length / 2)) &&
-        (otherNeighbors.back == nullptr || (car->getPosition() - otherNeighbors.back->getPosition()) >= (car->length / 2) + car->min_distance)) {
-        double own_wo_lc = getAcceleration(car, ownNeighbors.front);
-        double own_w_lc = getAcceleration(car, otherNeighbors.front);
-
-        double other_lane_diff = 0;
-        if (otherNeighbors.back != nullptr) {
-            other_lane_diff = (getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), car) -
-               getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), otherNeighbors.front));
-        }
-
-        double behind_diff = 0;
-        if (ownNeighbors.back != nullptr) {
-            behind_diff = (getAcceleration(dynamic_cast<Car *>(ownNeighbors.back), ownNeighbors.front) -
-                getAcceleration(dynamic_cast<Car *>(ownNeighbors.back), car));
-        }
-
-        if (own_w_lc > own_wo_lc) {
-            return own_w_lc - own_wo_lc + car->politeness * (behind_diff + other_lane_diff);
-        }
-    }
-    return 0;
 }

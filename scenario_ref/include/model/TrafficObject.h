@@ -47,6 +47,8 @@ public:
 
     void setPosition(double position) { x = position; }
 
+    virtual void calcSameLaneAcceleration(TrafficObject *leadingObject){};
+
     /**
      * move a this object to a specific lane.
      * @param lane lane to move object to

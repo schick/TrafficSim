@@ -1,6 +1,8 @@
 
 #ifndef PROJECT_INTELIGENT_DRIVER_MODEL
 #define PROJECT_INTELIGENT_DRIVER_MODEL
+
+
 #include <model/Car.h>
 
 class IntelligentDriverModel {
@@ -19,15 +21,6 @@ public:
      */
     static double getAcceleration(Car *car, TrafficObject *leading_vehicle);
 
-    /**
-     * lane change metric described on slide 19 (22)
-     * @param car the relevant car
-     * @param neighboringLane the other lane
-     * @param ownNeighbors neighbors on current lane
-     * @param otherNeighbors neighbors on other lane
-     * @return metric value in m/s^2
-     */
-    static double getLaneChangeMetric(Car *car, Lane *neighboringLane, Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors);
 
 private:
     static void updateKinematicState(Car *car);
@@ -37,8 +30,6 @@ private:
     static void moveCarAcrossJunction(Car *car);
 
     static bool isCarOverJunction(Car *car);
-
-    static double laneChangeMetric(Car *car, const Lane::NeighboringObjects &ownNeighbors, Lane::NeighboringObjects &otherNeighbors);
 
 };
 
