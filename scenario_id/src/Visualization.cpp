@@ -150,11 +150,16 @@ void Visualization_id::render_image() {
 
     // no need to flip image -> linkshändisches koordinatensystem
     if (video != nullptr) {
+#ifdef DEBUG_MSGS
+        printf("write frame: %lu\n", numFrame);
+#endif
         video->write(image);
     }
     if (imageBasePath.length() > 0){
         std::string fn = imageBasePath + std::to_string(numFrame) + ".jpg";
+#ifdef DEBUG_MSGS
         printf("write image: %s\n", fn.c_str());
+#endif
         imwrite(fn, image);
     }
 }

@@ -135,6 +135,7 @@ void Scenario_id::initJunctions() {
                     if (road.lanes[j] != -1) {
                         traffic_lights.emplace_back(RedTrafficLight_id(red_traffic_id, road.lanes[j], road.length - 35. / 2.));
                         junction.red_traffic_lights_ids[i][j] = red_traffic_id;
+                        lanes[road.lanes[j]].traffic_light = red_traffic_id;
                         red_traffic_id++;
                     } else {
                         junction.red_traffic_lights_ids[i][j] = -1;

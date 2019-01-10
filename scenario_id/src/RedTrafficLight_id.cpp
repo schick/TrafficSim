@@ -18,6 +18,3 @@ void RedTrafficLight_id::switchOn() {
     moveToLane(mAssociatedLane);
 }
 
-bool RedTrafficLight_id::isRed() {
-    return getLane() != -1;
-}
