@@ -5,6 +5,8 @@
 #include "model/Scenario.h"
 #include "util/json.hpp"
 
+//TODO: Rework so that no temporary instances are needed
+
 void Scenario::parse(json input) {
 
     parseJunctions(input);
@@ -18,63 +20,57 @@ void Scenario::parse(json input) {
 
 //JUNCTIONS
 void Scenario::parseJunctions(json &input) {
+    //Set correct size of hash map
+    junctions.reserve(input["junctions"].size());
+
     for (const auto& junction : input["junctions"]) {
+        uint64_t id = junction["id"];
+        double x = static_cast<double>(junction["x"]) * 100.0;
+        double y = static_cast<double>(junction["y"]) * 100.0;
+        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(id, x, y);
 
-        double x = (double) junction["x"] * 100.0;
-        double y = (double) junction["y"] * 100.0;
-        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(junction["id"], x, y);
         for (const auto& signal : junction["signals"]) {
-            junction_obj->signals.emplace_back(Junction::Signal({ signal["time"], signal["dir"] }));
+            junction_obj->signals.emplace_back(signal["time"], signal["dir"]);
         }
-        junctions.emplace_back(std::move(junction_obj));
-    }
-}
 
-void Scenario::parseRoads(json &input) {
-    for (const auto& road : input["roads"]) {
-        createRoads(road);
+        junctions.insert({id ,std::move(junction_obj)});
     }
 }
 
 //ROADS
-void Scenario::createRoads(const nlohmann::json & road) {
-    uint64_t j1 = road["junction1"];
-    uint64_t j2 = road["junction2"];
-    auto junction1 = std::find_if(std::begin(junctions), std::end(junctions),
-                                  [&](const std::shared_ptr<Junction> &v) { return v->id == j1; });
-    auto junction2 = std::find_if(std::begin(junctions), std::end(junctions),
-                                  [&](const std::shared_ptr<Junction> &v) { return v->id == j2; });
+void Scenario::parseRoads(json &input) {
+    //Set correct size of vector
+    roads.reserve(input["roads"].size());
 
-    /* one for each direction */
-    for (int j = 0; j < 2; j++) {
-        Junction *from, *to;
-        // get first junction
-        assert(junction1 != std::end(junctions));
-        assert(junction2 != std::end(junctions));
-        if (j == 0) {
-            from = (*junction1).get();
-            to = (*junction2).get();
-        }
-        else {
-            from = (*junction2).get();
-            to = (*junction1).get();
-        }
+    for (const auto& road : input["roads"]) {
+        uint64_t j1_id = road["junction1"];
+        uint64_t j2_id = road["junction2"];
 
-        double roadLimit = static_cast<double>(road["limit"]) / 3.6;
-        Junction::Direction roadDir = calcDirectionOfRoad(from, to);
+        Junction *junction1 = junctions.at(j1_id).get();
+        Junction *junction2 = junctions.at(j2_id).get();
+        double roadSpeedLimit = static_cast<double>(road["limit"]) / 3.6;
+        uint8_t laneCount = road["lanes"];
 
-        std::shared_ptr<Road> road_obj = std::make_shared<Road>(from, to, roadLimit, roadDir);
-
-        createLanesForRoad(road, road_obj);
-
-        road_obj->from->outgoing[roadDir] = road_obj.get();
-        road_obj->to->incoming[(roadDir + 2) % 4] = road_obj.get();
-
-        roads.emplace_back(std::move(road_obj));
+        /* one for each direction */
+        createRoad(junction1, junction2, roadSpeedLimit, laneCount);
+        createRoad(junction2, junction1, roadSpeedLimit, laneCount);
     }
 }
 
-// helper to calculate direction of a road
+
+void Scenario::createRoad(Junction* from, Junction *to, double speedLimit, uint8_t laneCount) {
+    Junction::Direction roadDir = calcDirectionOfRoad(from, to);
+
+    std::shared_ptr<Road> road_obj = std::make_shared<Road>(from, to, speedLimit, roadDir);
+
+    createLanesForRoad(laneCount, road_obj);
+
+    road_obj->from->outgoing[roadDir] = road_obj.get();
+    road_obj->to->incoming[(roadDir + 2) % 4] = road_obj.get();
+
+    roads.emplace_back(std::move(road_obj));
+}
+
 Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) {
     // linkshändisches koordinatensystem
     if (from->y < to->y) {
@@ -85,14 +81,14 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
         return Junction::Direction::EAST;
     } else if (from->x > to->x) {
         return Junction::Direction::WEST;
+    } else {
+        printf("ERROR: not a valid road...");
+        exit(-1);
     }
-    printf("ERROR: not a valid road...");
-    exit(-1);
 }
 
-void Scenario::createLanesForRoad(const nlohmann::json & road, std::shared_ptr<Road> &road_obj)
-{
-    for (uint8_t lane_id = 0; lane_id < road["lanes"]; lane_id++) {
+void Scenario::createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &road_obj) {
+    for (uint8_t lane_id = 0; lane_id < laneCount; lane_id++) {
         std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, road_obj.get());
         road_obj->lanes.emplace_back(lane.get());
         lanes.emplace_back(std::move(lane));
@@ -132,8 +128,8 @@ void Scenario::parseCars(json &input) {
 
 //INITIALIZE JUNCTIONS
 void Scenario::initJunctions() {
-    for (std::shared_ptr<Junction> &j : junctions) {
-        j->initializeSignals();
+    for (auto pair : junctions) {
+        pair.second->initializeSignals();
     }
 }
 

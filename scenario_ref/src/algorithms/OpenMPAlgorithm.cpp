@@ -37,10 +37,9 @@ void OpenMPAlgorithm::advanceCars() {
 }
 
 void OpenMPAlgorithm::advanceTrafficLights() {
-#pragma omp for
-    for (std::size_t i = 0; i < getRefScenario()->junctions.size(); i++) {
-        auto junction = getRefScenario()->junctions.at(i);
-        junction->updateSignals();
+#pragma omp single
+    for (auto pair : getRefScenario()->junctions) {
+        pair.second->updateSignals();
     }
 }
 
@@ -58,7 +57,6 @@ void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
         }
     }
 }
-
 
 void OpenMPAlgorithm::advance(size_t steps) {
 

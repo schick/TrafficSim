@@ -33,8 +33,8 @@ void SequentialAlgorithm::advanceCars() {
 }
 
 void SequentialAlgorithm::advanceTrafficLights() {
-    for (std::shared_ptr<Junction> &j : getRefScenario()->junctions) {
-        j->updateSignals();
+    for (auto pair : getRefScenario()->junctions) {
+        pair.second->updateSignals();
     }
 }
 
