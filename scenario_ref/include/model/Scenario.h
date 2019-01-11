@@ -30,17 +30,15 @@ public:
     void parse(json input);
     json toJson();
 
-    void initJunctions();
-    void parseCars(json & input);
+    void parseJunctions(json &input);
     void parseRoads(json & input);
     void createRoads(const nlohmann::json & road);
+    Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to);
     void createLanesForRoad(const nlohmann::json & road, std::shared_ptr<Road> &road_obj);
-    void parseJunctions(json &input);
+    void parseCars(json & input);
+    void initJunctions();
 
 };
-
-
-
 
 
 #endif //PROJECT_SCENARIO_H
