@@ -98,10 +98,11 @@ void Scenario::createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &roa
 //CARS
 void Scenario::parseCars(json &input) {
     cars.resize(input["cars"].size());
-    int car_idx = 0;
+    int carIdInVector = 0;
+
     for (const auto& car : input["cars"]) {
         double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
-        cars[car_idx] = std::make_shared<Car>(
+        auto newCar = std::make_shared<Car>(
                 car["id"],
                 5.,
                 target_velocity,
@@ -112,17 +113,22 @@ void Scenario::parseCars(json &input) {
                 car["politeness"],
                 car["start"]["distance"]);
 
-        uint64_t from = car["start"]["from"];
-        uint64_t to = car["start"]["to"];
-        auto it = std::find_if(std::begin(roads), std::end(roads), [&](const std::shared_ptr<Road> &road) {
-            return ((road->from->id == from && road->to->id == to)); });
-        assert(it != roads.end());
+        cars[carIdInVector] = newCar;
 
-        cars[car_idx]->moveToLane((*it)->lanes[car["start"]["lane"]]);
+        uint64_t fromID = car["start"]["from"];
+        uint64_t toID = car["start"]["to"];
+        auto from = junctions.at(fromID);
+        auto to = junctions.at(toID);
 
-        for (const auto& route : car["route"]) cars[car_idx]->turns.push_back(route);
+        auto roadDir = calcDirectionOfRoad(from.get(), to.get());
+        uint8_t  startLaneIndex = car["start"]["lane"];
 
-        car_idx++;
+        newCar->moveToLane(from->outgoing[roadDir]->lanes[startLaneIndex]);
+
+        for (const auto& route : car["route"]) newCar->turns.push_back(route);
+
+        carIdInVector++;
+
     }
 }
 
