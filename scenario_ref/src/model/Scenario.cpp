@@ -20,9 +20,9 @@ void Scenario::parse(json input) {
 void Scenario::parseJunctions(json &input) {
     for (const auto& junction : input["junctions"]) {
 
-        double x = (int16_t) junction["x"] * 100;
-        double y = (int16_t) junction["y"] * 100;
-        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(junction["id"], x * 100.0, y * 100.0);
+        double x = (double) junction["x"] * 100.0;
+        double y = (double) junction["y"] * 100.0;
+        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(junction["id"], x, y);
         for (const auto& signal : junction["signals"]) {
             junction_obj->signals.emplace_back(Junction::Signal({ signal["time"], signal["dir"] }));
         }
