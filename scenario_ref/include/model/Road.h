@@ -20,7 +20,7 @@ public:
     };
 
     Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {
-        lenght = (double) (abs(from->x - to->x) + abs(from->y - to->y));
+        lenght = (abs(from->x - to->x) + abs(from->y - to->y));
     };
 
     /**

@@ -5,7 +5,9 @@
 #ifndef PROJECT_SCENARIO_H
 #define PROJECT_SCENARIO_H
 
+
 #include <memory>
+#include <unordered_map>
 #include <BaseScenario.h>
 
 #include "util/json_fwd.hpp"
@@ -22,7 +24,8 @@ using json = nlohmann::json;
 class Scenario : public BaseScenario {
 public:
 
-    std::vector<std::shared_ptr<Junction>> junctions;
+    //TODO: Set hash algorithm to just take the id
+    std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
     std::vector<std::shared_ptr<Road>> roads;
     std::vector<std::shared_ptr<Lane>> lanes;
     std::vector<std::shared_ptr<Car>> cars;
@@ -30,17 +33,15 @@ public:
     void parse(json input);
     json toJson();
 
-    void initJunctions();
-    void parseCars(json & input);
-    void parseRoads(json & input);
-    void createRoads(const nlohmann::json & road);
-    void createLanesForRoad(const nlohmann::json & road, std::shared_ptr<Road> &road_obj);
     void parseJunctions(json &input);
+    void parseRoads(json &input);
+    void createRoad(Junction* from, Junction *to, double speedLimit, uint8_t laneCount);
+    Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to);
+    void createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &road_obj);
+    void parseCars(json &input);
+    void initJunctions();
 
 };
-
-
-
 
 
 #endif //PROJECT_SCENARIO_H
