@@ -40,9 +40,9 @@ int main() {
             auto end = std::chrono::system_clock::now();
             auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             durations.push_back(milliseconds);
-            auto milliseconds_total = std::chrono::duration_cast<std::chrono::milliseconds>(end - before_parsing).count();
-            durations_total.push_back(milliseconds_total);
-            printf("Done in %ldms (%ldms)\n\n", milliseconds, milliseconds_total);
+            auto milliseconds_parsing = std::chrono::duration_cast<std::chrono::milliseconds>(start - before_parsing).count();
+            durations_total.push_back(milliseconds_parsing);
+            printf("Steps in %.2fs - Parsing in %.2fs\n\n", (float) milliseconds / 1000., (float) milliseconds_parsing / 1000.);
         }
     }
 
