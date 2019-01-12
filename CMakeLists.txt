@@ -6,6 +6,18 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 endif(MSVC)
 
+function(copy_test_files target)
+	if (MSVC)
+	    add_custom_command(TARGET ${target} PRE_BUILD
+	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+	                       ${CMAKE_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
+	else(MSVC)
+	    add_custom_command(TARGET ${target} PRE_BUILD
+	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+	                       ${CMAKE_SOURCE_DIR}/tests $<TARGET_FILE_DIR:${target}>/tests)
+	endif(MSVC)
+endfunction()
+
 option(VISUALIZATION "Disable Visualization to dismiss opencv dependency" OFF)
 option(USE_CIN "Use cin to read JSON" ON)
 option(DEBUG_MSGS "Print stuff" OFF)
@@ -106,6 +118,8 @@ target_link_libraries(traffic_sim scenario_ref scenario_id scenario_base)
 IF(OpenCV_FOUND)
     target_link_libraries(traffic_sim ${OpenCV_LIBS})
 ENDIF(OpenCV_FOUND)
+   
+copy_test_files(traffic_sim)
 
 # build tests & benchmark
 IF (BUILD_TESTS)
@@ -115,9 +129,12 @@ IF (BUILD_TESTS)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test scenario_ref scenario_id )
     gtest_discover_tests(json_test)
+    copy_test_files(json_test)
 
     add_executable(benchmark src/test/benchmark.cpp)
     target_link_libraries(benchmark scenario_ref scenario_id scenario_base)
+    copy_test_files(benchmark)
+
 ELSE()
     message(STATUS "not building tests")
 ENDIF()
