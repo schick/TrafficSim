@@ -15,12 +15,12 @@ int main() {
             "tests/own_tests/16x16.json",
             "tests/own_tests/32x32.json",
             "tests/own_tests/64x64.json",
-            // "tests/own_tests/128_5_20695_103475.json",
-            //"tests/own_tests/256_5_83.751_418.755.json"
+            "tests/own_tests/128_5_20695_103475.json",
+            "tests/own_tests/256_5_83.751_418.755.json"
     };
 
     std::vector<std::string> algorithms = AdvanceAlgorithm::getAlgorithms();
-    std::swap(*std::find(algorithms.begin(), algorithms.end(), "SequentialAlgorithm"), algorithms[0]);
+    // std::swap(*std::find(algorithms.begin(), algorithms.end(), "SequentialAlgorithm"), algorithms[0]);
     std::vector<long> durations_total;
     std::vector<long> durations;
     for (std::string &fn : files) {
