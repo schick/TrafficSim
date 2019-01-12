@@ -21,6 +21,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
     EXPECT_NO_THROW(json_file_out >> loesung);
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, input);
+    ASSERT_TRUE(advancer.get() != nullptr && "Advancer not registered.");
     advancer->advance(input["time_steps"]);
 
     json output = advancer->getScenario()->toJson();
@@ -63,7 +64,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
     _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);\
-    _CREATE_TEST(NAME, PATH, CudaAlgorithm2_id, 7);
+    _CREATE_TEST(NAME, PATH, TestAlgo, 7);
 #else
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\

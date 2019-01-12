@@ -17,13 +17,13 @@ class CArrayIterator {
     T *array;
     size_t len;
 public:
-    CArrayIterator(T *array, size_t len) : array(array), len(len) {}
+    CUDA_HOSTDEV CArrayIterator(T *array, size_t len) : array(array), len(len) {}
 
-    T *begin() {
+    CUDA_HOSTDEV T *begin() {
         return array;
     }
 
-    T *end() {
+    CUDA_HOSTDEV T *end() {
         return array + len;
     }
 };
@@ -34,7 +34,7 @@ public:
     static CudaScenario_id *fromScenarioData_device(ScenarioData_id &scenario);
     static CudaScenario_id fromScenarioData(ScenarioData_id &scenario);
     static void freeDeviceCudaScenario(CudaScenario_id *device_cuda_scenario);
-    void retriveCars(Car_id *host_cars);
+    void retriveData(Scenario_id *scenario);
 
     CUDA_HOSTDEV inline Junction_id *getJunction(size_t id) {
         if(id >= num_junctions) return nullptr;
@@ -101,6 +101,9 @@ public:
     CUDA_HOSTDEV inline size_t getNumJunctions() {
         return num_junctions;
     }
+    CUDA_HOSTDEV inline size_t getNumLanes() {
+        return num_lanes;
+    }
 
     CUDA_HOSTDEV inline Car_id &assertCar(TrafficObject_id &trafficObject) {
         assert(trafficObject.id < num_cars);
@@ -146,13 +149,17 @@ public:
     CUDA_HOSTDEV Road_id::NeighboringLanes getNeighboringLanes(const Lane_id &lane);
     CUDA_HOSTDEV double getAcceleration(TrafficObject_id &car, TrafficObject_id *leading_vehicle);
     CUDA_HOSTDEV double laneChangeMetric(Car_id &car, Lane_id::NeighboringObjects ownNeighbors,
-                            Lane_id::NeighboringObjects otherNeighbors);
+                                         Lane_id::NeighboringObjects otherNeighbors);
+    CUDA_HOSTDEV double laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef ownNeighbors,
+                                         Lane_id::NeighboringObjectsRef otherNeighbors);
     CUDA_HOSTDEV double getLaneChangeMetricForLane(TrafficObject_id &trafficObject,
                                       Lane_id *neighboringLane,
                                       const Lane_id::NeighboringObjects &ownNeighbors);
     CUDA_HOSTDEV Car_id::AdvanceData nextStep(Car_id &car);
     CUDA_HOSTDEV Car_id::AdvanceData nextStep(Car_id &car, Lane_id::NeighboringObjects leftNeighbors,
-            Lane_id::NeighboringObjects ownNeighbors,Lane_id::NeighboringObjects rightNeighbors);
+                                              Lane_id::NeighboringObjects ownNeighbors,Lane_id::NeighboringObjects rightNeighbors);
+    CUDA_HOSTDEV Car_id::AdvanceData nextStep(Car_id &car, Lane_id::NeighboringObjectsRef leftNeighbors,
+                                              Lane_id::NeighboringObjectsRef ownNeighbors,Lane_id::NeighboringObjectsRef rightNeighbors);
 
     CUDA_HOSTDEV void moveCarAcrossJunction(Car_id &car, Car_id::AdvanceData &data);
     CUDA_HOSTDEV void updateKinematicState(Car_id &car, Car_id::AdvanceData &data);

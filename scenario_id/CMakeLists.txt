@@ -31,7 +31,8 @@ IF(WITH_CUDA)
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
             src/cudacontainer.cu
             src/AlgorithmWrapper.cu
-            src/algorithms/CudaAlgorithm2_id.cu)
+            src/algorithms/CudaAlgorithm2_id.cu
+            src/algorithms/TestAlgo.cu)
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()

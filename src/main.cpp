@@ -87,10 +87,12 @@ int main(int argc, char* argv[])
 #endif
 
     json output = advancer->getScenario()->toJson();
-    std::cout << output.dump() << "\n";
 
-#ifndef USE_CIN
-#ifdef DEBUG_MSGS
+#ifdef USE_CIN
+    std::cout << output.dump() << "\n";
+#endif
+
+#ifdef RUN_WITH_TESTS
     if (json_file_out.good()) {
         std::cout << loesung.dump() << "\n";
 
@@ -109,7 +111,6 @@ int main(int argc, char* argv[])
             if (!found_car) fprintf(stderr, "Car(%d) is not correct.\n", (int) car_json["id"]);
         }
     }
-#endif
 #endif
 
 #ifdef DEBUG_MSGS

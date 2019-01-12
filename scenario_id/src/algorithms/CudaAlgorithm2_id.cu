@@ -2,6 +2,7 @@
 // Created by oke on 16.12.18.
 //
 
+#include <driver_types.h>
 #include "algorithms/CudaAlgorithm2_id.h"
 #include "cuda/cuda_utils.h"
 
@@ -45,9 +46,13 @@ __device__ inline size_t gpu_ceil(double x) {
 #define C_MIN(a, b) (a < b ? a : b)
 #define C_MAX(a, b) (a < b ? b : a)
 
-__global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, int lane_offset=0) {
+__global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, int lane_offset, int clockRate) {
+    size_t __beginn = clock();
     size_t debug_car = 7;
     extern __shared__ size_t temp_neighbors[];
+
+
+
     size_t section_id = threadIdx.x + blockDim.x * threadIdx.y;
     size_t car_idx = blockIdx.x + gridDim.y * blockIdx.y;
     size_t section_size = (size_t ) gpu_ceil((double)scenario->getNumCars() / (blockDim.y * blockDim.x));
@@ -68,6 +73,8 @@ __global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, 
     Lane_id *lane = scenario->getLane(find_car->lane);
     AlgorithmWrapper algo(*scenario);
     int lane_offset_cnt = lane_offset;
+
+    size_t start = clock();
     while(lane_offset_cnt != 0 && lane != nullptr) {
         Road_id::NeighboringLanes neigh_lanes = algo.getNeighboringLanes(*lane);
         if (lane_offset_cnt > 0) {
@@ -84,6 +91,8 @@ __global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, 
             lane_offset_cnt++;
         }
     }
+
+    size_t after_first_while = clock();
     if (lane == nullptr) {
         neighbors[car_idx] = (size_t) -1;
         neighbors[car_idx + scenario->getNumCars()] = (size_t) -1;
@@ -109,6 +118,7 @@ __global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, 
             }
         }
     }
+    size_t after_second_for = clock();
 
     if(closest_gt != nullptr) {
         temp_neighbors[section_id] = closest_gt->id;
@@ -162,6 +172,7 @@ __global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, 
     }
     __syncthreads();
 
+    size_t after_third_while = clock();
     if (section_id == 0) {
         Lane_id &l = *scenario->getLane(find_car->lane);
         Road_id &r = *scenario->getRoad(l.road);
@@ -179,6 +190,11 @@ __global__ void search_preceeding(CudaScenario_id *scenario, size_t *neighbors, 
         neighbors[car_idx] = temp_neighbors[0];
         neighbors[car_idx + scenario->getNumCars()] = temp_neighbors[section_count];
     }
+    size_t __end = clock();
+    if(car_idx == 0 && section_id == 0) printf("Total: %fms, \n    1: %fms, \n    2: %fms, \n    3: %fms\n\n", (float) (__end - __beginn) / clockRate,
+                            (float) (after_first_while - start) / clockRate,
+                            (float) (after_second_for - after_first_while) / clockRate,
+                            (float) (after_third_while - after_second_for) / clockRate);
 }
 
 
@@ -193,7 +209,8 @@ void test_left_lane_neighbors(CudaScenario_id * device_scenario, Scenario_id *s)
 
     gpuErrchk(cudaMalloc((void**) &dev_neighbors, 2 * scenario.getNumCars() * sizeof(size_t)));
 
-    search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_scenario, dev_neighbors, -1);
+
+    search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_scenario, dev_neighbors, -1, -1);
 
     gpuErrchk( cudaPeekAtLastError() );
 
@@ -227,87 +244,6 @@ void test_left_lane_neighbors(CudaScenario_id * device_scenario, Scenario_id *s)
 }
 
 
-void test_right_lane_neighbors(CudaScenario_id * device_scenario, Scenario_id *s) {
-
-    CudaScenario_id scenario = CudaScenario_id::fromScenarioData(*s);
-    AlgorithmWrapper algorithmWrapper(scenario);
-    dim3 blocks(ceil(sqrt(scenario.getNumCars())), ceil(sqrt(scenario.getNumCars())));    /* Number of blocks   */
-    dim3 threads(1, 10);  /* Number of threads  */
-
-    size_t *dev_neighbors;
-
-    gpuErrchk(cudaMalloc((void**) &dev_neighbors, 2 * scenario.getNumCars() * sizeof(size_t)));
-
-    search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_scenario, dev_neighbors, 1);
-
-    gpuErrchk( cudaPeekAtLastError() );
-
-    cudaDeviceSynchronize();
-    size_t neighbors[2 * scenario.getNumCars()];
-    gpuErrchk(cudaMemcpy(neighbors, dev_neighbors,  2 * scenario.getNumCars() * sizeof(size_t), cudaMemcpyDeviceToHost));
-
-    for (size_t i = 0; i < scenario.getNumCars(); i++) {
-        Road_id::NeighboringLanes lanes = algorithmWrapper.getNeighboringLanes(*scenario.getLane(scenario.getCar(i)->lane));
-        if(lanes.right == (size_t) -1) {
-            assert(neighbors[scenario.getNumCars() + i] == (size_t) -1);
-            assert(neighbors[i] == (size_t) -1);
-            continue;
-        }
-        Lane_id::NeighboringObjects neig = algorithmWrapper.getNeighboringObjects(*scenario.getCar(i), *scenario.getLane(lanes.right));
-
-
-        if (neig.back == -1) {
-            assert(neighbors[scenario.getNumCars() + i] == (size_t) -1);
-        } else {
-            assert(neighbors[scenario.getNumCars() + i] != (size_t) -1 && neighbors[scenario.getNumCars() + i] == neig.back);
-        }
-        if (neig.front == -1) {
-            assert(neighbors[i] == (size_t) -1);
-        } else {
-            assert(neighbors[i] != (size_t) -1 && neighbors[i] == neig.front);
-        }
-    }
-
-    printf("passed right_lane test.\n");
-}
-
-void test_own_lane_neighbors(CudaScenario_id * device_scenario, Scenario_id *s) {
-
-    CudaScenario_id scenario = CudaScenario_id::fromScenarioData(*s);
-    AlgorithmWrapper algorithmWrapper(scenario);
-    dim3 blocks(ceil(sqrt(scenario.getNumCars())), ceil(sqrt(scenario.getNumCars())));    /* Number of blocks   */
-    dim3 threads(1, 10);  /* Number of threads  */
-
-    size_t *dev_neighbors;
-
-    gpuErrchk(cudaMalloc((void**) &dev_neighbors, 2 * scenario.getNumCars() * sizeof(size_t)));
-
-    search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_scenario, dev_neighbors, 0);
-
-    gpuErrchk( cudaPeekAtLastError() );
-
-    cudaDeviceSynchronize();
-    size_t neighbors[2 * scenario.getNumCars()];
-    gpuErrchk(cudaMemcpy(neighbors, dev_neighbors,  2 * scenario.getNumCars() * sizeof(size_t), cudaMemcpyDeviceToHost));
-
-    for (size_t i = 0; i < scenario.getNumCars(); i++) {
-        Lane_id::NeighboringObjects neig = algorithmWrapper.getNeighboringObjects(*scenario.getCar(i), *scenario.getLane(scenario.getCar(i)->lane));
-
-
-        if (neig.back == -1) {
-            assert(neighbors[scenario.getNumCars() + i] == (size_t) -1);
-        } else {
-            assert(neighbors[scenario.getNumCars() + i] != (size_t) -1 && neighbors[scenario.getNumCars() + i] == neig.back);
-        }
-        if (neig.front == -1) {
-            assert(neighbors[i] == (size_t) -1);
-        } else {
-            assert(neighbors[i] != (size_t) -1 && neighbors[i] == neig.front);
-        }
-    }
-
-    printf("passed own_lane test.\n");
-}
 
 void CudaAlgorithm2_id::advance(size_t steps) {
     //test_own_lane_neighbors(device_cuda_scenario, getIDScenario());
@@ -316,6 +252,7 @@ void CudaAlgorithm2_id::advance(size_t steps) {
 
     CudaScenario_id scenario = CudaScenario_id::fromScenarioData(*getIDScenario());
 
+    printf("Cars: %lu\n", scenario.getNumCars());
     size_t *left_lane_neighbors, *right_lane_neighbors, *own_lane_neighbors;
 
     gpuErrchk(cudaMalloc((void**) &left_lane_neighbors, 2 * scenario.getNumCars() * sizeof(size_t)));
@@ -332,31 +269,53 @@ void CudaAlgorithm2_id::advance(size_t steps) {
     Car_id::AdvanceData *device_changes;
     gpuErrchk(cudaMalloc((void**) &device_changes, getIDScenario()->cars.size() * sizeof(Car_id::AdvanceData)));
 
+    cudaDeviceProp prop;
+    cudaGetDeviceProperties(&prop, 0);
+    int clockRate = prop.clockRate;
+    cudaError_t err = cudaDeviceGetAttribute(&prop.clockRate, cudaDevAttrClockRate, 0);
+    cudaEvent_t starts[steps], stops[steps];
     for(int i = 0; i < steps; i++) {
-        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, right_lane_neighbors, 1);
+        cudaEventCreate(&starts[i]);
+        cudaEventCreate(&stops[i]);
+    }
+
+    for(int i = 0; i < steps; i++) {
+        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, right_lane_neighbors, 1, clockRate);
         gpuErrchk( cudaPeekAtLastError() );
-        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, own_lane_neighbors, 0);
+        cudaEventRecord(starts[i]);
+        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, own_lane_neighbors, 0, clockRate);
+        cudaEventRecord(stops[i]);
         gpuErrchk( cudaPeekAtLastError() );
-        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, left_lane_neighbors, -1);
+        search_preceeding<<<blocks, threads, 2 * threads.x * threads.y * sizeof(size_t)>>>(device_cuda_scenario, left_lane_neighbors, -1, clockRate);
         gpuErrchk( cudaPeekAtLastError() );
-        cudaDeviceSynchronize();
 
         kernel_get_changes<<<512, 512>>>(device_changes, device_cuda_scenario, right_lane_neighbors, own_lane_neighbors, left_lane_neighbors);
         gpuErrchk( cudaPeekAtLastError() );
-        cudaDeviceSynchronize();
         kernel_apply_changes<<<512, 512>>>(device_changes, device_cuda_scenario);
         gpuErrchk( cudaPeekAtLastError() );
-        cudaDeviceSynchronize();
         kernel_update_signals<<<512, 512>>>(device_cuda_scenario);
         gpuErrchk( cudaPeekAtLastError() );
-        cudaDeviceSynchronize();
     }
+    printf("clock: %d\n", clockRate);
 
     cudaDeviceSynchronize();
+    cudaEventSynchronize(stops[steps - 1]);
+    double total_ms = 0.;
+    for(int i = 0; i < steps; i++) {
+        float milliseconds = 0;
+        cudaEventElapsedTime(&milliseconds, starts[i], stops[i]);
+        total_ms += (double) milliseconds / steps;
+    }
 
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, starts[steps - 1], stops[steps - 1]);
+    printf("last duration: %f\n", milliseconds);
+    cudaEventElapsedTime(&milliseconds, starts[steps - 2], stops[steps - 2]);
+    printf("-2-last duration: %f\n", milliseconds);
+    printf("average duration: %f\n", total_ms);
     gpuErrchk( cudaPeekAtLastError() );
 
-    device_cuda_scenario->retriveCars(getIDScenario()->cars.data());
+    device_cuda_scenario->retriveData(getIDScenario());
 
     gpuErrchk(cudaFree(device_changes));
 }

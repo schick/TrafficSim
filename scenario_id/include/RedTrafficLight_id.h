@@ -8,6 +8,17 @@
 #include "TrafficObject_id.h"
 #include "Lane_id.h"
 
+#ifdef __CUDACC__
+#define CUDA_HOSTDEV __host__ __device__
+#define CUDA_HOST __host__
+#define CUDA_DEV __device__
+#else
+#define CUDA_HOSTDEV
+#define CUDA_HOST
+#define CUDA_DEV
+#endif
+
+
 class RedTrafficLight_id : public TrafficObject_id {
 
 public:
@@ -19,17 +30,19 @@ public:
     /**
      * switch this light off.
      */
-    void switchOff();
+    CUDA_HOSTDEV void switchOff();
 
     /**
      * switch this light on.
      */
-    void switchOn();
+    CUDA_HOSTDEV void switchOn();
 
     /**
      * @return whether red light is currently active
      */
-    bool isRed();
+    CUDA_HOSTDEV bool isRed() {
+        return lane != -1;
+    }
 
 };
 
