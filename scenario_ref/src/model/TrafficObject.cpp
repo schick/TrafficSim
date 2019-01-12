@@ -29,12 +29,15 @@ void TrafficObject::moveToLane(Lane *lane) {
 }
 
 void TrafficObject::removeFromLane() {
-    
+
     if (lane == nullptr) {
         return;
     }
+
     std::lock_guard<std::mutex> lock(lane->laneLock);
-    lane ->mTrafficObjects.erase(std::remove(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), this), lane->mTrafficObjects.end());
+    auto position = std::find(lane->mTrafficObjects.rbegin(), lane->mTrafficObjects.rend(), this);
+    //need -- and base() to cast from reverse pointer to forward pointer
+    lane->mTrafficObjects.erase(--position.base());
     lane = nullptr;
 }
 

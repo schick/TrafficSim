@@ -37,7 +37,7 @@ public:
         Direction direction;
     };
 
-    Junction(uint64_t id, int16_t x, int16_t y) : id(id), x(x), y(y), incoming(), outgoing() {};
+    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing() {};
 
     /**
      * signals to cycle through
@@ -53,7 +53,7 @@ public:
      * properties
      */
     uint64_t id;
-    int16_t x, y;
+    double x, y;
     std::array<Road*, 4> outgoing;
     std::array<Road*, 4> incoming;
 

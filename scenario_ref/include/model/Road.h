@@ -19,7 +19,9 @@ public:
         Lane *left = nullptr;
     };
 
-    Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {};
+    Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {
+        lenght = (abs(from->x - to->x) + abs(from->y - to->y));
+    };
 
     /**
      * properties
@@ -51,6 +53,8 @@ public:
 
 private:
     Junction::Direction roadDir;
+
+    double lenght;
 };
 
 
