@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     json input;
 
     SimpleArgumentParser p;
-    p.add_kw_argument("algorithm", "SequentialAlgorithm");
+    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
 
     // read input file
 #ifdef USE_CIN
