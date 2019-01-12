@@ -143,7 +143,7 @@ __global__ void checkKernel(CudaScenario_id *device_scenario, BucketContainer<Tr
 template<> template<>
 void BucketContainer<TrafficObject_id*, nullptr>::construct_device<CudaScenario_id>(CudaScenario_id *device_scenario, BucketContainer<TrafficObject_id *, nullptr> *device_bucketContainer, size_t num_lanes) {
 
-    uint BLOCK_NUM = ceil((float) num_lanes / THREAD_NUM);
+    unsigned int BLOCK_NUM = ceil((float) num_lanes / THREAD_NUM);
     dim3 threads(THREAD_NUM, 1);
     dim3 blocks(BLOCK_NUM, 1);
     allocateKernel<<<1, 1>>>(device_scenario, device_bucketContainer);
@@ -289,7 +289,7 @@ __global__ void cudaSortKernel(BucketMemory *container, Cmp cmp) {
                 }
             }
 
-            unsigned long power = pow(2, floor(log((double) n) / log(2.)));
+            unsigned long power = pow(2., floor(log((double) n) / log(2.)));
             for (unsigned long k = power; k > 0; k >>= 1) {
                 bitonic_sort_merge(device_values, k, n, cmp);
                 __syncthreads();
@@ -672,7 +672,7 @@ __device__ inline bool isInWrongLane(BucketMemory *container, TrafficObject_id *
     return (object < supposed_bucket.buffer || supposed_bucket.buffer + supposed_bucket.size <= object);
 }
 
-CUDA_HOSTDEV inline bool IsPowerOfTwo(ulong x)
+CUDA_HOSTDEV inline bool IsPowerOfTwo(unsigned long x)
 {
     return (x != 0) && ((x & (x - 1)) == 0);
 }
@@ -853,7 +853,7 @@ void collect_changed(CudaScenario_id *scenario, BucketMemory *container) {
     size_t block_size = 512;
     assert(IsPowerOfTwo(block_size));
 
-    size_t preSumHost[buffer_size];
+    std::vector<size_t> preSumHost(buffer_size);
 
     size_t *preSum;
     gpuErrchk(cudaMalloc((void**) &preSum, buffer_size * sizeof(size_t)));
@@ -887,7 +887,7 @@ void collect_changed(CudaScenario_id *scenario, BucketMemory *container) {
 #ifdef RUN_WITH_TESTS
         cudaDeviceSynchronize();
         gpuErrchk( cudaPeekAtLastError() );
-        gpuErrchk(cudaMemcpy(preSumHost, temp, temp_size * sizeof(size_t), cudaMemcpyDeviceToHost));
+        gpuErrchk(cudaMemcpy(preSumHost.data(), temp, temp_size * sizeof(size_t), cudaMemcpyDeviceToHost));
         cudaDeviceSynchronize();
         gpuErrchk( cudaPeekAtLastError() );
 #endif
@@ -903,7 +903,7 @@ void collect_changed(CudaScenario_id *scenario, BucketMemory *container) {
         reduce_sizes.pop_back();
 
 #ifdef RUN_WITH_TESTS
-        gpuErrchk(cudaMemcpy(preSumHost, temp, temp_size * sizeof(size_t), cudaMemcpyDeviceToHost));
+        gpuErrchk(cudaMemcpy(preSumHost.data(), temp, temp_size * sizeof(size_t), cudaMemcpyDeviceToHost));
         cudaDeviceSynchronize();
         gpuErrchk( cudaPeekAtLastError() );
 #endif
@@ -921,20 +921,18 @@ void collect_changed(CudaScenario_id *scenario, BucketMemory *container) {
 
 
 #ifdef RUN_WITH_TESTS
-    gpuErrchk(cudaMemcpy(preSumHost, reduce_arrays.back(), reduce_sizes.back() * sizeof(size_t), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(preSumHost.data(), reduce_arrays.back(), reduce_sizes.back() * sizeof(size_t), cudaMemcpyDeviceToHost));
     cudaDeviceSynchronize();
     gpuErrchk( cudaPeekAtLastError() );
 #endif
 
-
     GetIndicesKernel<<<buffer_size / 256 + 1, 256>>>(container, preSum, buffer_size);
     gpuErrchk( cudaPeekAtLastError() );
 
-    gpuErrchk( cudaFree(preSum) );
 #ifdef RUN_WITH_TESTS
     cudaDeviceSynchronize();
     gpuErrchk( cudaPeekAtLastError() );
-    gpuErrchk(cudaMemcpy(preSumHost, preSum, buffer_size * sizeof(size_t), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(preSumHost.data(), preSum, buffer_size * sizeof(size_t), cudaMemcpyDeviceToHost));
     // cudaDeviceSynchronize();
 
     cudaDeviceSynchronize();
@@ -942,6 +940,7 @@ void collect_changed(CudaScenario_id *scenario, BucketMemory *container) {
     printf("collect_changed---\n");
 #endif
 
+	gpuErrchk(cudaFree(preSum));
 }
 
 __global__ void prescank(size_t *tmp) {
