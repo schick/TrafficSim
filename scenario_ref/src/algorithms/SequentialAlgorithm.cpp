@@ -40,7 +40,10 @@ void SequentialAlgorithm::advanceTrafficLights() {
 
 void SequentialAlgorithm::sortLanes() {
     for (auto &lane : getRefScenario()->lanes) {
-        std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
+        if (!lane->isSorted) {
+            std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
+            lane->isSorted = true;
+        }
 
         for (std::size_t i = 0; i < lane->mTrafficObjects.size(); i++) {
             auto car = lane->mTrafficObjects.at(i);
