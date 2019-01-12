@@ -24,3 +24,7 @@ Project.sln
 
 #output
 *.avi
+
+#ignore large tests
+tests/own_tests/128_5_20695_103475\.json
+tests/own_tests/256_5_83\.751_418\.755\.json
