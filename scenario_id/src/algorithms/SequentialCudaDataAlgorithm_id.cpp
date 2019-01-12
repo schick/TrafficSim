@@ -11,17 +11,17 @@ void SequentialCudaDataAlgorithm_id::advance(size_t steps) {
     {
         for (int i = 0; i < steps; i++) {
             #pragma omp parallel for
-            for (size_t c_i = 0; c_i < cudaScenario.getNumCars(); c_i++) {
+            for (long c_i = 0; c_i < cudaScenario.getNumCars(); c_i++) {
                 changes[c_i] = wrapper.nextStep(*cudaScenario.getCar(c_i));
             }
 
             #pragma omp parallel for
-            for (size_t c_i = 0; c_i < cudaScenario.getNumCars(); c_i++) {
+            for (long c_i = 0; c_i < cudaScenario.getNumCars(); c_i++) {
                 wrapper.advanceStep(*cudaScenario.getCar(changes[c_i].car), changes[c_i]);
             }
 
             #pragma omp parallel for
-            for (size_t c_i = 0; c_i < cudaScenario.getNumJunctions(); c_i++) {
+            for (long c_i = 0; c_i < cudaScenario.getNumJunctions(); c_i++) {
                 wrapper.updateSignals(*cudaScenario.getJunction(c_i));
             }
         }
