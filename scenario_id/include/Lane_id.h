@@ -28,6 +28,7 @@ public:
     size_t id;
     size_t road;
     double length;
+    size_t traffic_light;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.
@@ -37,6 +38,12 @@ public:
         CUDA_HOSTDEV NeighboringObjects(size_t front, size_t back) : front(front), back(back) {};
         size_t front = (size_t)-1;
         size_t back = (size_t)-1;
+    };
+    struct NeighboringObjectsRef {
+        CUDA_HOSTDEV NeighboringObjectsRef() : front(nullptr), back(nullptr) {};
+        CUDA_HOSTDEV NeighboringObjectsRef(TrafficObject_id *front, TrafficObject_id *back) : front(front), back(back) {};
+        TrafficObject_id *front = nullptr;
+        TrafficObject_id *back = nullptr;
     };
 
     Lane_id(uint8_t lane_num, size_t road, size_t id, double length) : lane_num(lane_num), road(road), id(id), length(length) {};

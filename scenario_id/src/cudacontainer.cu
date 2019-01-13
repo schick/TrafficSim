@@ -11,7 +11,7 @@ __device__ void cuda_swap(T &t1, T &t2) { T t = t1; t1 = t2; t2 = t; }
 template<typename T>
 __global__ void bitonic_sort_step(T *dev_values, int j, int k, int n) {
     unsigned int i, ixj; /* Sorting partners: i and ixj */
-    i = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
+    i = threadIdx.x + blockDim.x * threadIdx.y;
     ixj = i ^ j;
 
     if (i >= n || ixj >= n)
@@ -39,7 +39,7 @@ __global__ void bitonic_sort_step(T *dev_values, int j, int k, int n) {
 template<typename T>
 __global__ void bitonic_sort_merge(T* values, int k, int n) {
     unsigned int i; /* Sorting partners: i and ixj */
-    i = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
+    i = threadIdx.x + blockDim.x * threadIdx.y;
     if(i + k < n && values[i] > values[i + k])
         cuda_swap(values[i], values[i + k]);
 }
@@ -93,7 +93,7 @@ __global__ void lower_bound(const TrafficObject_id *find_values, size_t *nearest
     size_t to = n;
     while(true) {
         if(find_values[i].id == iinv) {
-           printf("Find(%lu): %lu/%.2f, Current(%lu) %lu/%.2f, Index: %lu/%lu/%lu \n", find.id, find.lane, find.x, value[search_idx].id, value[search_idx].lane, value[search_idx].x, from, search_idx, to);
+            printf("Find(%lu): %lu/%.2f, Current(%lu) %lu/%.2f, Index: %lu/%lu/%lu \n", find.id, find.lane, find.x, value[search_idx].id, value[search_idx].lane, value[search_idx].x, from, search_idx, to);
         }
         if (value[search_idx] < find) {
             if (value[search_idx + 1] >= find) {
@@ -138,7 +138,7 @@ __global__ void lower_bound(const TrafficObject_id *find_values, size_t *nearest
     if(find_values[i].id == iinv) {
         printf("Found(%lu): %lu %lu\n", find.id,
                (nearest_back[i] != (size_t) -1 ? value[nearest_back[i]].id: (size_t) -1),
-                nearest_font[i] != (size_t) -1 ? value[nearest_font[i]].id: (size_t) -1);
+               nearest_font[i] != (size_t) -1 ? value[nearest_font[i]].id: (size_t) -1);
     }
 }
 

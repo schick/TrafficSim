@@ -7,10 +7,10 @@
 
 void OpenMPAlgorithm::calculateCarChanges() {
 #pragma omp for
-    for (std::size_t j = 0; j < getRefScenario()->roads.size(); j++) {
+    for (long j = 0; j < getRefScenario()->roads.size(); j++) {
         auto r = getRefScenario()->roads.at(j);
         for (auto &l : r.get()->lanes) {
-            for (std::size_t i = 0; i < l->mTrafficObjects.size(); i++) {
+            for (long i = 0; i < l->mTrafficObjects.size(); i++) {
                 //Iterate over cars of lane. neighbors are it+1 and it-1.
                 Lane::NeighboringObjects neighbors;
 
@@ -30,7 +30,7 @@ void OpenMPAlgorithm::calculateCarChanges() {
 
 void OpenMPAlgorithm::advanceCars() {
 #pragma omp for
-    for (std::size_t i = 0; i < getRefScenario()->cars.size(); i++) {
+    for (long i = 0; i < getRefScenario()->cars.size(); i++) {
         auto car = getRefScenario()->cars.at(i);
         IntelligentDriverModel::advanceStep(car.get());
     }
@@ -45,10 +45,12 @@ void OpenMPAlgorithm::advanceTrafficLights() {
 
 void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
 #pragma omp for
-    for (std::size_t i = 0; i < getRefScenario()->lanes.size(); i++) {
+    for (long i = 0; i < getRefScenario()->lanes.size(); i++) {
         auto lane = getRefScenario()->lanes.at(i);
-        std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
-
+        if (!lane->isSorted) {
+            std::sort(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), TrafficObject::Cmp());
+            lane->isSorted = true;
+        }
         for (std::size_t i = 0; i < lane->mTrafficObjects.size(); i++) {
             auto car = lane->mTrafficObjects.at(i);
             auto leadingObject = (i < lane->mTrafficObjects.size() - 1) ? lane->mTrafficObjects.at(i + 1) : nullptr;

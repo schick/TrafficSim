@@ -29,8 +29,8 @@ public:
     std::vector<Lane_id> lanes;
 
     // cars
-    std::unordered_map<int, int> car_original_to_working_ids;
-    std::unordered_map<int, int> car_working_to_original_ids;
+    std::unordered_map<size_t, size_t> car_original_to_working_ids;
+    std::unordered_map<size_t, size_t> car_working_to_original_ids;
     std::vector<Car_id> cars;
     std::vector<Car_id::TurnDirection> turns;
 

@@ -67,10 +67,12 @@ void CudaScenario_id::freeDeviceCudaScenario(CudaScenario_id *device_cuda_scenar
 }
 
 
-void CudaScenario_id::retriveCars(Car_id *host_cars) {
+void CudaScenario_id::retriveData(Scenario_id *scenario) {
     CudaScenario_id host_scenario;
     gpuErrchk(cudaMemcpy(&host_scenario, this, sizeof(CudaScenario_id), cudaMemcpyDeviceToHost));
-    gpuErrchk(cudaMemcpy(host_cars, host_scenario.cars, host_scenario.num_cars * sizeof(Car_id), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(scenario->cars.data(), host_scenario.cars, host_scenario.num_cars * sizeof(Car_id), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(scenario->traffic_lights.data(), host_scenario.traffic_lights, host_scenario.num_lights * sizeof(RedTrafficLight_id), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(scenario->junctions.data(), host_scenario.junctions, host_scenario.num_junctions * sizeof(Junction_id), cudaMemcpyDeviceToHost));
 }
 
 //
@@ -196,6 +198,34 @@ CUDA_HOSTDEV double AlgorithmWrapper::laneChangeMetric(Car_id &car, Lane_id::Nei
 }
 
 
+CUDA_HOSTDEV double AlgorithmWrapper::laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef ownNeighbors, Lane_id::NeighboringObjectsRef otherNeighbors) {
+
+    if ((otherNeighbors.front == nullptr || (otherNeighbors.front->x - car.x) >= (car.length / 2)) &&
+        (otherNeighbors.back == nullptr || (car.x - otherNeighbors.back->x) >= (car.length / 2) + car.min_distance)) {
+        double own_wo_lc = getAcceleration(car, ownNeighbors.front);
+        double own_w_lc = getAcceleration(car, otherNeighbors.front);
+
+        double other_lane_diff = 0;
+        if (otherNeighbors.back != nullptr) {
+            other_lane_diff = getAcceleration(*otherNeighbors.back, &car) -
+                              getAcceleration(*otherNeighbors.back, otherNeighbors.front);
+        }
+
+
+        double behind_diff = 0;
+        if (ownNeighbors.back != nullptr) {
+            behind_diff = getAcceleration(*ownNeighbors.back, ownNeighbors.front) -
+                          getAcceleration(*ownNeighbors.back, &car);
+        }
+
+        if (own_w_lc > own_wo_lc) {
+            return own_w_lc - own_wo_lc + car.politeness * (behind_diff + other_lane_diff);
+        }
+    }
+    return 0;
+}
+
+
 CUDA_HOSTDEV double AlgorithmWrapper::getLaneChangeMetricForLane(TrafficObject_id &trafficObject, Lane_id *neighboringLane, const Lane_id::NeighboringObjects &ownNeighbors) {
     Car_id &car = s.assertCar(trafficObject);
     if (neighboringLane != nullptr) {
@@ -257,6 +287,38 @@ CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car, Lane_id
     else {
         // stay on lane
         return Car_id::AdvanceData(car.id, getAcceleration(car, s.getTrafficObject(ownNeighbors.front)), 0);
+    }
+}
+
+CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car, Lane_id::NeighboringObjectsRef leftNeighbors,
+        Lane_id::NeighboringObjectsRef ownNeighbors,Lane_id::NeighboringObjectsRef rightNeighbors) {
+    Road_id::NeighboringLanes neighboringLanes = getNeighboringLanes(*s.getLane(car.lane));
+
+    // assert(ownNeighbors.front == getNeighboringObjects(car, *s.getLane(car.lane)).front);
+    // assert(ownNeighbors.back == getNeighboringObjects(car, *s.getLane(car.lane)).back);
+
+    double m_left = (neighboringLanes.left == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, leftNeighbors);
+    // assert(m_left == getLaneChangeMetricForLane(car, s.getLane(neighboringLanes.left), ownNeighbors));
+    double m_right = (neighboringLanes.right == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, rightNeighbors);
+    // assert(m_right == getLaneChangeMetricForLane(car, s.getLane(neighboringLanes.right), ownNeighbors));
+
+
+    if (m_left > 1 && m_left >= m_right) {
+        // go to left lane
+        double acc = getAcceleration(car, leftNeighbors.front);
+        // assert(acc == getAcceleration(car, s.getTrafficObject(getNeighboringObjects(car, *s.getLane(neighboringLanes.left)).front)));
+
+        return Car_id::AdvanceData(car.id, acc, -1);
+    }
+    else if (m_right > 1 && m_left < m_right) {
+        // right go to right lane
+        double acc = getAcceleration(car, rightNeighbors.front);
+        // assert(acc == getAcceleration(car, s.getTrafficObject(getNeighboringObjects(car, *s.getLane(neighboringLanes.right)).front)));
+        return Car_id::AdvanceData(car.id, acc, 1);
+    }
+    else {
+        // stay on lane
+        return Car_id::AdvanceData(car.id, getAcceleration(car, ownNeighbors.front), 0);
     }
 }
 
@@ -340,6 +402,7 @@ CUDA_HOSTDEV void AlgorithmWrapper::setSignals(Junction_id &junction) {
         }
     }
 }
+
 
 CUDA_HOSTDEV void AlgorithmWrapper::updateSignals(Junction_id &junction) {
     if(junction.signal_count != 0 && 0 == --junction.current_signal_time_left) {

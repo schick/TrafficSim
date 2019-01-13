@@ -94,19 +94,21 @@ void Scenario_id::parseRoads(json &input) {
 
 void Scenario_id::parseCars(json &input) {
     cars.resize(input["cars"].size());
-    int new_car_id = 0;
+    size_t new_car_id = 0;
     for (const auto& car : input["cars"]) {
+        size_t realCarId = car["id"];
         double target_velocity = static_cast<double>(car["target_velocity"]) / 3.6;
-        car_original_to_working_ids[car["id"]] = new_car_id;
-        car_working_to_original_ids[new_car_id] = car["id"];
+        car_original_to_working_ids[realCarId] = new_car_id;
+        car_working_to_original_ids[new_car_id] = realCarId;
 
-        int from_id = junction_original_to_working_ids[car["start"]["from"]];
-        int to_id = junction_original_to_working_ids[car["start"]["to"]];
-        auto it = std::find_if(std::begin(roads), std::end(roads), [&](const Road_id &road) {
-            return (road.from == from_id && road.to == to_id); });
-        assert(it != roads.end());
-        int lane_id = (*it).lanes[(int) car["start"]["lane"]];
+        uint8_t startLaneIndex = car["start"]["lane"];
+        Junction_id &from = junctions[junction_original_to_working_ids[car["start"]["from"]]];
+        Junction_id &to = junctions[junction_original_to_working_ids[car["start"]["to"]]];
+        auto roadDir = calcDirectionOfRoad(from, to);
+        size_t lane_id = roads[from.outgoing[roadDir]].lanes[startLaneIndex];
+
         assert(lane_id != -1);
+
         Car_id &car_obj = cars[new_car_id] = Car_id(
                 new_car_id,
                 5.,
@@ -135,6 +137,7 @@ void Scenario_id::initJunctions() {
                     if (road.lanes[j] != -1) {
                         traffic_lights.emplace_back(RedTrafficLight_id(red_traffic_id, road.lanes[j], road.length - 35. / 2.));
                         junction.red_traffic_lights_ids[i][j] = red_traffic_id;
+                        lanes[road.lanes[j]].traffic_light = red_traffic_id;
                         red_traffic_id++;
                     } else {
                         junction.red_traffic_lights_ids[i][j] = -1;

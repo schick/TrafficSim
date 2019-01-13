@@ -23,7 +23,7 @@ IF(WITH_CUDA)
     find_package(CUDA 9.0 REQUIRED)
 
     # Pass options to NVCC
-    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++11)
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++17)
     list(APPEND CUDA_NVCC_FLAGS "-O3")
 
     add_definitions(-DWITH_CUDA)
@@ -31,7 +31,8 @@ IF(WITH_CUDA)
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
             src/cudacontainer.cu
             src/AlgorithmWrapper.cu
-            src/algorithms/CudaAlgorithm2_id.cu)
+            #src/algorithms/CudaAlgorithm2_id.cu
+            src/algorithms/TestAlgo.cu)
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()
@@ -39,7 +40,8 @@ ENDIF()
 add_library(scenario_id ${SOURCE_FILES_BY_ID})
 
 IF(WITH_CUDA)
-    target_compile_features(scenario_id PUBLIC cxx_std_11)
+    set_property(TARGET scenario_id PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+    target_compile_features(scenario_id PUBLIC cxx_std_17)
     set_target_properties(scenario_id PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 ENDIF()
 
