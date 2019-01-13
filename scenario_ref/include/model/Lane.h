@@ -18,12 +18,6 @@ class Lane {
 
     friend class TrafficObject;
 
-private:
-
-    /**
-     * object on this lane. currently not sorted.
-     */
-
 public:
     std::vector<TrafficObject *> mTrafficObjects;
 
@@ -36,8 +30,7 @@ public:
         TrafficObject *back = nullptr;
     };
 
-
-    Lane(int lane, Road* road) : lane(lane), road(road), mTrafficObjects() {};
+    Lane(int lane, Road* road, double length) : lane(lane), road(road), mTrafficObjects(), length(length){};
 
     /**
      * properties
@@ -46,20 +39,8 @@ public:
     Road* road;
     std::mutex laneLock;
     bool isSorted = false;
+    double length;
 
-    /**
-     * get current all objects on lane
-     * @return list of objects on this lane
-     */
-    std::vector<TrafficObject*> getTrafficObjects();
-
-    
-
-    /**
-     * get length of lane
-     * @return length of lane in m
-     */
-    double getLength();
 };
 
 

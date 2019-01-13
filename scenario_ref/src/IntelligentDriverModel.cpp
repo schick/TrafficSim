@@ -29,7 +29,6 @@ void IntelligentDriverModel::updateLane(Car *car) {
         // just do a lane change if wanted
         if (car->new_lane_offset != 0) {
             // lane_offset should be validated in this case
-            assert(car->getLane()->road->lanes.size() > car->getLane()->lane + car->new_lane_offset);
             car->moveToLane(car->getLane()->road->lanes[car->getLane()->lane + car->new_lane_offset]);
         }
     }
@@ -41,7 +40,7 @@ void IntelligentDriverModel::moveCarAcrossJunction(Car *car) {
     Lane *old_lane = car->getLane();
 
     // subtract moved position on current lane from distance
-    auto oldLaneLength = old_lane->road->getLength();
+    auto oldLaneLength = old_lane->length;
     car->setPosition(car->getPosition() - oldLaneLength);
 
     // select direction based on current direction and turn
@@ -63,7 +62,7 @@ void IntelligentDriverModel::moveCarAcrossJunction(Car *car) {
 }
 
 bool IntelligentDriverModel::isCarOverJunction(Car *car) {
-    return car->getPosition() >= car->getLane()->getLength();
+    return car->getPosition() >= car->getLane()->length;
 }
 
 double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_vehicle) {

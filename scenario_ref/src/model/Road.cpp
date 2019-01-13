@@ -16,10 +16,6 @@ Road::NeighboringLanes Road::getNeighboringLanes(Lane* lane) {
     return lanes;
 }
 
-double Road::getLength() {
-    return lenght;
-}
-
 Junction::Direction Road::getDirection() {
     return roadDir;
 }

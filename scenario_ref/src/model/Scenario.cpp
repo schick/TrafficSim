@@ -3,7 +3,6 @@
 //
 
 #include "model/Scenario.h"
-#include "util/json.hpp"
 
 //TODO: Rework so that no temporary instances are needed
 
@@ -48,22 +47,28 @@ void Scenario::parseRoads(json &input) {
 
         Junction *junction1 = junctions.at(j1_id).get();
         Junction *junction2 = junctions.at(j2_id).get();
+
         double roadSpeedLimit = static_cast<double>(road["limit"]) / 3.6;
         uint8_t laneCount = road["lanes"];
+        double roadLength = calcRoadLength(junction1, junction2);
 
         /* one for each direction */
-        createRoad(junction1, junction2, roadSpeedLimit, laneCount);
-        createRoad(junction2, junction1, roadSpeedLimit, laneCount);
+        createRoad(junction1, junction2, roadLength, roadSpeedLimit, laneCount);
+        createRoad(junction2, junction1, roadLength, roadSpeedLimit, laneCount);
     }
 }
 
+double Scenario::calcRoadLength(Junction* junction1, Junction *junction2) {
+    return (std::abs(junction1->x - junction2->x) + std::abs(junction1->y - junction2->y));
+}
 
-void Scenario::createRoad(Junction* from, Junction *to, double speedLimit, uint8_t laneCount) {
+
+void Scenario::createRoad(Junction* from, Junction *to, double roadLength, double speedLimit, uint8_t laneCount) {
     Junction::Direction roadDir = calcDirectionOfRoad(from, to);
 
     std::shared_ptr<Road> road_obj = std::make_shared<Road>(from, to, speedLimit, roadDir);
 
-    createLanesForRoad(laneCount, road_obj);
+    createLanesForRoad(laneCount, roadLength, road_obj);
 
     road_obj->from->outgoing[roadDir] = road_obj.get();
     road_obj->to->incoming[(roadDir + 2) % 4] = road_obj.get();
@@ -87,9 +92,9 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
     }
 }
 
-void Scenario::createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &road_obj) {
+void Scenario::createLanesForRoad(uint8_t  laneCount, double roadLength, std::shared_ptr<Road> &road_obj) {
     for (uint8_t lane_id = 0; lane_id < laneCount; lane_id++) {
-        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, road_obj.get());
+        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, road_obj.get(), roadLength);
         road_obj->lanes.emplace_back(lane.get());
         lanes.emplace_back(std::move(lane));
     }

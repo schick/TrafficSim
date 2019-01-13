@@ -8,9 +8,10 @@
 
 #include <memory>
 #include <unordered_map>
+#include <cmath>
 #include <BaseScenario.h>
 
-#include "util/json_fwd.hpp"
+#include "util/json.hpp"
 
 #include "BaseScenario.h"
 #include "Car.h"
@@ -35,9 +36,10 @@ public:
 
     void parseJunctions(json &input);
     void parseRoads(json &input);
-    void createRoad(Junction* from, Junction *to, double speedLimit, uint8_t laneCount);
+    double calcRoadLength(Junction* from, Junction *to);
+    void createRoad(Junction* from, Junction *to, double roadLength, double speedLimit, uint8_t laneCount);
     Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to);
-    void createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &road_obj);
+    void createLanesForRoad(uint8_t  laneCount, double roadLength, std::shared_ptr<Road> &road_obj);
     void parseCars(json &input);
     void initJunctions();
 
