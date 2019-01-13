@@ -27,8 +27,8 @@ void SequentialAlgorithm::calculateCarChanges() {
 };
 
 void SequentialAlgorithm::advanceCars() {
-    for (std::shared_ptr<Car> &car : getRefScenario()->cars) {
-        IntelligentDriverModel::advanceStep(car.get());
+    for (Car &car : getRefScenario()->cars) {
+        IntelligentDriverModel::advanceStep(car);
     }
 }
 

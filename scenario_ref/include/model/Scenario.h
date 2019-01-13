@@ -29,7 +29,7 @@ public:
     std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
     std::vector<std::shared_ptr<Road>> roads;
     std::vector<std::shared_ptr<Lane>> lanes;
-    std::vector<std::shared_ptr<Car>> cars;
+    std::vector<Car> cars;
 
     void parse(json input);
     json toJson();

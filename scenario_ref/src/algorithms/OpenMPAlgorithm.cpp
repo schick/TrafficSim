@@ -32,7 +32,7 @@ void OpenMPAlgorithm::advanceCars() {
 #pragma omp for
     for (long i = 0; i < getRefScenario()->cars.size(); i++) {
         auto car = getRefScenario()->cars.at(i);
-        IntelligentDriverModel::advanceStep(car.get());
+        IntelligentDriverModel::advanceStep(car);
     }
 }
 

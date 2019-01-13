@@ -4,22 +4,19 @@
 #include <assert.h>
 #include <math.h>
 
-void IntelligentDriverModel::advanceStep(Car *car) {
-    if (car == nullptr) {
-        return;
-    }
+void IntelligentDriverModel::advanceStep(Car &car) {
     updateKinematicState(car);
     updateLane(car);
 }
 
-void IntelligentDriverModel::updateKinematicState(Car *car) {
+void IntelligentDriverModel::updateKinematicState(Car &car) {
     //assert(data.car == car);
-    car->a = car->new_acceleration;
-    car->v = std::max(car->v + car->a, 0.);
-    car->setPosition(car->getPosition() + car->v);
+    car.a = car.new_acceleration;
+    car.v = std::max(car.v + car.a, 0.);
+    car.setPosition(car.getPosition() + car.v);
 }
 
-void IntelligentDriverModel::updateLane(Car *car) {
+void IntelligentDriverModel::updateLane(Car &car) {
     //assert(data.car == car);
 
     // check for junction
@@ -27,42 +24,42 @@ void IntelligentDriverModel::updateLane(Car *car) {
         moveCarAcrossJunction(car);
     } else {
         // just do a lane change if wanted
-        if (car->new_lane_offset != 0) {
+        if (car.new_lane_offset != 0) {
             // lane_offset should be validated in this case
-            car->moveToLane(car->getLane()->road->lanes[car->getLane()->lane + car->new_lane_offset]);
+            car.moveToLane(car.getLane()->road->lanes[car.getLane()->lane + car.new_lane_offset]);
         }
     }
 }
 
-void IntelligentDriverModel::moveCarAcrossJunction(Car *car) {
-    assert(!car->turns.empty());
+void IntelligentDriverModel::moveCarAcrossJunction(Car &car) {
+    assert(!car.turns.empty());
 
-    Lane *old_lane = car->getLane();
+    Lane *old_lane = car.getLane();
 
     // subtract moved position on current lane from distance
     auto oldLaneLength = old_lane->length;
-    car->setPosition(car->getPosition() - oldLaneLength);
+    car.setPosition(car.getPosition() - oldLaneLength);
 
     // select direction based on current direction and turn
-    int direction = (old_lane->road->getDirection() + car->turns.front() + 2) % 4;
+    int direction = (old_lane->road->getDirection() + car.turns.front() + 2) % 4;
 
     // if no road in that direction -> select next to the right
     Road *nextRoad;
     while ((nextRoad = old_lane->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
 
     // move car to same or the right lane AFTER lane change
-    int indexOfNextLane = std::min((int) nextRoad->lanes.size() - 1, old_lane->lane + car->new_lane_offset);
+    int indexOfNextLane = std::min((int) nextRoad->lanes.size() - 1, old_lane->lane + car.new_lane_offset);
     indexOfNextLane = std::max(0, indexOfNextLane);
 
-    car->moveToLane(nextRoad->lanes[indexOfNextLane]);
+    car.moveToLane(nextRoad->lanes[indexOfNextLane]);
 
     // update next turns
-    car->turns.push_back(car->turns.front());
-    car->turns.pop_front();
+    car.turns.push_back(car.turns.front());
+    car.turns.pop_front();
 }
 
-bool IntelligentDriverModel::isCarOverJunction(Car *car) {
-    return car->getPosition() >= car->getLane()->length;
+bool IntelligentDriverModel::isCarOverJunction(Car &car) {
+    return car.getPosition() >= car.getLane()->length;
 }
 
 double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_vehicle) {
