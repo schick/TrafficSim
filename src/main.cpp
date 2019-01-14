@@ -93,8 +93,9 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef RUN_WITH_TESTS
+    std::cout << "Output:   " << output.dump() << "\n";
     if (json_file_out.good()) {
-        std::cout << loesung.dump() << "\n";
+        std::cout << "Expected: " << loesung.dump() << "\n";
 
         for (auto &car_json : output["cars"]) {
             bool found_car = false;

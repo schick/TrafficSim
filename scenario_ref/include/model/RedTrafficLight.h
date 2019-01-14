@@ -16,7 +16,7 @@ class RedTrafficLight : public TrafficObject {
 
 public:
     // traffic lights have -1 id, because traffic lights are always at the end of road.
-    explicit RedTrafficLight(Lane *lane) : mAssociatedLane(lane), TrafficObject(-1, 0, lane->getLength() - 35. / 2.) {}
+    explicit RedTrafficLight(Lane *lane) : mAssociatedLane(lane), TrafficObject(-1, 0, lane->length - 35. / 2.) {}
 
     /**
      * switch this light off.

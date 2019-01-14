@@ -8,9 +8,10 @@
 
 #include <memory>
 #include <unordered_map>
+#include <cmath>
 #include <BaseScenario.h>
 
-#include "util/json_fwd.hpp"
+#include "util/json.hpp"
 
 #include "BaseScenario.h"
 #include "Car.h"
@@ -26,18 +27,19 @@ public:
 
     //TODO: Set hash algorithm to just take the id
     std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
-    std::vector<std::shared_ptr<Road>> roads;
-    std::vector<std::shared_ptr<Lane>> lanes;
-    std::vector<std::shared_ptr<Car>> cars;
+    std::vector<Road> roads;
+    std::vector<Lane> lanes;
+    std::vector<Car> cars;
 
     void parse(json input);
     json toJson();
 
     void parseJunctions(json &input);
     void parseRoads(json &input);
-    void createRoad(Junction* from, Junction *to, double speedLimit, uint8_t laneCount);
+    double calcRoadLength(Junction* from, Junction *to);
+    void createRoad(Junction* from, Junction *to, double roadLength, double speedLimit, uint8_t laneCount);
     Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to);
-    void createLanesForRoad(uint8_t  laneCount, std::shared_ptr<Road> &road_obj);
+    void createLanesForRoad(uint8_t  laneCount, double roadLength, Road &road_obj);
     void parseCars(json &input);
     void initJunctions();
 

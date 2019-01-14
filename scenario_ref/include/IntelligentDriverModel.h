@@ -11,7 +11,7 @@ public:
      * advance car based of data
      * @param data data representing the change
      */
-    static void advanceStep(Car *car);
+    static void advanceStep(Car &car);
 
     /**
      * calculate the desired acceleration. base calculation on leading object
@@ -23,13 +23,13 @@ public:
 
 
 private:
-    static void updateKinematicState(Car *car);
+    static void updateKinematicState(Car &car);
 
-    static void updateLane(Car *car);
+    static void updateLane(Car &car);
 
-    static void moveCarAcrossJunction(Car *car);
+    static void moveCarAcrossJunction(Car &Car);
 
-    static bool isCarOverJunction(Car *car);
+    static bool isCarOverJunction(Car &car);
 
 };
 
