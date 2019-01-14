@@ -12,6 +12,7 @@
 #include "algorithms/CudaAlgorithm2_id.h"
 #include "algorithms/TestAlgo.h"
 
+REGISTER_ALGORITHM(OpenMPAlgorithm);
 REGISTER_ALGORITHM(SequentialAlgorithm);
 
 #ifdef WITH_CUDA

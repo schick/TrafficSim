@@ -6,7 +6,7 @@
 
 
 void OpenMPAlgorithm::calculateCarChanges() {
-#pragma omp for
+#pragma omp parallel for
     for (long j = 0; j < getRefScenario()->roads.size(); j++) {
         auto r = getRefScenario()->roads.at(j);
         for (auto &l : r.lanes) {
@@ -29,22 +29,21 @@ void OpenMPAlgorithm::calculateCarChanges() {
 };
 
 void OpenMPAlgorithm::advanceCars() {
-#pragma omp for
-    for (long i = 0; i < getRefScenario()->cars.size(); i++) {
-        auto car = getRefScenario()->cars.at(i);
+#pragma omp parallel for
+    for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
+        Car &car = getRefScenario()->cars[i];
         IntelligentDriverModel::advanceStep(car);
     }
 }
 
 void OpenMPAlgorithm::advanceTrafficLights() {
-#pragma omp single
     for (auto pair : getRefScenario()->junctions) {
         pair.second->updateSignals();
     }
 }
 
 void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
-#pragma omp for
+#pragma omp parallel for
     for (long i = 0; i < getRefScenario()->lanes.size(); i++) {
         Lane &lane = getRefScenario()->lanes.at(i);
         if (!lane.isSorted) {
@@ -62,7 +61,6 @@ void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
 
 void OpenMPAlgorithm::advance(size_t steps) {
 
-#pragma omp parallel
     for (int i = 0; i < steps; i++) {
         sortLanesAndCalculateAcceleration();
         calculateCarChanges();

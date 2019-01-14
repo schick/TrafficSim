@@ -33,10 +33,18 @@ public:
     Lane(int lane, Road &road, double length) : lane(lane), road(road), mTrafficObjects(), length(length){};
 
     /**
+     * Copy Constructor
+     */
+    Lane(const Lane &source): road(source.road) {
+        std::cout << "it happened";
+    }
+
+    /**
      * properties
      */
     int lane;
     Road &road;
+    std::mutex laneLock;
     bool isSorted = false;
     double length;
 
