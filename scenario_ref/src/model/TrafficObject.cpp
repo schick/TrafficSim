@@ -26,6 +26,7 @@ void TrafficObject::moveToLane(Lane *lane) {
     this->lane = lane;
     std::lock_guard<std::mutex> lock(lane->laneLock);
     lane->mTrafficObjects.push_back(this);
+    lane->isSorted = false;
 }
 
 void TrafficObject::removeFromLane() {

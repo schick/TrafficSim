@@ -45,6 +45,7 @@ public:
     int lane;
     Road* road;
     std::mutex laneLock;
+    bool isSorted = false;
 
     /**
      * get current all objects on lane
