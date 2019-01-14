@@ -8,11 +8,13 @@
 #include "IntelligentDriverModel.h"
 #include "LaneChangeModel.h"
 
-void Car::nextStep(Lane::NeighboringObjects sameNeighbors) {
+void Car::nextStep() {
 
     auto lane = getLane();
 
     Road::NeighboringLanes neighboringLanes = lane->road.getNeighboringLanes(lane);
+
+    auto sameNeighbors = NeighborFinder::getNeighboringObjects(lane, this);
 
     auto leftNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.left, this);
     double m_left = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
