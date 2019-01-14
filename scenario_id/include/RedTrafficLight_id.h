@@ -41,7 +41,7 @@ public:
      * @return whether red light is currently active
      */
     CUDA_HOSTDEV bool isRed() {
-        return lane != -1;
+        return lane != (size_t ) -1;
     }
 
 };
