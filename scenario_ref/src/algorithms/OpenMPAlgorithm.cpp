@@ -9,7 +9,7 @@ void OpenMPAlgorithm::calculateCarChanges() {
 #pragma omp for
     for (long j = 0; j < getRefScenario()->roads.size(); j++) {
         auto r = getRefScenario()->roads.at(j);
-        for (auto &l : r.get()->lanes) {
+        for (auto &l : r.lanes) {
             for (long i = 0; i < l->mTrafficObjects.size(); i++) {
                 //Iterate over cars of lane. neighbors are it+1 and it-1.
                 Lane::NeighboringObjects neighbors;

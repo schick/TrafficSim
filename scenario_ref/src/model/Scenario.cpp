@@ -66,14 +66,13 @@ double Scenario::calcRoadLength(Junction *junction1, Junction *junction2) {
 void Scenario::createRoad(Junction *from, Junction *to, double roadLength, double speedLimit, uint8_t laneCount) {
     Junction::Direction roadDir = calcDirectionOfRoad(from, to);
 
-    std::shared_ptr<Road> road_obj = std::make_shared<Road>(from, to, speedLimit, roadDir);
+    roads.emplace_back(from, to, speedLimit, roadDir);
 
-    createLanesForRoad(laneCount, roadLength, road_obj);
+    createLanesForRoad(laneCount, roadLength, roads.back());
 
-    road_obj->from->outgoing[roadDir] = road_obj.get();
-    road_obj->to->incoming[(roadDir + 2) % 4] = road_obj.get();
+    from->outgoing[roadDir] = &(roads.back());
+    to->incoming[(roadDir + 2) % 4] = &(roads.back());
 
-    roads.emplace_back(std::move(road_obj));
 }
 
 Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) {
@@ -92,10 +91,10 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
     }
 }
 
-void Scenario::createLanesForRoad(uint8_t laneCount, double roadLength, std::shared_ptr<Road> &road_obj) {
+void Scenario::createLanesForRoad(uint8_t laneCount, double roadLength, Road &road_obj) {
     for (uint8_t lane_id = 0; lane_id < laneCount; lane_id++) {
-        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, road_obj.get(), roadLength);
-        road_obj->lanes.emplace_back(lane.get());
+        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, &road_obj, roadLength);
+        road_obj.lanes.emplace_back(lane.get());
         lanes.emplace_back(std::move(lane));
     }
 }

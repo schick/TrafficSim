@@ -27,7 +27,7 @@ public:
 
     //TODO: Set hash algorithm to just take the id
     std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
-    std::vector<std::shared_ptr<Road>> roads;
+    std::vector<Road> roads;
     std::vector<std::shared_ptr<Lane>> lanes;
     std::vector<Car> cars;
 
@@ -39,7 +39,7 @@ public:
     double calcRoadLength(Junction* from, Junction *to);
     void createRoad(Junction* from, Junction *to, double roadLength, double speedLimit, uint8_t laneCount);
     Junction::Direction calcDirectionOfRoad(Junction *from, Junction *to);
-    void createLanesForRoad(uint8_t  laneCount, double roadLength, std::shared_ptr<Road> &road_obj);
+    void createLanesForRoad(uint8_t  laneCount, double roadLength, Road &road_obj);
     void parseCars(json &input);
     void initJunctions();
 

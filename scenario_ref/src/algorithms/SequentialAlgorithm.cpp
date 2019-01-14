@@ -6,8 +6,8 @@
 
 
 void SequentialAlgorithm::calculateCarChanges() {
-    for (std::shared_ptr<Road> &r : getRefScenario()->roads) {
-        for (auto &l : r.get()->lanes) {
+    for (Road &r : getRefScenario()->roads) {
+        for (auto &l : r.lanes) {
             for (std::size_t i = 0; i < l->mTrafficObjects.size(); i++) {
                 //Iterate over cars of lane. neighbors are it+1 and it-1.
                 Lane::NeighboringObjects neighbors;
