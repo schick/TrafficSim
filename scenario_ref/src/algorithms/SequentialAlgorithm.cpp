@@ -31,15 +31,6 @@ void SequentialAlgorithm::sortLanes() {
             std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
             lane.isSorted = true;
         }
-
-        for (std::size_t i = 0; i < lane.mTrafficObjects.size(); i++) {
-            auto car = lane.mTrafficObjects.at(i);
-
-            auto leadingObject = (i < lane.mTrafficObjects.size() - 1) ? lane.mTrafficObjects.at(i + 1) : nullptr;
-
-            car->calcSameLaneAcceleration(leadingObject);
-        }
-
     }
 }
 

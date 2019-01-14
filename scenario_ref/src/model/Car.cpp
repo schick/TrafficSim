@@ -15,6 +15,7 @@ void Car::nextStep() {
     Road::NeighboringLanes neighboringLanes = lane->road.getNeighboringLanes(lane);
 
     auto sameNeighbors = NeighborFinder::getNeighboringObjects(lane, this);
+    calcSameLaneAcceleration(sameNeighbors.front);
 
     auto leftNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.left, this);
     double m_left = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
