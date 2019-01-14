@@ -39,7 +39,7 @@ void Scenario::parseJunctions(json &input) {
 //ROADS
 void Scenario::parseRoads(json &input) {
     //Set correct size of vector
-    roads.reserve(input["roads"].size());
+    roads.reserve(input["roads"].size() * 2);
 
     for (const auto &road : input["roads"]) {
         uint64_t j1_id = road["junction1"];
