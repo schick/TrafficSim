@@ -26,7 +26,7 @@ void IntelligentDriverModel::updateLane(Car &car) {
         // just do a lane change if wanted
         if (car.new_lane_offset != 0) {
             // lane_offset should be validated in this case
-            car.moveToLane(car.getLane()->road->lanes[car.getLane()->lane + car.new_lane_offset]);
+            car.moveToLane(car.getLane()->road.lanes[car.getLane()->lane + car.new_lane_offset]);
         }
     }
 }
@@ -41,11 +41,11 @@ void IntelligentDriverModel::moveCarAcrossJunction(Car &car) {
     car.setPosition(car.getPosition() - oldLaneLength);
 
     // select direction based on current direction and turn
-    int direction = (old_lane->road->getDirection() + car.turns.front() + 2) % 4;
+    int direction = (old_lane->road.getDirection() + car.turns.front() + 2) % 4;
 
     // if no road in that direction -> select next to the right
     Road *nextRoad;
-    while ((nextRoad = old_lane->road->to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
+    while ((nextRoad = old_lane->road.to->outgoing[direction]) == nullptr) direction = (++direction) % 4;
 
     // move car to same or the right lane AFTER lane change
     int indexOfNextLane = std::min((int) nextRoad->lanes.size() - 1, old_lane->lane + car.new_lane_offset);
@@ -66,7 +66,7 @@ double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_
     if (car == nullptr) {
         return 0;
     }
-    double vel_fraction = (car->v / std::min(car->getLane()->road->limit, car->target_velocity));
+    double vel_fraction = (car->v / std::min(car->getLane()->road.limit, car->target_velocity));
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
     double with_lead = 0;

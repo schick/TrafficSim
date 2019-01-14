@@ -40,6 +40,7 @@ void Scenario::parseJunctions(json &input) {
 void Scenario::parseRoads(json &input) {
     //Set correct size of vector
     roads.reserve(input["roads"].size() * 2);
+    lanes.reserve(input["roads"].size() * 6);
 
     for (const auto &road : input["roads"]) {
         uint64_t j1_id = road["junction1"];
@@ -93,9 +94,8 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
 
 void Scenario::createLanesForRoad(uint8_t laneCount, double roadLength, Road &road_obj) {
     for (uint8_t lane_id = 0; lane_id < laneCount; lane_id++) {
-        std::shared_ptr<Lane> lane = std::make_shared<Lane>(lane_id, &road_obj, roadLength);
-        road_obj.lanes.emplace_back(lane.get());
-        lanes.emplace_back(std::move(lane));
+        lanes.emplace_back(lane_id, road_obj, roadLength);
+        road_obj.lanes.push_back(&(lanes.back()));
     }
 }
 
@@ -146,8 +146,8 @@ json Scenario::toJson() {
         json out_car;
 
         out_car["id"] = car.id;
-        out_car["from"] = car.getLane()->road->from->id;
-        out_car["to"] = car.getLane()->road->to->id;
+        out_car["from"] = car.getLane()->road.from->id;
+        out_car["to"] = car.getLane()->road.to->id;
         out_car["lane"] = car.getLane()->lane;
         out_car["position"] = car.getPosition();
 

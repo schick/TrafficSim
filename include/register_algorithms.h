@@ -13,7 +13,6 @@
 #include "algorithms/TestAlgo.h"
 
 REGISTER_ALGORITHM(SequentialAlgorithm);
-REGISTER_ALGORITHM(OpenMPAlgorithm);
 
 #ifdef WITH_CUDA
     REGISTER_ALGORITHM(TestAlgo);

@@ -30,14 +30,13 @@ public:
         TrafficObject *back = nullptr;
     };
 
-    Lane(int lane, Road* road, double length) : lane(lane), road(road), mTrafficObjects(), length(length){};
+    Lane(int lane, Road &road, double length) : lane(lane), road(road), mTrafficObjects(), length(length){};
 
     /**
      * properties
      */
     int lane;
-    Road* road;
-    std::mutex laneLock;
+    Road &road;
     bool isSorted = false;
     double length;
 

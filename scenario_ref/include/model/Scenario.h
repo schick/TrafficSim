@@ -28,7 +28,7 @@ public:
     //TODO: Set hash algorithm to just take the id
     std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
     std::vector<Road> roads;
-    std::vector<std::shared_ptr<Lane>> lanes;
+    std::vector<Lane> lanes;
     std::vector<Car> cars;
 
     void parse(json input);
