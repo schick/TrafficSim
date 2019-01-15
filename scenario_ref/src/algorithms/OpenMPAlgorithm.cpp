@@ -22,14 +22,16 @@ void OpenMPAlgorithm::advanceCars() {
 }
 
 void OpenMPAlgorithm::advanceTrafficLights() {
-    for (auto pair : getRefScenario()->junctions) {
-        pair.second->updateSignals();
+#pragma omp parallel for
+    for (size_t i = 0; i < getRefScenario()->junctions.size(); i++) {
+        Junction &junction = getRefScenario()->junctions.at(i);
+        junction.updateSignals();
     }
 }
 
 void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
 #pragma omp parallel for
-    for (long i = 0; i < getRefScenario()->lanes.size(); i++) {
+    for (size_t i = 0; i < getRefScenario()->lanes.size(); i++) {
         Lane &lane = getRefScenario()->lanes.at(i);
         if (!lane.isSorted) {
             std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());

@@ -19,8 +19,9 @@ void SequentialAlgorithm::advanceCars() {
 }
 
 void SequentialAlgorithm::advanceTrafficLights() {
-    for (auto pair : getRefScenario()->junctions) {
-        pair.second->updateSignals();
+    for (size_t i = 0; i < getRefScenario()->junctions.size(); i++) {
+        Junction &junction = getRefScenario()->junctions.at(i);
+        junction.updateSignals();
     }
 }
 
