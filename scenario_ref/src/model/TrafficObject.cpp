@@ -24,6 +24,7 @@ void TrafficObject::moveToLane(Lane *lane) {
         removeFromLane();
     }
     this->lane = lane;
+    std::lock_guard<std::mutex> lock(lane->laneLock);
     lane->mTrafficObjects.push_back(this);
     lane->isSorted = false;
 }
@@ -34,6 +35,7 @@ void TrafficObject::removeFromLane() {
         return;
     }
 
+    std::lock_guard<std::mutex> lock(lane->laneLock);
     auto position = std::find(lane->mTrafficObjects.rbegin(), lane->mTrafficObjects.rend(), this);
     //need -- and base() to cast from reverse pointer to forward pointer
     lane->mTrafficObjects.erase(--position.base());

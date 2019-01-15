@@ -44,6 +44,7 @@ public:
      */
     int lane;
     Road &road;
+    std::mutex laneLock;
     bool isSorted = false;
     double length;
 
