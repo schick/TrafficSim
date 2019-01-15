@@ -13,12 +13,12 @@ double LaneChangeModel::getLaneChangeMetric(Car *car, Lane::NeighboringObjects &
     }
 }
 
-double LaneChangeModel::calculateLaneChangeMetric(Car *car, Lane::NeighboringObjects &sameNeighbors,
-                                                  Lane::NeighboringObjects &otherNeighbors, bool isLeftLane) {
+double
+LaneChangeModel::calculateLaneChangeMetric(Car *car, Lane::NeighboringObjects &sameNeighbors, Lane::NeighboringObjects &otherNeighbors, bool isLeftLane) {
 
     if (hasFrontSpaceOnOtherLane(car, otherNeighbors) && hasBackSpaceOnOtherLane(car, otherNeighbors)) {
 
-        double sameLaneAcceleration = car->getSameLaneAcceleration();
+        double sameLaneAcceleration = car->sameLaneAcceleration;
         double otherLaneAcceleration = IntelligentDriverModel::getAcceleration(car, otherNeighbors.front);
 
         if (otherLaneAcceleration > sameLaneAcceleration) {
@@ -31,20 +31,21 @@ double LaneChangeModel::calculateLaneChangeMetric(Car *car, Lane::NeighboringObj
 
             double other_lane_diff = 0;
             if (otherNeighbors.back != nullptr) {
-                other_lane_diff = IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), car) -
-                        otherNeighbors.back->getSameLaneAcceleration();
+                other_lane_diff = (IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), car) -
+                                   IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(otherNeighbors.back), otherNeighbors.front));
             }
+
 
             double behind_diff = 0;
             if (sameNeighbors.back != nullptr) {
-                behind_diff = IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back), sameNeighbors.front) -
-                               sameNeighbors.back->getSameLaneAcceleration();
+                behind_diff = (IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back), sameNeighbors.front) -
+                               IntelligentDriverModel::getAcceleration(dynamic_cast<Car *>(sameNeighbors.back), car));
             }
 
             return otherLaneAcceleration - sameLaneAcceleration + car->politeness * (behind_diff + other_lane_diff);
         }
     }
-    return 0;
+    return 0.0;
 }
 
 bool LaneChangeModel::hasFrontSpaceOnOtherLane(Car *car, Lane::NeighboringObjects &otherNeighbors) {

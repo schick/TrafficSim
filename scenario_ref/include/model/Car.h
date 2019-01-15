@@ -66,7 +66,7 @@ public:
 
     std::list<TurnDirection> turns;
 
-    void nextStep(Lane::NeighboringObjects sameNeighbors);
+    void nextStep();
 
     void calcSameLaneAcceleration(TrafficObject *leadingObject);
     double getSameLaneAcceleration();

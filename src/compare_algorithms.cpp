@@ -61,21 +61,21 @@ int main() {
 
         for(auto &car : scenario->cars) {
             for (auto &car2 : scenarioid->cars) {
-                if (car->id == car2.id) {
+                if (car.id == car2.id) {
                     Lane_id &l2 = scenarioid->lanes.at(car2.lane);
                     Road_id &r2 = scenarioid->roads.at(l2.road);
-                    if(car->getLane()->road->from->id != scenarioid->junction_working_to_original_ids[r2.from] ||
-                       car->getLane()->road->to->id != scenarioid->junction_working_to_original_ids[r2.to]) {
-                        printf("Car(%d) is at wrong road in step %d\n", car->id , i);
+                    if(car.getLane()->road.from->id != scenarioid->junction_working_to_original_ids[r2.from] ||
+                       car.getLane()->road.to->id != scenarioid->junction_working_to_original_ids[r2.to]) {
+                        printf("Car(%d) is at wrong road in step %d\n", car.id , i);
                         exit(0);
                     }
-                    if(car->getLane()->lane != l2.lane_num) {
-                        printf("Car(%d) is at wrong lane in step %d\n", car->id , i);
+                    if(car.getLane()->lane != l2.lane_num) {
+                        printf("Car(%d) is at wrong lane in step %d\n", car.id , i);
                         exit(0);
                     }
 
-                    if(fabs(car->getPosition() - car2.x) > 1e-4) {
-                        printf("Car(%d) is at wrong position in step %d\n", car->id , i);
+                    if(fabs(car.getPosition() - car2.x) > 1e-4) {
+                        printf("Car(%d) is at wrong position in step %d\n", car.id , i);
                         exit(0);
                     }
                 }
