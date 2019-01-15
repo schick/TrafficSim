@@ -14,7 +14,6 @@ void OpenMPAlgorithm::calculateCarChanges() {
 };
 
 void OpenMPAlgorithm::advanceCars() {
-#pragma omp parallel for
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
         IntelligentDriverModel::advanceStep(car);
