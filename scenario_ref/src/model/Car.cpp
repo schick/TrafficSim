@@ -10,7 +10,7 @@
 
 void Car::nextStep() {
 
-    auto lane = getLane();
+    Lane *lane = getLane();
 
     Road::NeighboringLanes neighboringLanes = lane->road.getNeighboringLanes(lane);
 

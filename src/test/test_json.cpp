@@ -81,6 +81,8 @@ CREATE_TESTS(speed_limit, "13-speed_limit.json");
 
 CREATE_TESTS(1car_uturn, "15-1car_uturn.json");
 
+CREATE_TESTS(1car_signal, "17-1car_signal.json");
+
 CREATE_TESTS(3cars_1lane, "20-3cars_1lane.json");
 
 CREATE_TESTS(2two_cars_before_lane_change, "25-2two_cars_before_lane_change.json");
