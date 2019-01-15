@@ -7,24 +7,9 @@
 
 void OpenMPAlgorithm::calculateCarChanges() {
 #pragma omp parallel for
-    for (long j = 0; j < getRefScenario()->roads.size(); j++) {
-        auto r = getRefScenario()->roads.at(j);
-        for (auto &l : r.lanes) {
-            for (long i = 0; i < l->mTrafficObjects.size(); i++) {
-                //Iterate over cars of lane. neighbors are it+1 and it-1.
-                Lane::NeighboringObjects neighbors;
-
-                //set preceding car for all cars except the first one
-                if (i != 0)
-                    neighbors.back = l->mTrafficObjects.at(i - 1);
-
-                //set next car for all cars except the last one
-                if (i != l->mTrafficObjects.size() - 1)
-                    neighbors.front = l->mTrafficObjects.at(i + 1);
-
-                l->mTrafficObjects.at(i)->nextStep(neighbors);
-            }
-        }
+    for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
+        Car &car = getRefScenario()->cars[i];
+        car.nextStep();
     }
 };
 
@@ -49,12 +34,6 @@ void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
         if (!lane.isSorted) {
             std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
             lane.isSorted = true;
-        }
-        for (std::size_t i = 0; i < lane.mTrafficObjects.size(); i++) {
-            auto car = lane.mTrafficObjects.at(i);
-            auto leadingObject = (i < lane.mTrafficObjects.size() - 1) ? lane.mTrafficObjects.at(i + 1) : nullptr;
-
-            car->calcSameLaneAcceleration(leadingObject);
         }
     }
 }
