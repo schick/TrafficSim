@@ -19,9 +19,7 @@ public:
         Lane *left = nullptr;
     };
 
-    Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {
-        lenght = (abs(from->x - to->x) + abs(from->y - to->y));
-    };
+    Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {};
 
     /**
      * properties
@@ -38,13 +36,6 @@ public:
      */
     NeighboringLanes getNeighboringLanes(Lane* lane);
 
-
-    /**
-     * get the length of the road
-     * @return length of road in m
-     */
-    double getLength();
-
     /**
      * get the direction of the road
      * @return the direction
@@ -54,7 +45,6 @@ public:
 private:
     Junction::Direction roadDir;
 
-    double lenght;
 };
 
 

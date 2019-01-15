@@ -10,14 +10,10 @@
 Road::NeighboringLanes Road::getNeighboringLanes(Lane* lane) {
     NeighboringLanes lanes;
     if (lane->lane > 0)
-        lanes.left = lane->road->lanes[lane->lane - 1];
-    if (lane->road->lanes.size() > lane->lane + 1)
-        lanes.right = lane->road->lanes[lane->lane + 1];
+        lanes.left = lane->road.lanes[lane->lane - 1];
+    if (lane->road.lanes.size() > lane->lane + 1)
+        lanes.right = lane->road.lanes[lane->lane + 1];
     return lanes;
-}
-
-double Road::getLength() {
-    return lenght;
 }
 
 Junction::Direction Road::getDirection() {

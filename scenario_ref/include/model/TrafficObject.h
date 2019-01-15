@@ -63,13 +63,6 @@ public:
      */
     void removeFromLane();
 
-    /**
-     * do next step
-     * @param sameNeighbors
-     */
-    virtual void nextStep(Lane::NeighboringObjects sameNeighbors){};
-
-
 
 private:
     /**
