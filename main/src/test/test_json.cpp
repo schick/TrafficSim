@@ -4,7 +4,7 @@
 
 #include "util/json.hpp"
 #include "algorithms/SequentialAlgorithm.h"
-#include "register_algorithms.h"
+#include "util/register_algorithms.h"
 
 
 using json = nlohmann::json;
