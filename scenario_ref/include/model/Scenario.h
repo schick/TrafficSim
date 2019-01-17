@@ -26,7 +26,11 @@ class Scenario : public BaseScenario {
 public:
 
     //TODO: Set hash algorithm to just take the id
-    std::unordered_map<uint64_t , std::shared_ptr<Junction>> junctions;
+
+    // Needed for faster parsing
+    std::unordered_map<uint64_t, Junction*> junctionsMap;
+
+    std::vector<Junction> junctions;
     std::vector<Road> roads;
     std::vector<Lane> lanes;
     std::vector<Car> cars;

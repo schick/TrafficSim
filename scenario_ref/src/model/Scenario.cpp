@@ -19,20 +19,22 @@ void Scenario::parse(json input) {
 
 //JUNCTIONS
 void Scenario::parseJunctions(json &input) {
-    //Set correct size of hash map
-    junctions.reserve(input["junctions"].size());
+    //Set correct size of vector and hash
+    size_t junctionCount = input["junctions"].size();
+    junctions.reserve(junctionCount);
+    junctionsMap.reserve(junctionCount);
 
     for (const auto &junction : input["junctions"]) {
         uint64_t id = junction["id"];
         double x = static_cast<double>(junction["x"]) * 100.0;
         double y = static_cast<double>(junction["y"]) * 100.0;
-        std::shared_ptr<Junction> junction_obj = std::make_shared<Junction>(id, x, y);
+        junctions.emplace_back(id, x, y);
 
         for (const auto &signal : junction["signals"]) {
-            junction_obj->signals.emplace_back(signal["time"], signal["dir"]);
+            junctions.back().signals.emplace_back(signal["time"], signal["dir"]);
         }
 
-        junctions.insert({id, std::move(junction_obj)});
+        junctionsMap.insert({id, &junctions.back()});
     }
 }
 
@@ -46,8 +48,8 @@ void Scenario::parseRoads(json &input) {
         uint64_t j1_id = road["junction1"];
         uint64_t j2_id = road["junction2"];
 
-        Junction *junction1 = junctions.at(j1_id).get();
-        Junction *junction2 = junctions.at(j2_id).get();
+        Junction *junction1 = junctionsMap.at(j1_id);
+        Junction *junction2 = junctionsMap.at(j2_id);
 
         double roadSpeedLimit = static_cast<double>(road["limit"]) / 3.6;
         uint8_t laneCount = road["lanes"];
@@ -73,7 +75,6 @@ void Scenario::createRoad(Junction *from, Junction *to, double roadLength, doubl
 
     from->outgoing[roadDir] = &(roads.back());
     to->incoming[(roadDir + 2) % 4] = &(roads.back());
-
 }
 
 Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) {
@@ -117,25 +118,24 @@ void Scenario::parseCars(json &input) {
 
         uint64_t fromID = car["start"]["from"];
         uint64_t toID = car["start"]["to"];
-        auto from = junctions.at(fromID);
-        auto to = junctions.at(toID);
+        Junction *from = junctionsMap.at(fromID);
+        Junction *to = junctionsMap.at(toID);
 
-        auto roadDir = calcDirectionOfRoad(from.get(), to.get());
+        auto roadDir = calcDirectionOfRoad(from, to);
         uint8_t startLaneIndex = car["start"]["lane"];
 
         auto lane = from->outgoing[roadDir]->lanes[startLaneIndex];
-
         cars.back().moveToLane(lane);
 
-        for (auto &route : car["route"])
+        for (const auto &route : car["route"])
             cars.back().turns.emplace_back(route);
     }
 }
 
 //INITIALIZE JUNCTIONS
 void Scenario::initJunctions() {
-    for (auto pair : junctions) {
-        pair.second->initializeSignals();
+    for (Junction &junction : junctions) {
+        junction.initializeSignals();
     }
 }
 
