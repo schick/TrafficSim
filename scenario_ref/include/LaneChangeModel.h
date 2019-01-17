@@ -22,13 +22,13 @@ public:
     * @param otherNeighbors neighbors on other lane
     * @return metric value in m/s^2
     */
-    static double getLaneChangeMetric(Car *car, Lane::NeighboringObjects &ownNeighbors, Lane *otherLane, Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
+    static double getLaneChangeMetric(Car &car, Lane::NeighboringObjects &ownNeighbors, Lane *otherLane, Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
 
 private:
 
-    static double calculateLaneChangeMetric(Car *car, Lane::NeighboringObjects &sameNeighbors, Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
-    static bool hasFrontSpaceOnOtherLane(Car *car, Lane::NeighboringObjects &otherNeighbors);
-    static bool hasBackSpaceOnOtherLane(Car *car, Lane::NeighboringObjects &otherNeighbors);
+    static double calculateLaneChangeMetric(Car &car, Lane::NeighboringObjects &sameNeighbors, Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
+    static bool hasFrontSpaceOnOtherLane(Car &car, Lane::NeighboringObjects &otherNeighbors);
+    static bool hasBackSpaceOnOtherLane(Car &car, Lane::NeighboringObjects &otherNeighbors);
 
 };
 
