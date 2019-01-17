@@ -143,5 +143,5 @@ ELSE()
 ENDIF()
 
 
-add_executable(compare main/src/compare_algorithms.cpp)
+add_executable(compare main/src/test/compare_algorithms.cpp)
 target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
