@@ -23,12 +23,8 @@
 using json = nlohmann::json;
 
 class Scenario : public BaseScenario {
+
 public:
-
-    //TODO: Set hash algorithm to just take the id
-
-    // Needed for faster parsing
-    std::unordered_map<uint64_t, Junction*> junctionsMap;
 
     std::vector<Junction> junctions;
     std::vector<Road> roads;
@@ -37,6 +33,12 @@ public:
 
     void parse(json input);
     json toJson();
+
+private:
+
+    //TODO: Set hash algorithm to just take the id
+    //Needed for faster parsing
+    std::unordered_map<uint64_t, Junction*> junctionsMap;
 
     void parseJunctions(json &input);
     void parseRoads(json &input);
