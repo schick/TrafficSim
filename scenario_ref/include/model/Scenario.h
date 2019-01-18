@@ -31,7 +31,7 @@ public:
     std::vector<Lane> lanes;
     std::vector<Car> cars;
 
-    void parse(json input);
+    void parse(json &input);
     json toJson();
 
 private:

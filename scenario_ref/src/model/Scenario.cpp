@@ -6,14 +6,10 @@
 
 //TODO: Rework so that no temporary instances are needed
 
-void Scenario::parse(json input) {
-
+void Scenario::parse(json &input) {
     parseJunctions(input);
-
     parseRoads(input);
-
     parseCars(input);
-
     initJunctions();
 }
 
