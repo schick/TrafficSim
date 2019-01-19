@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     nlohmann::json input;
 
     // set default algorithm
-    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
+    p.add_kw_argument("algorithm", "TestAlgo");
 
     // read input file
 #ifdef USE_CIN
