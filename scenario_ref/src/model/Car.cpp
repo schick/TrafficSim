@@ -8,6 +8,8 @@
 #include "IntelligentDriverModel.h"
 #include "LaneChangeModel.h"
 
+#include <algorithm>
+
 void Car::nextStep() {
 
     Lane *lane = getLane();
@@ -18,10 +20,10 @@ void Car::nextStep() {
     calcSameLaneAcceleration(sameNeighbors.front);
 
     auto leftNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.left, this);
-    double m_left = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
+    double m_left = LaneChangeModel::getLaneChangeMetric(*this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
 
     auto rightNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.right, this);
-    double m_right = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.right, rightNeighbors, false);
+    double m_right = LaneChangeModel::getLaneChangeMetric(*this, sameNeighbors, neighboringLanes.right, rightNeighbors, false);
 
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
@@ -46,4 +48,15 @@ void Car::calcSameLaneAcceleration(TrafficObject *leadingObject) {
 
 double Car::getSameLaneAcceleration() {
     return sameLaneAcceleration;
+}
+
+void Car::updateKinematicState() {
+    a = new_acceleration;
+    v = std::max(v + a, 0.);
+    setPosition(getPosition() + v);
+    traveledDistance += v;
+}
+
+double Car::getTraveledDistance() {
+    return traveledDistance;
 }

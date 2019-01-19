@@ -14,8 +14,7 @@ class OpenMPAlgorithm : public AdvanceAlgorithm {
 
 public:
     ADVANCE_ALGO_INIT(OpenMPAlgorithm, Scenario, Visualization);
-
-
+    
     explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
     void calculateCarChanges();
@@ -26,7 +25,7 @@ public:
     void advanceCars();
     void advanceTrafficLights();
     void advance(size_t steps) override;
-    void sortLanesAndCalculateAcceleration();
+    void sortLanes();
 };
 
 #endif //PROJECT_OPENMPALGORITHM_H

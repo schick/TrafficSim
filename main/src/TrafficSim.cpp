@@ -1,45 +1,30 @@
-#include <fstream>
-#include <iostream>
+//
+// Created by maxi on 1/17/19.
+//
 
-#include "util/SimpleArgumentParser.h"
-#include "model/Scenario.h"
+#include "TrafficSim.h"
 #include "AdvanceAlgorithm.h"
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include "optimization/RandomOptimizer.h"
 
-#include "register_algorithms.h"
-#include "util/json.hpp"
+void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
+    std::string algorihtm = "SequentialAlgorithm";
+    RandomOptimizer optimizer(input, algorihtm);
+    json output = optimizer.optimize();
 
-#ifdef VISUALIZATION_ENABLED
-#include "BaseVisualizationEngine.h"
-#include "Visualization_id.h"
-#endif
-int main(int argc, char* argv[])
-{
-    json input;
+    std::cout << output.dump() << "\n";
+}
 
-    SimpleArgumentParser p;
-    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
+void trafficSim::calculate(nlohmann::json &input, SimpleArgumentParser &p) {
 
-    // read input file
-#ifdef USE_CIN
-    std::cin >> input;
-    p.load(argc, argv);
-#else
-    p.add_argument("file_name");
-    p.load(argc, argv);
-
-    std::string file_name(p["file_name"]);
-    std::ifstream json_file(file_name);
-    try {
-        json_file >> input;
-    } catch(const std::exception &e) {
-        std::cerr << "Failed to parse JSON.\n" << e.what() << std::endl;
-        return 1;
-    }
-
-    // read loesung
+// read input file
+#ifndef USE_CIN
 #ifdef DEBUG_MSGS
+    // read loesung
     json loesung;
-    std::ifstream json_file_out(file_name + ".sol");
+    std::ifstream json_file_out(p["file_name"] + ".sol");
     if (json_file_out.good()) {
         try {
             json_file_out >> loesung;
@@ -55,6 +40,7 @@ int main(int argc, char* argv[])
         printf("Algorithm not found.");
         exit(-1);
     }
+
 #ifdef VISUALIZATION_ENABLED
     std::shared_ptr<BaseVisualizationEngine> visualization = advancer->createVisualizationEngine(advancer->getScenario());
     std::string video_fn("output.avi");
@@ -94,30 +80,28 @@ int main(int argc, char* argv[])
 
 #ifdef RUN_WITH_TESTS
     std::cout << "Output:   " << output.dump() << "\n";
-    if (json_file_out.good()) {
-        std::cout << "Expected: " << loesung.dump() << "\n";
+        if (json_file_out.good()) {
+            std::cout << "Expected: " << loesung.dump() << "\n";
 
-        for (auto &car_json : output["cars"]) {
-            bool found_car = false;
-            for (auto &cmp_car_json : loesung["cars"]) {
-                if (cmp_car_json["id"] == car_json["id"] &&
-                    cmp_car_json["to"] == car_json["to"] &&
-                    cmp_car_json["from"] == car_json["from"] &&
-                    abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= 1e-7 &&
-                    cmp_car_json["lane"] == car_json["lane"]) {
-                    found_car = true;
-                    break;
+            for (auto &car_json : output["cars"]) {
+                bool found_car = false;
+                for (auto &cmp_car_json : loesung["cars"]) {
+                    if (cmp_car_json["id"] == car_json["id"] &&
+                        cmp_car_json["to"] == car_json["to"] &&
+                        cmp_car_json["from"] == car_json["from"] &&
+                        abs((double)cmp_car_json["position"] - (double)car_json["position"]) <= 1e-7 &&
+                        cmp_car_json["lane"] == car_json["lane"]) {
+                        found_car = true;
+                        break;
+                    }
                 }
+                if (!found_car) fprintf(stderr, "Car(%d) is not correct.\n", (int) car_json["id"]);
             }
-            if (!found_car) fprintf(stderr, "Car(%d) is not correct.\n", (int) car_json["id"]);
         }
-    }
 #endif
 
 #ifdef DEBUG_MSGS
     std::cout << "Time: " << elapsed.count() << "ms" << std::endl;
 #endif
-
-
-    return 0;
 }
+

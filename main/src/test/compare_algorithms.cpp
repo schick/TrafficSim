@@ -6,7 +6,7 @@
 #include <iostream>
 #include "util/json.hpp"
 #include "AdvanceAlgorithm.h"
-#include "register_algorithms.h"
+#include "util/register_algorithms.h"
 
 
 int main() {

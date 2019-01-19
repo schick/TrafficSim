@@ -5,20 +5,11 @@
 #include <math.h>
 
 void IntelligentDriverModel::advanceStep(Car &car) {
-    updateKinematicState(car);
+    car.updateKinematicState();
     updateLane(car);
 }
 
-void IntelligentDriverModel::updateKinematicState(Car &car) {
-    //assert(data.car == car);
-    car.a = car.new_acceleration;
-    car.v = std::max(car.v + car.a, 0.);
-    car.setPosition(car.getPosition() + car.v);
-}
-
 void IntelligentDriverModel::updateLane(Car &car) {
-    //assert(data.car == car);
-
     // check for junction
     if (isCarOverJunction(car)) {
         moveCarAcrossJunction(car);
@@ -32,8 +23,6 @@ void IntelligentDriverModel::updateLane(Car &car) {
 }
 
 void IntelligentDriverModel::moveCarAcrossJunction(Car &car) {
-    assert(!car.turns.empty());
-
     Lane *old_lane = car.getLane();
 
     // subtract moved position on current lane from distance

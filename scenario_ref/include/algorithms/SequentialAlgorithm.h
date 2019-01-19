@@ -8,6 +8,8 @@
 #include "AdvanceAlgorithm.h"
 #include "model/Scenario.h"
 #include "IntelligentDriverModel.h"
+#include "optimization/model/OptimizeScenario.h"
+
 #ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
 #endif
@@ -15,9 +17,9 @@
 class SequentialAlgorithm : public AdvanceAlgorithm {
 
 public:
-    ADVANCE_ALGO_INIT(SequentialAlgorithm, Scenario, Visualization);
+    ADVANCE_ALGO_INIT_WITH_OPT(SequentialAlgorithm, Scenario, OptimizeScenario, Visualization);
 
-    explicit SequentialAlgorithm(std::shared_ptr<BaseScenario>scenario) : AdvanceAlgorithm(scenario) {};
+    explicit SequentialAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
     void calculateCarChanges();
 

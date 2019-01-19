@@ -23,14 +23,11 @@ public:
 
 
 private:
-    static void updateKinematicState(Car &car);
-
     static void updateLane(Car &car);
 
     static void moveCarAcrossJunction(Car &Car);
 
     static bool isCarOverJunction(Car &car);
-
 };
 
 
