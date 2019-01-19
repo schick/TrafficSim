@@ -63,13 +63,21 @@ public:
     double new_acceleration = 0;
     int new_lane_offset  = 0;
 
-
     std::list<TurnDirection> turns;
 
     void nextStep();
 
-    void calcSameLaneAcceleration(TrafficObject *leadingObject);
-    double getSameLaneAcceleration();
+    void calcSameLaneAcceleration(TrafficObject *leadingObject) override;
+    double getSameLaneAcceleration() override;
+
+    virtual void updateKinematicState();
+
+    double getTraveledDistance();
+
+
+private:
+
+    double traveledDistance = 0.0;
 
 };
 

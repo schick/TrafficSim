@@ -10,14 +10,10 @@
 #include "util/json.hpp"
 #include "Scenario_id.h"
 
-void Scenario_id::parse(json input) {
-
+void Scenario_id::parse(json &input) {
     parseJunctions(input);
-
     parseRoads(input);
-
     parseCars(input);
-
     initJunctions();
 #ifdef DEBUG_MSGS
     printf("%lu Cars\n%lu Lanes\n%lu Junctions\n", cars.size(), lanes.size(), junctions.size());

@@ -103,7 +103,7 @@ add_subdirectory(scenario_id)
 include_directories(main/include)
 
 
-add_executable(traffic_sim main/src/main.cpp main/src/util/SimpleArgumentParser.cpp)
+add_executable(traffic_sim main/src/main.cpp main/src/util/SimpleArgumentParser.cpp main/src/TrafficSim.cpp)
 
 
 IF(WITH_CUDA)

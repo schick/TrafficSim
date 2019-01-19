@@ -5,14 +5,8 @@
 #include <math.h>
 
 void IntelligentDriverModel::advanceStep(Car &car) {
-    updateKinematicState(car);
+    car.updateKinematicState();
     updateLane(car);
-}
-
-void IntelligentDriverModel::updateKinematicState(Car &car) {
-    car.a = car.new_acceleration;
-    car.v = std::max(car.v + car.a, 0.);
-    car.setPosition(car.getPosition() + car.v);
 }
 
 void IntelligentDriverModel::updateLane(Car &car) {

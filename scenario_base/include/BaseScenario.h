@@ -12,7 +12,7 @@ using json = nlohmann::json;
 class BaseScenario {
 
 public:
-    virtual void parse(json input) = 0;
+    virtual void parse(json &input) = 0;
     virtual json toJson() = 0;
 
 };
