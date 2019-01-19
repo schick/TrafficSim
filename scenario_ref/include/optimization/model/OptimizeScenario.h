@@ -13,7 +13,11 @@ public:
 
     double getTraveledDistance();
 
+    // Main parse function
     void parse(json &input) override;
+
+    // Return signals as json
+    json toJson() override;
 
 private:
 

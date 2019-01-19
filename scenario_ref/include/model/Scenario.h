@@ -34,6 +34,7 @@ public:
     // Main parse function
     void parse(json &input) override;
 
+    // Return cars as json
     json toJson() override;
 
     // Set RedTrafficLights depending on set Signals

@@ -18,7 +18,7 @@ public:
     }
 
 
-    void optimize();
+    nlohmann::json optimize();
 
 
 private:

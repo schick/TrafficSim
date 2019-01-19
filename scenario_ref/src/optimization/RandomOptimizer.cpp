@@ -31,7 +31,7 @@ void randomInitialization(OptimizeScenario &scenario) {
     scenario.initJunctions();
 }
 
-void RandomOptimizer::optimize() {
+nlohmann::json RandomOptimizer::optimize() {
 
     double total_distance = 0.0;
 
@@ -49,7 +49,14 @@ void RandomOptimizer::optimize() {
         advancer->advance(scenarioData["time_steps"]);
 
         total_distance = scenario.getTraveledDistance();
-        printf("Distance: %.2f", total_distance);
+
+#ifdef DEBUG_MSGS
+        printf("Distance: %.2f\n", total_distance);
+#endif
+
+        if (total_distance > minTravelLength) {
+            return dynamic_cast<OptimizeScenario*>(advancer->getScenario().get())->toJson();
+        }
     }
 
 
