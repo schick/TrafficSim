@@ -10,9 +10,9 @@
 #include "optimization/RandomOptimizer.h"
 
 void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
-    std::string algorihtm = "SequentialAlgorithm";
+    std::string algorithm = "SequentialAlgorithm";
 
-    std::shared_ptr<BaseOptimizer> optimizer = std::make_shared<RandomOptimizer>(input, algorihtm);
+    std::shared_ptr<BaseOptimizer> optimizer = std::make_shared<RandomOptimizer>(input, algorithm);
 
     json output = optimizer->optimize();
 
