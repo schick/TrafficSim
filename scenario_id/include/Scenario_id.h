@@ -9,6 +9,7 @@ using json = nlohmann::json;
 
 class Scenario_id : public ScenarioData_id, public BaseScenario {
 public:
+
     void parse(json &input);
     void initJunctions();
     void parseCars(json &input);

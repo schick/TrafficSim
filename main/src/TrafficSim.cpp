@@ -4,12 +4,16 @@
 
 #include "TrafficSim.h"
 #include "AdvanceAlgorithm.h"
-
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include "optimization/RandomOptimizer.h"
 
 void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
+    std::string algorihtm = p["algorithm"];
+    RandomOptimizer optimizer(input, algorihtm);
+    optimizer.optimize();
+
 
 }
 

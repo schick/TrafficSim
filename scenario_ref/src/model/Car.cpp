@@ -8,6 +8,8 @@
 #include "IntelligentDriverModel.h"
 #include "LaneChangeModel.h"
 
+#include <algorithm>
+
 void Car::nextStep() {
 
     Lane *lane = getLane();
@@ -46,4 +48,15 @@ void Car::calcSameLaneAcceleration(TrafficObject *leadingObject) {
 
 double Car::getSameLaneAcceleration() {
     return sameLaneAcceleration;
+}
+
+void Car::updateKinematicState() {
+    a = new_acceleration;
+    v = std::max(v + a, 0.);
+    setPosition(getPosition() + v);
+    traveledDistance += v;
+}
+
+double Car::getTraveledDistance() {
+    return traveledDistance;
 }

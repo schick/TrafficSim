@@ -32,6 +32,7 @@ public:
      * traffic light signal
      */
     struct Signal {
+        Signal() {};
         Signal(uint64_t duration, Direction direction) : duration(duration), direction(direction) {}
         uint64_t duration;
         Direction direction;

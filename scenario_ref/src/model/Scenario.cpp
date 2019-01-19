@@ -4,8 +4,6 @@
 
 #include "model/Scenario.h"
 
-//TODO: Rework so that no temporary instances are needed
-
 void Scenario::parse(json &input) {
     parseJunctions(input);
     parseRoads(input);
@@ -26,11 +24,16 @@ void Scenario::parseJunctions(json &input) {
         double y = static_cast<double>(junction["y"]) * 100.0;
         junctions.emplace_back(id, x, y);
 
-        for (const auto &signal : junction["signals"]) {
-            junctions.back().signals.emplace_back(signal["time"], signal["dir"]);
-        }
+        parseSignals(junction);
 
         junctionsMap.insert({id, &junctions.back()});
+    }
+}
+
+//SIGNALS
+void Scenario::parseSignals(const json &junction) {
+    for (const auto &signal : junction["signals"]) {
+        junctions.back().signals.emplace_back(signal["time"], signal["dir"]);
     }
 }
 

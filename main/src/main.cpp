@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     }
 #endif
 
-    if (input.find("optimize_signals") != input.end() && input["optimize_signals"] == "true") {
+    if (input.find("optimize_signals") != input.end() && input["optimize_signals"] == true) {
         trafficSim::optimize(input, p);
     } else {
         trafficSim::calculate(input, p);
