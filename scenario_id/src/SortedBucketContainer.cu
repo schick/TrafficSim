@@ -481,9 +481,11 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
         if (bucket_idx >= container->bucket_count) return;
+#ifdef DEBUG_MSGS
         if (element_idx >= container->buckets[bucket_idx].size)
-            printf("%lu: %lu, %lu, %lu, %lu\n", idx, bucket_idx, container->bucket_count, element_idx,
+            printf("ERROR: %lu: %lu, %lu, %lu, %lu\n", idx, bucket_idx, container->bucket_count, element_idx,
                    container->buckets[bucket_idx].size);
+#endif
         assert(bucket_idx < container->bucket_count);
         assert(element_idx < container->buckets[bucket_idx].size);
         bool found = false;
@@ -578,9 +580,10 @@ CUDA_DEV SortedBucketContainer::SortedBucketContainer(CudaScenario_id *scenario,
     }
 
     this->main_buffer_size = total_buffer_size;
-
+#ifdef DEBUG_MSGS
     printf("Allocated: %.2fMB\n", (float) (sizeof(size_t) * scenario->getNumLanes() * 2 + sizeof(TrafficObject_id**) * scenario->getNumLanes() +
                                            sizeof(TrafficObject_id*) * total_buffer_size) / 1024. / 1024.);
+#endif
 }
 
 std::shared_ptr<SortedBucketContainer> SortedBucketContainer::fromScenario(Scenario_id &scenario, CudaScenario_id *device_cuda_scenario) {
@@ -699,9 +702,11 @@ void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **
         int insert_offset = atomicAdd(temp_value + objectsToInsert[idx]->lane, 1);
         auto &bucket = container->buckets[objectsToInsert[idx]->lane];
         assert(bucket.size + insert_offset < bucket.buffer_size);
+#ifdef DEBUG_MSGS
         if(bucket.size + insert_offset >= bucket.buffer_size) {
             printf("Buffer-Overflow for Lane(%lu)\n", objectsToInsert[idx]->lane);
         }
+#endif
         bucket.buffer[bucket.size + insert_offset] = objectsToInsert[idx];
 #ifdef RUN_WITH_TESTS
         if (objectsToInsert[idx]->id == CAR_TO_ANALYZE) {
@@ -772,8 +777,10 @@ __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t 
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(i, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
         if (bucket_idx >= container->bucket_count) return;
+#ifdef DEBUG_MSGS
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", i,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
+#endif
         assert(bucket_idx < container->bucket_count);
         assert(element_idx < container->buckets[bucket_idx].size);
         sizes[i] = (size_t) (int) isInWrongLane(container, container->buckets[bucket_idx].buffer + element_idx);

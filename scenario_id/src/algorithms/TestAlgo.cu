@@ -43,7 +43,7 @@ __device__ void test_right_lane_neighbors(TrafficObject_id **neighbors, CudaScen
     } else {
 
         if(!(neighbors[car_id] != nullptr && neighbors[car_id]->id == neig.front)) {
-            printf("Car(%lu, %lu): %lu == %lu, tllane(%lu)\n", car_id, scenario->getCar(car_id)->lane, neighbors[car_id] != nullptr ? neighbors[car_id]->id : -1, neig.front, scenario->getLight(neig.front)->lane);
+            printf("Car(%lu, %lu): %lu == %lu, tllane(%lu)\n", car_id, scenario->getCar(car_id)->lane, neighbors[car_id] != nullptr ? neighbors[car_id]->id : (size_t ) -1, neig.front, scenario->getLight(neig.front)->lane);
         }
         assert(neighbors[car_id] != nullptr && neighbors[car_id]->id == neig.front);
     }
