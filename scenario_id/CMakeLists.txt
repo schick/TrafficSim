@@ -32,7 +32,9 @@ IF(WITH_CUDA)
             src/cudacontainer.cu
             src/AlgorithmWrapper.cu
             #src/algorithms/CudaAlgorithm2_id.cu
-            src/algorithms/TestAlgo.cu)
+            src/algorithms/TestAlgo.cu src/PreScan.cu include/PreScan.h
+            src/cuda_utils.cu src/SortedBucketContainer.cu
+            include/SortedBucketContainer.h src/SortBuffer.cu include/SortBuffer.h)
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()

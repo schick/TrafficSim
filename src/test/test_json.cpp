@@ -22,8 +22,9 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, input);
     ASSERT_TRUE(advancer.get() != nullptr && "Advancer not registered.");
-    advancer->advance(input["time_steps"]);
 
+
+    EXPECT_NO_THROW(advancer->advance(input["time_steps"]));
     json output = advancer->getScenario()->toJson();
 
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());

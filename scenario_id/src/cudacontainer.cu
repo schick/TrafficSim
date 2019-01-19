@@ -6,9 +6,6 @@
 #include "cuda/cuda_utils.h"
 
 template<typename T>
-__device__ void cuda_swap(T &t1, T &t2) { T t = t1; t1 = t2; t2 = t; }
-
-template<typename T>
 __global__ void bitonic_sort_step(T *dev_values, int j, int k, int n) {
     unsigned int i, ixj; /* Sorting partners: i and ixj */
     i = threadIdx.x + blockDim.x * threadIdx.y;
@@ -22,14 +19,14 @@ __global__ void bitonic_sort_step(T *dev_values, int j, int k, int n) {
             /* Sort ascending */
             if (dev_values[i] > dev_values[ixj]) {
                 /* exchange(i,ixj); */
-                cuda_swap(dev_values[i], dev_values[ixj]);
+                swap(dev_values[i], dev_values[ixj]);
             }
         }
         if ((i & k) != 0) {
             /* Sort descending */
             if (dev_values[i] < dev_values[ixj]) {
                 /* exchange(i,ixj); */
-                cuda_swap(dev_values[i], dev_values[ixj]);
+                swap(dev_values[i], dev_values[ixj]);
             }
         }
     }
@@ -41,7 +38,7 @@ __global__ void bitonic_sort_merge(T* values, int k, int n) {
     unsigned int i; /* Sorting partners: i and ixj */
     i = threadIdx.x + blockDim.x * threadIdx.y;
     if(i + k < n && values[i] > values[i + k])
-        cuda_swap(values[i], values[i + k]);
+        swap(values[i], values[i + k]);
 }
 
 #define THREADS 512 // 2^9
