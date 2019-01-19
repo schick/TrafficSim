@@ -33,29 +33,27 @@ void randomInitialization(OptimizeScenario &scenario) {
 
 nlohmann::json RandomOptimizer::optimize() {
 
-    double total_distance = 0.0;
+    while (true) {
 
-    while (total_distance < minTravelLength) {
         std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
         if (advancer == nullptr) {
             printf("Algorithm not found.");
             exit(-1);
         }
 
-        OptimizeScenario &scenario = *dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+        OptimizeScenario &scenario = *static_cast<OptimizeScenario *>(advancer->getScenario().get());
 
         randomInitialization(scenario);
-
         advancer->advance(scenarioData["time_steps"]);
 
-        total_distance = scenario.getTraveledDistance();
+        double total_distance = scenario.getTraveledDistance();
 
 #ifdef DEBUG_MSGS
         printf("Distance: %.2f\n", total_distance);
 #endif
 
         if (total_distance > minTravelLength) {
-            return dynamic_cast<OptimizeScenario*>(advancer->getScenario().get())->toJson();
+            return scenario.toJson();
         }
     }
 
