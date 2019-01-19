@@ -29,7 +29,7 @@ void OpenMPAlgorithm::advanceTrafficLights() {
     }
 }
 
-void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
+void OpenMPAlgorithm::sortLanes() {
 #pragma omp parallel for
     for (size_t i = 0; i < getRefScenario()->lanes.size(); i++) {
         Lane &lane = getRefScenario()->lanes[i];
@@ -41,9 +41,8 @@ void OpenMPAlgorithm::sortLanesAndCalculateAcceleration() {
 }
 
 void OpenMPAlgorithm::advance(size_t steps) {
-
     for (int i = 0; i < steps; i++) {
-        sortLanesAndCalculateAcceleration();
+        sortLanes();
         calculateCarChanges();
         advanceCars();
         advanceTrafficLights();
