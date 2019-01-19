@@ -17,7 +17,7 @@
 #include "Car.h"
 #include "Junction.h"
 #include "Lane.h"
-#include "RedTrafficLight.h"
+#include "TrafficLight.h"
 #include "Road.h"
 
 using json = nlohmann::json;

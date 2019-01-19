@@ -10,13 +10,13 @@
 #include <stdexcept>
 
 
-class RedTrafficLight : public TrafficObject {
+class TrafficLight : public TrafficObject {
 
     Lane* mAssociatedLane;
 
 public:
     // traffic lights have -1 id, because traffic lights are always at the end of road.
-    explicit RedTrafficLight(Lane *lane) : mAssociatedLane(lane), TrafficObject(-1, 0, lane->length - 35. / 2.) {}
+    explicit TrafficLight(Lane *lane) : mAssociatedLane(lane), TrafficObject(-1, 0, lane->length - 35. / 2.) {}
 
     /**
      * switch this light off.

@@ -8,7 +8,7 @@
 #include <array>
 #include <vector>
 
-#include "RedTrafficLight.h"
+#include "TrafficLight.h"
 
 class Road;
 
@@ -78,7 +78,7 @@ private:
     /**
      * red lights for each lane and road.
      */
-    std::array<std::vector<RedTrafficLight>, 4> mRedTrafficLights;
+    std::array<std::vector<TrafficLight>, 4> mRedTrafficLights;
 
     void setSignals();
 };

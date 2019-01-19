@@ -2,7 +2,7 @@
 include_directories(include)
 
 # add library with all logic
-SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src/model/RedTrafficLight.cpp
+SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src/model/TrafficLight.cpp
         src/model/Road.cpp src/model/Scenario.cpp src/model/TrafficObject.cpp
         src/algorithms/SequentialAlgorithm.cpp
         src/algorithms/OpenMPAlgorithm.cpp
