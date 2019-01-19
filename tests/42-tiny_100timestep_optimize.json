@@ -17,7 +17,7 @@
 	{"junction1" : 2, "junction2" : 4, "lanes" : 2, "limit" : 100},
 	{"junction1" : 3, "junction2" : 5, "lanes" : 2, "limit" : 100}
 ],
-	"min_travel_distance": 2000,
+	"min_travel_distance": 20000,
 	"optimize_signals": true,
 "cars" : [
 	{"id" : 0, "target_velocity" : 75, "max_acceleration" : 2, "target_deceleration" : 3, "min_distance" : 3, "target_headway" : 2, "politeness" : 0.3,

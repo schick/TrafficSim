@@ -33,20 +33,24 @@ void randomInitialization(OptimizeScenario &scenario) {
 
 void RandomOptimizer::optimize() {
 
-    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
-    if (advancer == nullptr) {
-        printf("Algorithm not found.");
-        exit(-1);
+    double total_distance = 0.0;
+
+    while (total_distance < minTravelLength) {
+        std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
+        if (advancer == nullptr) {
+            printf("Algorithm not found.");
+            exit(-1);
+        }
+
+        OptimizeScenario &scenario = *dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+
+        randomInitialization(scenario);
+
+        advancer->advance(scenarioData["time_steps"]);
+
+        total_distance = scenario.getTraveledDistance();
+        printf("Distance: %.2f", total_distance);
     }
 
-    OptimizeScenario &scenario = *dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
-
-    randomInitialization(scenario);
-
-    advancer->advance(scenarioData["time_steps"]);
-
-    double total_distance = scenario.getTraveledDistance();
-
-    printf("Distance: %.2f", total_distance);
 
 }
