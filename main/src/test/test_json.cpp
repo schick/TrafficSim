@@ -4,7 +4,7 @@
 
 #include "util/json.hpp"
 #include "algorithms/SequentialAlgorithm.h"
-#include "register_algorithms.h"
+#include "util/register_algorithms.h"
 
 
 using json = nlohmann::json;
@@ -81,6 +81,8 @@ CREATE_TESTS(1car_10steps, "10-1car_10steps.json");
 CREATE_TESTS(speed_limit, "13-speed_limit.json");
 
 CREATE_TESTS(1car_uturn, "15-1car_uturn.json");
+
+CREATE_TESTS(1car_signal, "17-1car_signal.json");
 
 CREATE_TESTS(3cars_1lane, "20-3cars_1lane.json");
 

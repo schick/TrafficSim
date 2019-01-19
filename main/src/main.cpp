@@ -5,7 +5,7 @@
 #include "model/Scenario.h"
 #include "AdvanceAlgorithm.h"
 
-#include "register_algorithms.h"
+#include "util/register_algorithms.h"
 #include "util/json.hpp"
 
 #ifdef VISUALIZATION_ENABLED

@@ -19,13 +19,14 @@ void SequentialAlgorithm::advanceCars() {
 }
 
 void SequentialAlgorithm::advanceTrafficLights() {
-    for (auto pair : getRefScenario()->junctions) {
-        pair.second->updateSignals();
+    for (size_t i = 0; i < getRefScenario()->junctions.size(); i++) {
+        Junction &junction = getRefScenario()->junctions[i];
+        junction.updateSignals();
     }
 }
 
 void SequentialAlgorithm::sortLanes() {
-    for (auto &lane : getRefScenario()->lanes) {
+    for (Lane &lane : getRefScenario()->lanes) {
         if (!lane.isSorted) {
             std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
             lane.isSorted = true;

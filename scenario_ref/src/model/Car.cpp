@@ -10,7 +10,7 @@
 
 void Car::nextStep() {
 
-    auto lane = getLane();
+    Lane *lane = getLane();
 
     Road::NeighboringLanes neighboringLanes = lane->road.getNeighboringLanes(lane);
 
@@ -18,10 +18,10 @@ void Car::nextStep() {
     calcSameLaneAcceleration(sameNeighbors.front);
 
     auto leftNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.left, this);
-    double m_left = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
+    double m_left = LaneChangeModel::getLaneChangeMetric(*this, sameNeighbors, neighboringLanes.left, leftNeighbors, true);
 
     auto rightNeighbors = NeighborFinder::getNeighboringObjects(neighboringLanes.right, this);
-    double m_right = LaneChangeModel::getLaneChangeMetric(this, sameNeighbors, neighboringLanes.right, rightNeighbors, false);
+    double m_right = LaneChangeModel::getLaneChangeMetric(*this, sameNeighbors, neighboringLanes.right, rightNeighbors, false);
 
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane
