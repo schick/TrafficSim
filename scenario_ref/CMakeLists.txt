@@ -8,7 +8,7 @@ SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src
         src/algorithms/OpenMPAlgorithm.cpp
         src/IntelligentDriverModel.cpp include/NeighborFinder.h src/LaneChangeModel.cpp include/LaneChangeModel.h src/NeighborFinder.cpp
         src/optimization/model/OptimizeScenario.cpp
-        src/optimization/RandomOptimizer.cpp)
+        src/optimization/RandomOptimizer.cpp src/optimization/BaseOptimizer.cpp include/optimization/BaseOptimizer.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)

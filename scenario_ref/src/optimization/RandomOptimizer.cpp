@@ -41,7 +41,7 @@ nlohmann::json RandomOptimizer::optimize() {
             exit(-1);
         }
 
-        OptimizeScenario &scenario = *static_cast<OptimizeScenario *>(advancer->getScenario().get());
+        OptimizeScenario &scenario = *dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
 
         randomInitialization(scenario);
         advancer->advance(scenarioData["time_steps"]);
