@@ -3,8 +3,8 @@
 #include <gtest/gtest.h>
 
 #include "util/json.hpp"
-#include "algorithms/SequentialAlgorithm.h"
 #include "util/register_algorithms.h"
+#include "optimization/RandomOptimizer.h"
 
 
 using json = nlohmann::json;
@@ -22,9 +22,12 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(algorithm, input);
     ASSERT_TRUE(advancer.get() != nullptr && "Advancer not registered.");
-
-
     EXPECT_NO_THROW(advancer->advance(input["time_steps"]));
+
+    double total_distance = advancer->getScenario()->getTraveledDistance();
+
+    printf("Distance: %.2f\n", total_distance);
+
     json output = advancer->getScenario()->toJson();
 
     ASSERT_EQ(loesung["cars"].size(), output["cars"].size());
@@ -59,7 +62,6 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 #define _CREATE_TEST(NAME, PATH, ALGO, ACCURACY) TEST(test##ALGO##ACCURACY, NAME) {\
     test_file(STR(ALGO), JSON_TEST_PATH + PATH, 1e-##ACCURACY);\
 }
-
 
 #ifdef WITH_CUDA
 #define CREATE_TESTS(NAME, PATH) \
@@ -102,17 +104,37 @@ CREATE_TESTS(cars_correct_turning, "40-cars_correct_turning.json");
 
 CREATE_TESTS(tiny_100_steps, "42-tiny_100timestep.json");
 
+CREATE_TESTS(tiny_400_steps, "44-tiny_400timestep.json");
+
 CREATE_TESTS(4x4, "own_tests/4x4.json");
 
 CREATE_TESTS(16x16, "own_tests/16x16.json");
 
-/*TEST(Foo, Acceleration) {
-    auto leadingCar = Car_id(0, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
-    auto followingCar = Car_id(1, 5, 30, 2, 2, 2, 2, 0.2, 0, 0, 0);
+void testRandom(std::string algorithm, std::string fn) {
+    json input;
 
-    auto a = followingCar.getAcceleration(&leadingCar);
-    ASSERT_EQ(a, 2);
-}*/
+    // read input file
+    std::ifstream json_file(fn);
+    EXPECT_NO_THROW(json_file >> input);
+
+    std::shared_ptr<BaseOptimizer> optimizer = std::make_shared<RandomOptimizer>(input, algorithm);
+    ASSERT_TRUE(optimizer.get() != nullptr && "Advancer not registered.");
+
+    optimizer->optimize();
+}
+
+#define _CREATE_OPTIMIZATION(NAME, PATH, ALGO) TEST(RandomOptimizer_##ALGO, NAME) {\
+    testRandom(STR(ALGO), JSON_TEST_PATH + PATH);\
+}
+
+#define _CREATE_OPTIMIZATIONS(NAME, PATH) \
+    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm);\
+    _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm);
+
+// _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");
+
+// _CREATE_OPTIMIZATIONS(tiny_400_steps, "44-tiny_400timestep_optimize.json");
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

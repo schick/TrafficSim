@@ -40,6 +40,9 @@ public:
     // Set RedTrafficLights depending on set Signals
     void initJunctions();
 
+    // Get sum of traveledDistance of all cars
+    double getTraveledDistance() override;
+
 protected:
 
     // Overridable method that handles parsing of Signals

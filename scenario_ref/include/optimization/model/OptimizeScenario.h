@@ -11,8 +11,6 @@ class OptimizeScenario : public Scenario {
 
 public:
 
-    double getTraveledDistance();
-
     // Main parse function
     void parse(json &input) override;
 

@@ -5,28 +5,16 @@
 #ifndef TRAFFIC_SIM_RANDOMOPTIMIZER_H
 #define TRAFFIC_SIM_RANDOMOPTIMIZER_H
 
-#include "util/json.hpp"
 
+#include "BaseOptimizer.h"
 
-class RandomOptimizer {
+class RandomOptimizer : public BaseOptimizer {
 
 public:
 
-    RandomOptimizer(nlohmann::json &scenarioData, std::string &algorithm)
-            : scenarioData(scenarioData), algorithm(algorithm) {
-        minTravelLength = scenarioData["min_travel_distance"];
-    }
+    RandomOptimizer(nlohmann::json &scenarioData, std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
 
-
-    nlohmann::json optimize();
-
-
-private:
-
-    nlohmann::json &scenarioData;
-    std::string &algorithm;
-
-    double minTravelLength = 0.0;
+    nlohmann::json optimize() override;
 
 };
 

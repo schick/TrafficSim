@@ -16,6 +16,11 @@ public:
     void parseRoads(json &input);
     void parseJunctions(json &input);
     json toJson();
+
+
+    double getTraveledDistance() override {
+        return 0;
+    }
 };
 
 #endif

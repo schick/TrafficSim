@@ -14,6 +14,7 @@ class BaseScenario {
 public:
     virtual void parse(json &input) = 0;
     virtual json toJson() = 0;
+    virtual double getTraveledDistance() = 0;
 
 };
 

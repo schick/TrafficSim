@@ -31,14 +31,6 @@ json OptimizeScenario::toJson() {
     return output;
 }
 
-double OptimizeScenario::getTraveledDistance() {
-    double sum;
-    for (Car &car : cars) {
-        sum += car.getTraveledDistance();
-    }
-    return sum;
-}
-
 void OptimizeScenario::parseSignals(const json &input) {
     //Do nothing
 }

@@ -4,6 +4,7 @@
 
 #include "algorithms/OpenMPAlgorithm.h"
 
+#include "IntelligentDriverModel.h"
 
 void OpenMPAlgorithm::calculateCarChanges() {
 #pragma omp parallel for

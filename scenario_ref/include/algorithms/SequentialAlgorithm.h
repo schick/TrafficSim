@@ -7,7 +7,6 @@
 
 #include "AdvanceAlgorithm.h"
 #include "model/Scenario.h"
-#include "IntelligentDriverModel.h"
 #include "optimization/model/OptimizeScenario.h"
 
 #ifdef VISUALIZATION_ENABLED
