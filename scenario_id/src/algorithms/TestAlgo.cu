@@ -297,72 +297,77 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
 
     AlgorithmWrapper wrapper(*scenario);
 
-    size_t car_idx = GetGlobalIdx();
-    int lane_offset = (int)(car_idx % 3) - 1;
-    car_idx /= 3;
+    for(size_t idx = GetGlobalIdx(); idx < scenario->getNumCars() * 3; idx += GetGlobalDim()) {
+        int lane_offset = (int) (idx % 3) - 1;
+        size_t car_idx = idx / 3;
 
-    if (car_idx >= scenario->getNumCars())
-        return;
+        if (car_idx >= scenario->getNumCars())
+            return;
 
-    TrafficObject_id car = *scenario->getCar(car_idx);
-    size_t lane_id = (size_t ) -1;
-    TrafficObject_id **nearest = nullptr;
-    Road_id::NeighboringLanes n_lanes;
-    switch (lane_offset) {
-        case 1:
-            n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
-            lane_id = n_lanes.right;
-            nearest = nearest_right;
-            break;
-        case 0:
-            lane_id = car.lane;
-            nearest = nearest_own;
-            break;
-        case -1:
-            n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
-            lane_id = n_lanes.left;
-            nearest = nearest_left;
-            break;
-        default:
-            assert(false);
-    }
-#ifdef DEBUG_MSGS
-    if(car.id == CAR_TO_ANALYZE) printf("original lane of Car(%lu) is Lane(%lu)\n", car.id, car.lane);
-#endif
-    car.lane = lane_id;
-    TrafficObject_id *&nearest_font = nearest[car_idx];
-    TrafficObject_id *&nearest_back = nearest[car_idx + scenario->getNumCars()];
-
-    if (lane_id == (size_t) -1) {
-        nearest_back = nullptr;
-        nearest_font = nullptr;
-        return;
-    }
-
-    size_t n = container->buckets[lane_id].size;
-    if (n == 0) {
-        nearest_back = nullptr;
-        nearest_font = nullptr;
-    } else {
-        find_nearest_for_car_on_lane(scenario, container, car, nearest_font, nearest_back);
-    }
-    Lane_id *l = scenario->getLane(car.lane);
-    RedTrafficLight_id *tl = scenario->getLight(l->traffic_light);
-    if(tl->isRed()) {
-        if (car < *tl && (nearest_font == nullptr || *tl < *nearest_font)) {
-            nearest_font = tl;
-#ifdef DEBUG_MSGS
-            if (car.id == CAR_TO_ANALYZE) printf("Car(%lu, %lu) has light(%lu, %lu) in the front.\n", car.id, car.lane, nearest_font->id, nearest_font->lane);
-#endif
+        TrafficObject_id car = *scenario->getCar(car_idx);
+        size_t lane_id = (size_t) -1;
+        TrafficObject_id **nearest = nullptr;
+        Road_id::NeighboringLanes n_lanes;
+        switch (lane_offset) {
+            case 1:
+                n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
+                lane_id = n_lanes.right;
+                nearest = nearest_right;
+                break;
+            case 0:
+                lane_id = car.lane;
+                nearest = nearest_own;
+                break;
+            case -1:
+                n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
+                lane_id = n_lanes.left;
+                nearest = nearest_left;
+                break;
+            default:
+                assert(false);
         }
-        if (car > *tl && (nearest_back == nullptr || *tl > *nearest_back)) {
-            nearest_back = tl;
 #ifdef DEBUG_MSGS
-            if (car.id == CAR_TO_ANALYZE) printf("Car(%lu, %lu) has light(%lu, %lu) in the back.\n", car.id, car.lane, nearest_back->id, nearest_back->lane);
+        if (car.id == CAR_TO_ANALYZE) printf("original lane of Car(%lu) is Lane(%lu)\n", car.id, car.lane);
 #endif
-        }
-    }
+        car.lane = lane_id;
+        TrafficObject_id *&nearest_font = nearest[car_idx];
+        TrafficObject_id *&nearest_back = nearest[car_idx + scenario->getNumCars()];
 
+        if (lane_id == (size_t) -1) {
+            nearest_back = nullptr;
+            nearest_font = nullptr;
+            return;
+        }
+
+        size_t n = container->buckets[lane_id].size;
+        if (n == 0) {
+            nearest_back = nullptr;
+            nearest_font = nullptr;
+        } else {
+            find_nearest_for_car_on_lane(scenario, container, car, nearest_font, nearest_back);
+        }
+        Lane_id *l = scenario->getLane(car.lane);
+        RedTrafficLight_id *tl = scenario->getLight(l->traffic_light);
+        if (tl->isRed()) {
+            if (car < *tl && (nearest_font == nullptr || *tl < *nearest_font)) {
+                nearest_font = tl;
+#ifdef DEBUG_MSGS
+                if (car.id == CAR_TO_ANALYZE)
+                    printf("Car(%lu, %lu) has light(%lu, %lu) in the front.\n", car.id, car.lane, nearest_font->id,
+                           nearest_font->lane);
+#endif
+            }
+            if (car > *tl && (nearest_back == nullptr || *tl > *nearest_back)) {
+                nearest_back = tl;
+#ifdef DEBUG_MSGS
+                if (car.id == CAR_TO_ANALYZE)
+                    printf("Car(%lu, %lu) has light(%lu, %lu) in the back.\n", car.id, car.lane, nearest_back->id,
+                           nearest_back->lane);
+#endif
+            }
+        }
+
+    }
 }
 
 __global__ void find_nearest(CudaScenario_id *scenario, SortedBucketContainer *container, TrafficObject_id **nearest_left,
@@ -549,8 +554,7 @@ void static_advance(size_t steps, Scenario_id &scenario) {
         CHECK_FOR_ERROR();
 #endif
 
-        find_nearest2<<< number_of_cars * 3 / SUGGESTED_THREADS + 1, SUGGESTED_THREADS >> >
-                                                                      (device_cuda_scenario, bucket_memory.get(), dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
+        find_nearest2<<<SUGGESTED_THREADS, SUGGESTED_THREADS>>>(device_cuda_scenario, bucket_memory.get(), dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
         CHECK_FOR_ERROR();
 
 #ifdef RUN_WITH_TESTS
