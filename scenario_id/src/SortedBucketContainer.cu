@@ -371,6 +371,8 @@ __global__ void SetTempSizeKernel(SortedBucketContainer *container, unsigned int
 
     if (lane_id < container->bucket_count) {
         container->buckets[lane_id].size += temp_value[lane_id];
+        container->buckets[lane_id].size = MIN(container->buckets[lane_id].size,
+                container->buckets[lane_id].buffer_size);
 #ifdef RUN_WITH_TESTS
         if (lane_id == BUCKET_TO_ANALYZE)
             printf("New Temporary Bucket(%lu) size (added %u): %lu\n", (size_t) BUCKET_TO_ANALYZE,temp_value[lane_id],
@@ -575,12 +577,17 @@ void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **
     for(size_t idx = GetGlobalIdx(); idx < *n; idx += GetGlobalDim()) {
         int insert_offset = atomicAdd(temp_value + objectsToInsert[idx]->lane, 1);
         auto &bucket = container->buckets[objectsToInsert[idx]->lane];
-        assert(bucket.size + insert_offset < bucket.buffer_size);
-#ifdef DEBUG_MSGS
+        // assert(bucket.size + insert_offset < bucket.buffer_size);
+#ifdef DEBUG
         if(bucket.size + insert_offset >= bucket.buffer_size) {
+            // TODO: handle buffer overflow with seperate buffer (adapt find_nearest,
+            // TODO: and always put in reinsert buffer to try and reintegrate those back into normal container)
+
             printf("Buffer-Overflow for Lane(%lu)\n", objectsToInsert[idx]->lane);
+            continue;
         }
 #endif
+        assert(bucket.size + insert_offset < bucket.buffer_size);
         bucket.buffer[bucket.size + insert_offset] = objectsToInsert[idx];
 #ifdef RUN_WITH_TESTS
         if (objectsToInsert[idx]->id == CAR_TO_ANALYZE) {
