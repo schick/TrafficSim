@@ -10,11 +10,19 @@
 
 class RandomOptimizer : public BaseOptimizer {
 
+private:
+
+    int iterations = 0;
+
 public:
 
     RandomOptimizer(nlohmann::json &scenarioData, std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
 
     nlohmann::json optimize() override;
+
+    int getIterations() {
+        return iterations;
+    }
 
 };
 

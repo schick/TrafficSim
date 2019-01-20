@@ -35,6 +35,8 @@ nlohmann::json RandomOptimizer::optimize() {
 
     while (true) {
 
+        iterations++;
+
         std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
         if (advancer == nullptr) {
             throw std::runtime_error("Algorithm not found: " + algorithm);
