@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(p["algorithm"], &scenario);
     if (advancer == nullptr) {
-        printf("Algorithm not found.");
+        printf("Algorithm not found: %s", p["algorithm"].c_str());
         exit(-1);
     }
 #ifdef VISUALIZATION_ENABLED
