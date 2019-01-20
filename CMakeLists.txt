@@ -114,8 +114,8 @@ add_executable(traffic_sim main/src/main.cpp main/src/util/SimpleArgumentParser.
 IF(WITH_CUDA)
     set_property(TARGET traffic_sim PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
     set_property(TARGET traffic_sim PROPERTY CUDA_SEPARABLE_COMPILATION ON)
-    target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
-    target_compile_features(traffic_sim PUBLIC cxx_std_17)
+    # target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+    target_compile_features(traffic_sim PUBLIC cxx_std_14)
 
     add_definitions(-DWITH_CUDA)
 ELSE()
