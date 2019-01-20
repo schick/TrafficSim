@@ -7,7 +7,7 @@
 
 #include "algorithms/SequentialAlgorithm.h"
 #include "algorithms/OpenMPAlgorithm.h"
-#include "algorithms/TestAlgo.h"
+#include "algorithms/CudaAlgorithm.h"
 
 #include "optimization/BaseOptimizer.h"
 #include "optimization/RandomOptimizer.h"

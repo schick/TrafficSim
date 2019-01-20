@@ -30,12 +30,12 @@
 
 
 
-class TestAlgo : public AdvanceAlgorithm {
+class CudaAlgorithm : public AdvanceAlgorithm {
 
 public:
-    ADVANCE_ALGO_INIT(TestAlgo, Scenario_id, Visualization_id);
+    ADVANCE_ALGO_INIT_WITH_OPT(CudaAlgorithm, Scenario_id, Scenario_id, Visualization_id);
 
-    explicit TestAlgo(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
+    explicit CudaAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
     Scenario_id* getIDScenario() {
         return dynamic_cast<Scenario_id*>(getScenario().get());

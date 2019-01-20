@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
     // set default algorithm
 #ifdef WITH_CUDA
-    p.add_kw_argument("algorithm", "TestAlgo");
+    p.add_kw_argument("algorithm", "CudaAlgorithm");
 #else
     p.add_kw_argument("algorithm", "OpenMPAlgorithm");
 #endif

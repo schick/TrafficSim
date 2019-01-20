@@ -3,7 +3,7 @@
 //
 
 #include <driver_types.h>
-#include <algorithms/TestAlgo.h>
+#include <algorithms/CudaAlgorithm.h>
 #include "SortedBucketContainer.h"
 #include "PreScan.h"
 

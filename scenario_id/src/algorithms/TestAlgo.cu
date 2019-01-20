@@ -4,7 +4,7 @@
 
 #include <curand_mtgp32_kernel.h>
 #include <model/Lane.h>
-#include "algorithms/TestAlgo.h"
+#include "algorithms/CudaAlgorithm.h"
 #include "cuda/cuda_utils.h"
 #include <chrono>
 #include <thread>
@@ -563,7 +563,7 @@ void static_advance(size_t steps, Scenario_id &scenario) {
     device_cuda_scenario->retriveData(&scenario);
 }
 
-void TestAlgo::advance(size_t steps) {
+void CudaAlgorithm::advance(size_t steps) {
     static_advance(steps, *getIDScenario());
     cudaDeviceReset();
 };
