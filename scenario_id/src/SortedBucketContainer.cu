@@ -484,13 +484,8 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
         if (bucket_idx >= container->bucket_count) return;
-#ifdef DEBUG_MSGS
-        if (element_idx >= container->buckets[bucket_idx].size)
-            printf("ERROR: %lu: %lu, %lu, %lu, %lu\n", idx, bucket_idx, container->bucket_count, element_idx,
-                   container->buckets[bucket_idx].size);
-#endif
         assert(bucket_idx < container->bucket_count);
-        assert(element_idx < container->buckets[bucket_idx].size);
+        if(element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
         bool found = false;
         size_t new_size;
         auto &bucket = container->buckets[bucket_idx];
