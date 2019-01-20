@@ -332,13 +332,6 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
     }
 }
 
-void SortedBucketContainer::SortFixedSize(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer) {
-    TrafficObject_id::Cmp cmp;
-    cudaSortKernel<<<2048, 1024, 1024 * sizeof(TrafficObject_id*)>>>(container, cmp, 0, 100000000, sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled);
-    CHECK_FOR_ERROR();
-}
-
-
 void SortedBucketContainer::Sort(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer) {
     SortInSizeSteps(container, scenario, sortBuffer);
 }
@@ -372,50 +365,6 @@ void SortedBucketContainer::FetchBucketSizes(SortedBucketContainer *container, S
 void SortedBucketContainer::FetchBucketSizes(BucketData *buckets, size_t num_buckets, Scenario_id &scenario, size_t *bucketSizes) {
     FetchBucketSizesPtrKernel<<<sqrt(num_buckets) + 1, sqrt(num_buckets) + 1>>>(buckets, num_buckets, bucketSizes);
     CHECK_FOR_ERROR();
-}
-
-
-__global__ void MergeBlockWisePreScan(size_t *out, size_t out_size, size_t *in, size_t in_size, size_t buffer_size, size_t skip_count) {
-    assert(IsPowerOfTwo(buffer_size));
-    size_t idx = GetThreadIdx();
-    size_t offset = GetBlockIdx() * buffer_size * skip_count;
-
-    assert(GetBlockDim() * 2 == buffer_size);
-    assert((2 * GetBlockDim() + 1) * skip_count - 1 + GetGridDim() * buffer_size * skip_count >= in_size);
-
-    extern __shared__ size_t temp[];
-
-    if ((2 * idx + 1) * skip_count - 1 + offset < in_size)
-        temp[2 * idx] = in[(2 * idx + 1) * skip_count - 1 + offset];
-    else
-        temp[2 * idx] = 0;
-
-    if ((2 * idx + 2) * skip_count - 1 + offset < in_size)
-        temp[2 * idx + 1] = in[(2 * idx + 2) * skip_count - 1 + offset];
-    else
-        temp[2 * idx + 1] = 0;
-
-    __syncthreads();
-
-    PreScan(temp, idx, buffer_size);
-
-    __syncthreads();
-
-    assert(2 * GetBlockDim() + 1 + buffer_size * GetGridDim() >= out_size);
-    if(2 * idx + buffer_size * GetBlockIdx() < out_size)
-        out[2 * idx + buffer_size * GetBlockIdx()] = temp[2 * idx];
-    if(2 * idx + 1 + buffer_size * GetBlockIdx() < out_size)
-        out[2 * idx + 1 + buffer_size * GetBlockIdx()] = temp[2 * idx + 1];
-}
-
-__global__ void MergeBlockWisePreScanStep2(size_t *out, size_t *in, size_t n, size_t buffer_size, size_t out_size) {
-    size_t idx = GetThreadIdx();
-    size_t offset = GetBlockIdx() * n;
-
-    if (GetBlockIdx() > 0 && idx + offset < out_size) {
-        out[idx + offset] += in[GetBlockIdx() - 1];
-    }
-
 }
 
 __global__ void SetTempSizeKernel(SortedBucketContainer *container, unsigned int *temp_value) {
@@ -624,79 +573,9 @@ __device__ inline bool isInWrongLane(SortedBucketContainer *container, TrafficOb
     return (object < supposed_bucket.buffer || supposed_bucket.buffer + supposed_bucket.size <= object);
 }
 
-
-__global__ void BlockWisePreScan(SortedBucketContainer *container, size_t *g_odata, size_t n) {
-    assert(IsPowerOfTwo(n));
-    extern __shared__ size_t temp[];// allocated on invocation
-
-    size_t traffic_object_id = GetThreadIdx();
-    size_t buffer_offset = GetBlockIdx() * n;
-    assert(n == GetBlockDim() * 2);
-    assert(GetGlobalDim() * 2 >= container->main_buffer_size);
-
-    TrafficObject_id **p_obj1 = container->main_buffer + 2 * traffic_object_id + buffer_offset;
-    TrafficObject_id **p_obj2 = container->main_buffer + 2 * traffic_object_id + 1 + buffer_offset;
-    // if(GetGlobalIdx() == 0) printf("Starting...\n");
-
-    if(p_obj1 < container->main_buffer + container->main_buffer_size && p_obj1 != nullptr) {
-        temp[2 * traffic_object_id] = isInWrongLane(container, p_obj1) ? 1 : 0; // load input into shared memory
-        //printf("Got one. %lu, %lu, %lu \n", traffic_object_id, buffer_offset, temp[2 * traffic_object_id]);
-    } else
-        temp[2 * traffic_object_id] = 0;
-
-    if(p_obj2 < container->main_buffer + container->main_buffer_size && p_obj2 != nullptr) {
-        temp[2 * traffic_object_id + 1] = isInWrongLane(container, p_obj2) ? 1 : 0;  // load input into shared memory
-        //printf("Got one. %lu, %lu, %lu \n", traffic_object_id, buffer_offset, temp[2 * traffic_object_id + 1]);
-    } else
-        temp[2 * traffic_object_id + 1] = 0;
-
-    PreScan(temp, traffic_object_id, n);
-
-    __syncthreads();
-
-    if(p_obj1 < container->main_buffer + container->main_buffer_size)
-        g_odata[2 * traffic_object_id + buffer_offset] = temp[2*traffic_object_id]; // write results to device memory
-    if(p_obj2 < container->main_buffer + container->main_buffer_size)
-        g_odata[2 * traffic_object_id+1 + buffer_offset] = temp[2*traffic_object_id+1];
-
-}
-
-__global__ void MoveToReinsertBufferKernel(SortedBucketContainer *container, size_t *prefixSum, size_t n,
-                                     TrafficObject_id **reinsert_buffer, size_t buffer_size) {
-
-    size_t idx = GetGlobalIdx();
-
-    assert(GetGlobalDim() >= n);
-
-    if (idx >= n) return;
-
-    if ((idx == 0 && prefixSum[0] > 0) || (idx != 0 && prefixSum[idx] != prefixSum[idx - 1])){
-        size_t insert_id = idx == 0 ? 0 : prefixSum[idx - 1];
-        if(insert_id >= buffer_size) {
-            printf("%lu, %lu\n", insert_id, buffer_size);
-        }
-
-        if(!(insert_id < buffer_size && container->main_buffer[idx] != nullptr)) {
-            printf("%lu: %lu - %lu\n", idx, prefixSum[idx], idx == 0 ? (size_t )-1 : prefixSum[idx - 1]);
-        }
-
-        assert(insert_id < buffer_size && container->main_buffer[idx] != nullptr);
-        reinsert_buffer[insert_id] = container->main_buffer[idx];
-        container->main_buffer[idx] = nullptr;
-#ifdef RUN_WITH_TESTS
-        if (reinsert_buffer[insert_id]->id == CAR_TO_ANALYZE) {
-            printf("Car(%lu) moved to ReinsertBuffer(#%lu)\n", reinsert_buffer[insert_id]->id, insert_id);
-        }
-#endif
-    }
-}
-
-
-
 __global__
 void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **objectsToInsert, size_t *n, unsigned int *temp_value) {
     for(size_t idx = GetGlobalIdx(); idx < *n; idx += GetGlobalDim()) {
-
         int insert_offset = atomicAdd(temp_value + objectsToInsert[idx]->lane, 1);
         auto &bucket = container->buckets[objectsToInsert[idx]->lane];
         assert(bucket.size + insert_offset < bucket.buffer_size);
@@ -713,60 +592,6 @@ void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **
 #endif
     }
 }
-
-void MyPreScan(Scenario_id &scenario, SortedBucketContainer *container, SortBuffer &sortBuffer) {
-
-    assert(IsPowerOfTwo(PRE_SUM_BLOCK_SIZE));
-
-    size_t buffer_size = SortedBucketContainer::getBufferSize(scenario, 4.);
-
-    BlockWisePreScan<<<buffer_size / PRE_SUM_BLOCK_SIZE + 1, PRE_SUM_BLOCK_SIZE / 2, PRE_SUM_BLOCK_SIZE * sizeof(size_t)>>>(container, sortBuffer.preSumOut, PRE_SUM_BLOCK_SIZE);
-    CHECK_FOR_ERROR();
-
-#ifdef RUN_WITH_TESTS
-    std::vector<size_t> preSumHost(buffer_size);
-    gpuErrchk(cudaMemcpy(preSumHost.data(), sortBuffer.temporary_pre_sum_buffers[0], sortBuffer.temporary_pre_sum_buffer_sizes[0] * sizeof(size_t), cudaMemcpyDeviceToHost));
-    CHECK_FOR_ERROR();
-#endif
-
-    size_t *previousPreSumTemp, *preSumTemp;
-    size_t previousPreSumTempSize, preSumTempSize;
-    for(size_t i=1; i < sortBuffer.temporary_pre_sum_buffers.size(); i++) {
-        preSumTemp = sortBuffer.temporary_pre_sum_buffers[i];
-        preSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i];
-        previousPreSumTemp = sortBuffer.temporary_pre_sum_buffers[i - 1];
-        previousPreSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i - 1];
-
-        MergeBlockWisePreScan<<<preSumTempSize / PRE_SUM_BLOCK_SIZE + 1, PRE_SUM_BLOCK_SIZE / 2, PRE_SUM_BLOCK_SIZE * sizeof(size_t )>>>(preSumTemp, preSumTempSize, previousPreSumTemp, previousPreSumTempSize, PRE_SUM_BLOCK_SIZE, PRE_SUM_BLOCK_SIZE);
-        CHECK_FOR_ERROR();
-
-#ifdef RUN_WITH_TESTS
-        gpuErrchk(cudaMemcpy(preSumHost.data(), preSumTemp, preSumTempSize * sizeof(size_t), cudaMemcpyDeviceToHost));
-        CHECK_FOR_ERROR();
-#endif
-    }
-
-    for(size_t i=sortBuffer.temporary_pre_sum_buffer_sizes.size() - 1; i > 0; i--) {
-        preSumTemp = sortBuffer.temporary_pre_sum_buffers[i];
-        preSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i];
-        previousPreSumTemp = sortBuffer.temporary_pre_sum_buffers[i - 1];
-        previousPreSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i - 1];
-
-#ifdef RUN_WITH_TESTS
-        gpuErrchk(cudaMemcpy(preSumHost.data(), preSumTemp, preSumTempSize * sizeof(size_t), cudaMemcpyDeviceToHost));
-        CHECK_FOR_ERROR();
-#endif
-
-        MergeBlockWisePreScanStep2<<<preSumTempSize, PRE_SUM_BLOCK_SIZE, PRE_SUM_BLOCK_SIZE * sizeof(size_t )>>>(previousPreSumTemp, preSumTemp, PRE_SUM_BLOCK_SIZE, previousPreSumTempSize, previousPreSumTempSize);
-        CHECK_FOR_ERROR();
-    }
-#ifdef RUN_WITH_TESTS
-    gpuErrchk(cudaMemcpy(preSumHost.data(), sortBuffer.temporary_pre_sum_buffers[0], sortBuffer.temporary_pre_sum_buffer_sizes[0] * sizeof(size_t), cudaMemcpyDeviceToHost));
-    CHECK_FOR_ERROR();
-#endif
-
-}
-
 
 __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t car_count, size_t *sizes, size_t num_sizes,
         size_t *lanePreSum, size_t lanePreSumSize) {
@@ -785,8 +610,6 @@ __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t 
         // printf("%lu - %lu.%lu: Lane(%lu) : %lu\n", i, bucket_idx, element_idx, container->buckets[bucket_idx].buffer[element_idx]->lane, sizes[i]);
     }
 }
-
-
 
 __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, size_t *prefixSum, size_t n,
                                            TrafficObject_id **reinsert_buffer, size_t buffer_size,
@@ -815,8 +638,6 @@ __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, si
     }
 }
 
-
-int i = 0;
 void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *container, SortBuffer &sortBuffer) {
 
     size_t number_of_lanes = scenario.lanes.size();
@@ -839,7 +660,6 @@ void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *containe
         (container, sortBuffer.preSumOut, scenario.cars.size(), sortBuffer.reinsert_buffer, sortBuffer.reinsert_buffer_size,
                 sortBuffer.laneBucketPreSumBuffer, scenario.lanes.size());
     CHECK_FOR_ERROR();
-    i++;
 
 #ifdef RUN_WITH_TESTS
     std::vector<size_t> preSumHost(buffer_size);
@@ -849,12 +669,6 @@ void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *containe
     gpuErrchk(cudaMemcpy(preSumHost.data(), sortBuffer.preSumIn, scenario.cars.size() * sizeof(size_t), cudaMemcpyDeviceToHost));
     CHECK_FOR_ERROR();
 #endif
-
-    /* MyPreScan(scenario, container, sortBuffer);
-
-    MoveToReinsertBufferKernel<<<buffer_size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>
-        (container, sortBuffer.preSumOut, buffer_size, sortBuffer.reinsert_buffer, sortBuffer.reinsert_buffer_size);
-    CHECK_FOR_ERROR()*/
 
     gpuErrchk(cudaMemsetAsync(sortBuffer.laneCounter, 0, sortBuffer.laneCounterSize * sizeof(unsigned int)));
     MoveToContainerKernel<<<256, 256>>>(container, sortBuffer.reinsert_buffer, sortBuffer.preSumOut + scenario.cars.size() - 1, sortBuffer.laneCounter);
