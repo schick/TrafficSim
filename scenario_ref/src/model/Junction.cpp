@@ -9,12 +9,12 @@
 
 
 void Junction::initializeSignals() {
-    for(int i = 0; i < 4; i++) {
+    /*for(int i = 0; i < 4; i++) {
         if (incoming[i] != nullptr) {
-            for(Lane *l : incoming[i]->lanes)
+            for(Lane l : incoming[i]->lanes)
                 mRedTrafficLights[i].emplace_back(l);
         }
-    }
+    }*/
 
     if(!signals.empty()) {
         current_signal = 0;
@@ -25,17 +25,31 @@ void Junction::initializeSignals() {
 }
 
 void Junction::setSignals() {
-    for(int i = 0; i < 4; i++) {
-        for(RedTrafficLight &l : mRedTrafficLights[i]) {
+    for (int i = 0; i < 4; i++) {
+        if (incoming[i] != nullptr) {
+            for (Lane *l : incoming[i]->lanes) {
+                if (!signals.empty() && signals[current_signal].direction == i) {
+                    // green light
+                    l->isRed = false;
+                }
+                else {
+                    // red light
+                    l->isRed = true;
+                }
+            }
+        }
+    }
+    /*for(int i = 0; i < 4; i++) {
+        for(TrafficLight &l : mRedTrafficLights[i]) {
             if (!signals.empty() && signals[current_signal].direction == i) {
                 // green light
                 l.switchOff();
             } else {
                 // red light
-                l.switchOn();
+               l.switchOn();
             }
         }
-    }
+    }*/
 }
 
 void Junction::updateSignals() {

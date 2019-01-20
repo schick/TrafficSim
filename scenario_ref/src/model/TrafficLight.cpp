@@ -5,11 +5,13 @@
 #include "model/TrafficLight.h"
 
 void TrafficLight::switchOff() {
-    removeFromLane();
+    associatedLane->isRed = false;
+    //removeFromLane();
 }
 
 void TrafficLight::switchOn() {
-    moveToLane(mAssociatedLane);
+    //moveToLane(mAssociatedLane);
+    associatedLane->isRed = true;
 }
 
 bool TrafficLight::isRed() {

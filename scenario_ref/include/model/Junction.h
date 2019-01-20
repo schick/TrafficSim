@@ -78,7 +78,7 @@ private:
     /**
      * red lights for each lane and road.
      */
-    std::array<std::vector<TrafficLight>, 4> mRedTrafficLights;
+    //std::array<std::vector<TrafficLight>, 4> mRedTrafficLights;
 
     void setSignals();
 };

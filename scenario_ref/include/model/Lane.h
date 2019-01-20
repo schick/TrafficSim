@@ -10,16 +10,20 @@
 #include <iostream>
 #include <algorithm>
 #include <mutex>
+//#include "TrafficLight.h"
+//#include "TrafficObject.h"
 
 class Road;
 class TrafficObject;
+class TrafficLight;
 
 class Lane {
 
-    friend class TrafficObject;
 
 public:
     std::vector<TrafficObject *> mTrafficObjects;
+    //TrafficLight &trafficLight;
+    bool isRed = false;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.
@@ -30,7 +34,9 @@ public:
         TrafficObject *back = nullptr;
     };
 
-    Lane(int lane, Road &road, double length) : lane(lane), road(road), mTrafficObjects(), length(length){};
+    Lane(int lane, Road &road, double length) : lane(lane), road(road), mTrafficObjects(), length(length) {
+
+    }
 
     /**
      * Copy Constructor

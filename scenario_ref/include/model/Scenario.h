@@ -34,6 +34,7 @@ public:
     std::vector<Road> roads;
     std::vector<Lane> lanes;
     std::vector<Car> cars;
+    std::vector<TrafficLight> trafficLights;
 
     void parse(json input);
     json toJson();

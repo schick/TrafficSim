@@ -70,6 +70,19 @@ double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
     double with_lead = 0;
+    
+    if (leading_vehicle != nullptr && leading_vehicle->getPosition() >= car->getLane()->length - 35. / 2. && car->getLane()->isRed) {
+        auto trafficLight = &TrafficLight(car->getLane());
+        if (car->getPosition() < trafficLight->getPosition()) {
+            leading_vehicle = trafficLight;
+        }
+    }
+    if (leading_vehicle == nullptr && car->getLane()->isRed) {
+        auto trafficLight = &TrafficLight(car->getLane());
+        if (car->getPosition() < trafficLight->getPosition()) {
+            leading_vehicle = trafficLight;
+        }
+    }
     if (leading_vehicle != nullptr) {
         double delta_v = car->v - leading_vehicle->v;
         double s = std::max(leading_vehicle->getPosition() - car->getPosition() - leading_vehicle->length, car->min_s);

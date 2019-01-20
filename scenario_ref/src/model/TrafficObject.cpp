@@ -7,8 +7,8 @@
 #include <mutex>
 
 #include "model/TrafficObject.h"
-#include "model/Lane.h"
-#include "model/Road.h"
+//#include "model/Lane.h"
+//#include "model/Road.h"
 
 
 Lane *TrafficObject::getLane() {
@@ -37,8 +37,14 @@ void TrafficObject::removeFromLane() {
 
     std::lock_guard<std::mutex> lock(lane->laneLock);
     auto position = std::find(lane->mTrafficObjects.rbegin(), lane->mTrafficObjects.rend(), this);
+    //auto position = std::find(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), this);
     //need -- and base() to cast from reverse pointer to forward pointer
-    lane->mTrafficObjects.erase(--position.base());
+    //lane->mTrafficObjects.erase(--position.base());
+   // auto end = lane->mTrafficObjects.end() - 1;
+    //auto found = --position.base();
+    std::iter_swap(position, lane->mTrafficObjects.end() - 1);
+    lane->mTrafficObjects.pop_back();
+    lane->isSorted = false;
     lane = nullptr;
 }
 
