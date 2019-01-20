@@ -110,30 +110,30 @@ CREATE_TESTS(4x4, "own_tests/4x4.json");
 
 CREATE_TESTS(16x16, "own_tests/16x16.json");
 
-void testRandom(std::string algorithm, std::string fn) {
+void testRandom(std::string optimization, std::string algorithm, std::string fn) {
     json input;
 
     // read input file
     std::ifstream json_file(fn);
     EXPECT_NO_THROW(json_file >> input);
 
-    std::shared_ptr<BaseOptimizer> optimizer = std::make_shared<RandomOptimizer>(input, algorithm);
-    ASSERT_TRUE(optimizer.get() != nullptr && "Advancer not registered.");
+    std::shared_ptr<BaseOptimizer> optimizer =  BaseOptimizer::instantiate(optimization, input, algorithm);
+    ASSERT_TRUE(optimizer.get() != nullptr && "Optimizer not registered.");
+    ASSERT_TRUE(optimizer->hasValidAlgorithm() && "AdvanceAlgorithm not registered.");
 
     optimizer->optimize();
 }
 
-#define _CREATE_OPTIMIZATION(NAME, PATH, ALGO) TEST(RandomOptimizer_##ALGO, NAME) {\
-    testRandom(STR(ALGO), JSON_TEST_PATH + PATH);\
+#define _CREATE_OPTIMIZATION(NAME, PATH, ALGO, OPT_ALGO) TEST(Optimize_##OPT_ALGO##_##ALGO, NAME) {\
+    testRandom(STR(OPT_ALGO), STR(ALGO), JSON_TEST_PATH + PATH);\
 }
 
 #define _CREATE_OPTIMIZATIONS(NAME, PATH) \
-    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm);\
-    _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm);
+    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, RandomOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm, RandomOptimizer);
 
-// _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");
-
-// _CREATE_OPTIMIZATIONS(tiny_400_steps, "44-tiny_400timestep_optimize.json");
+_CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");
+_CREATE_OPTIMIZATIONS(tiny_400_steps, "44-tiny_400timestep_optimize.json");
 
 
 int main(int argc, char **argv) {

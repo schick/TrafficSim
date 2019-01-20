@@ -12,8 +12,13 @@
 #include "algorithms/CudaAlgorithm2_id.h"
 #include "algorithms/TestAlgo.h"
 
+#include "optimization/BaseOptimizer.h"
+#include "optimization/RandomOptimizer.h"
+
 REGISTER_ALGORITHM(OpenMPAlgorithm);
 REGISTER_ALGORITHM(SequentialAlgorithm);
+
+REGISTER_OPTIMIZER(RandomOptimizer);
 
 #ifdef WITH_CUDA
     REGISTER_ALGORITHM(TestAlgo);

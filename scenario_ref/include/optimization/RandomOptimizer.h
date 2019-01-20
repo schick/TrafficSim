@@ -6,7 +6,7 @@
 #define TRAFFIC_SIM_RANDOMOPTIMIZER_H
 
 
-#include "BaseOptimizer.h"
+#include "optimization/BaseOptimizer.h"
 
 class RandomOptimizer : public BaseOptimizer {
 
