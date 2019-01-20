@@ -20,7 +20,11 @@ int main(int argc, char* argv[]) {
     nlohmann::json input;
 
     // set default algorithm
+#ifdef WITH_CUDA
     p.add_kw_argument("algorithm", "TestAlgo");
+#else
+    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
+#endif
 
     // read input file
 #ifdef USE_CIN
