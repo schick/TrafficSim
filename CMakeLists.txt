@@ -7,15 +7,15 @@ if(MSVC)
 endif(MSVC)
 
 function(copy_test_files target)
-	if (MSVC)
-	    add_custom_command(TARGET ${target} PRE_BUILD
-	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-	                       ${CMAKE_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
-	else(MSVC)
-	    add_custom_command(TARGET ${target} PRE_BUILD
-	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-	                       ${CMAKE_SOURCE_DIR}/tests $<TARGET_FILE_DIR:${target}>/tests)
-	endif(MSVC)
+    if (MSVC)
+        add_custom_command(TARGET ${target} PRE_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${CMAKE_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
+    else(MSVC)
+        add_custom_command(TARGET ${target} PRE_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${CMAKE_SOURCE_DIR}/tests $<TARGET_FILE_DIR:${target}>/tests)
+    endif(MSVC)
 endfunction()
 
 option(VISUALIZATION "Disable Visualization to dismiss opencv dependency" OFF)
