@@ -18,7 +18,7 @@ REGISTER_ALGORITHM(SequentialAlgorithm);
 REGISTER_OPTIMIZER(RandomOptimizer);
 
 #ifdef WITH_CUDA
-    REGISTER_ALGORITHM(TestAlgo);
+    REGISTER_ALGORITHM(CudaAlgorithm);
     //REGISTER_ALGORITHM(CudaAlgorithm2_id);
 #endif
 
