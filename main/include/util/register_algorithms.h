@@ -6,10 +6,7 @@
 #define TRAFFIC_SIM_ALGORITHMS_H
 
 #include "algorithms/SequentialAlgorithm.h"
-#include "algorithms/SequentialAlgorithm_id.h"
 #include "algorithms/OpenMPAlgorithm.h"
-#include "algorithms/OpenMPAlgorithm_id.h"
-#include "algorithms/CudaAlgorithm2_id.h"
 #include "algorithms/TestAlgo.h"
 
 #include "optimization/BaseOptimizer.h"

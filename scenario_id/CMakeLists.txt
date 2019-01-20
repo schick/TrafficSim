@@ -4,11 +4,14 @@ project(cmake_and_cuda LANGUAGES CXX)
 include_directories(include)
 
 # by_id library
-SET(SOURCE_FILES_BY_ID src/Car_id.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight_id.cpp
-        src/Road_id.cpp src/Scenario.cpp src/TrafficObject.cpp
-        src/algorithms/SequentialAlgorithm_id.cpp
-        src/algorithms/OpenMPAlgorithm_id.cpp
-        src/algorithms/CudaAlgorithm.cpp src/AlgorithmWrapper.cpp src/algorithms/SequentialCudaDataAlgorithm_id.cpp)
+SET(SOURCE_FILES_BY_ID
+        src/Car_id.cpp
+        src/Junction.cpp
+        src/Lane.cpp
+        src/RedTrafficLight_id.cpp
+        src/Road_id.cpp
+        src/Scenario.cpp
+        src/TrafficObject.cpp)
 
 IF(OpenCV_FOUND)
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID} src/Visualization.cpp)
@@ -29,12 +32,12 @@ IF(WITH_CUDA)
     add_definitions(-DWITH_CUDA)
 
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
-            src/cudacontainer.cu
             src/AlgorithmWrapper.cu
-            #src/algorithms/CudaAlgorithm2_id.cu
-            src/algorithms/TestAlgo.cu src/PreScan.cu include/PreScan.h
-            src/cuda_utils.cu src/SortedBucketContainer.cu
-            include/SortedBucketContainer.h src/SortBuffer.cu include/SortBuffer.h)
+            src/algorithms/TestAlgo.cu
+            src/PreScan.cu
+            src/cuda_utils.cu
+            src/SortedBucketContainer.cu
+            src/SortBuffer.cu )
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()
