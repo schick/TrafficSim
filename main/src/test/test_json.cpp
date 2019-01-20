@@ -121,7 +121,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     ASSERT_TRUE(optimizer.get() != nullptr && "Optimizer not registered.");
     ASSERT_TRUE(optimizer->hasValidAlgorithm() && "AdvanceAlgorithm not registered.");
 
-    optimizer->optimize();
+    ASSERT_NO_THROW(optimizer->optimize());
 }
 
 #define _CREATE_OPTIMIZATION(NAME, PATH, ALGO, OPT_ALGO) TEST(Optimize_##OPT_ALGO##_##ALGO, NAME) {\

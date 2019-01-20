@@ -51,8 +51,7 @@ Junction_id::Direction calcDirectionOfRoad(Junction_id &from, Junction_id &to) {
     } else if (from.x > to.x) {
         return Junction_id::Direction::WEST;
     }
-    printf("ERROR: not a valid road...");
-    exit(-1);
+    throw std::runtime_error("ERROR: not a valid road...");
 }
 
 void Scenario_id::parseRoads(json &input) {

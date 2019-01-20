@@ -87,8 +87,7 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
     } else if (from->x > to->x) {
         return Junction::Direction::WEST;
     } else {
-        printf("ERROR: not a valid road...");
-        exit(-1);
+        throw std::runtime_error("ERROR: not a valid road...");
     }
 }
 

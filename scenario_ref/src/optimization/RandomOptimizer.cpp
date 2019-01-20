@@ -6,7 +6,7 @@
 #include "optimization/model/OptimizeScenario.h"
 #include "AdvanceAlgorithm.h"
 #include <memory>
-
+#include <stdexcept>
 #include <random>
 
 inline unsigned int range_random(size_t min, size_t max) {
@@ -37,23 +37,24 @@ nlohmann::json RandomOptimizer::optimize() {
 
         std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
         if (advancer == nullptr) {
-            printf("Algorithm not found.");
-            exit(-1);
+            throw std::runtime_error("Algorithm not found: " + algorithm);
         }
 
-        OptimizeScenario &scenario = *dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
-
-        randomInitialization(scenario);
+        OptimizeScenario *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+        if (scenario == nullptr) {
+            throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
+        }
+        randomInitialization(*scenario);
         advancer->advance(scenarioData["time_steps"]);
 
-        double total_distance = scenario.getTraveledDistance();
+        double total_distance = scenario->getTraveledDistance();
 
 #ifdef DEBUG_MSGS
         printf("Distance: %.2f\n", total_distance);
 #endif
 
         if (total_distance > minTravelLength) {
-            return scenario.toJson();
+            return scenario->toJson();
         }
     }
 
