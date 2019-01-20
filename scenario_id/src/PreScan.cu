@@ -7,9 +7,9 @@
 #include <assert.h>
 #include <vector>
 
-int GetRequiredPreSumReqBufferSize(int size, int batch_count) {
-    int total_size = 0;
-    for(int step_size = size; step_size >= 1; step_size = step_size == 1 ? 0 : step_size / batch_count + 1) {
+size_t GetRequiredPreSumReqBufferSize(size_t size, size_t batch_count) {
+    size_t total_size = 0;
+    for(size_t step_size = size; step_size >= 1; step_size = step_size == 1 ? 0 : step_size / batch_count + 1) {
         total_size += step_size;
     }
     return total_size;

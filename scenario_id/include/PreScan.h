@@ -21,7 +21,7 @@
 
 
 void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int batch_count);
-int GetRequiredPreSumReqBufferSize(int size, int batch_count);
+size_t GetRequiredPreSumReqBufferSize(size_t size, size_t batch_count);
 
 CUDA_DEV void PreScan(size_t *temp, size_t idx, size_t n, size_t skip=1);
 
