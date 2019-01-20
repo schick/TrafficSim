@@ -67,7 +67,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\
     _CREATE_TEST(NAME, PATH, OpenMPAlgorithm, 7);\
-    _CREATE_TEST(NAME, PATH, TestAlgo, 7);
+    _CREATE_TEST(NAME, PATH, CudaAlgorithm, 7);
 #else
 #define CREATE_TESTS(NAME, PATH) \
     _CREATE_TEST(NAME, PATH, SequentialAlgorithm, 7);\

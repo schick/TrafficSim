@@ -7,6 +7,9 @@
 #include "SortedBucketContainer.h"
 #include "PreScan.h"
 
+#define MAX(a, b) (a < b ? b : a)
+#define MIN(a, b) (a < b ? a : b)
+
 CUDA_HOSTDEV inline void GetBucketIdxFromGlobalIdx(size_t globalIdx, size_t *sizePrefixSum, size_t sizePrefixSumLen, size_t *bucket_idx, size_t *element_idx) {
     size_t *lb = upper_bound<size_t>(sizePrefixSum, sizePrefixSum + sizePrefixSumLen, globalIdx);
     *element_idx = lb == sizePrefixSum ? globalIdx : globalIdx - *(lb - 1);
@@ -33,7 +36,7 @@ CUDA_GLOB void BitonicSortMergeKernel(BucketData *buckets, size_t num_buckets, s
 
     unsigned int i = element_idx;
     if(i + k < n && cmp(bucket[i + k], bucket[i]))
-        swap(bucket[i], bucket[i + k]);
+        cu_swap(bucket[i], bucket[i + k]);
 
 
 #ifdef RUN_WITH_TESTS
@@ -71,14 +74,14 @@ CUDA_GLOB void BitonicSortStepKernel(BucketData *buckets, size_t num_buckets, si
             /* Sort ascending */
             if (cmp(bucket[ixj], bucket[i])) {
                 /* exchange(i,ixj); */
-                swap(bucket[i], bucket[ixj]);
+                cu_swap(bucket[i], bucket[ixj]);
             }
         }
         if ((i & k) != 0) {
             /* Sort descending */
             if (cmp(bucket[i], bucket[ixj])) {
                 /* exchange(i,ixj); */
-                swap(bucket[i], bucket[ixj]);
+                cu_swap(bucket[i], bucket[ixj]);
             }
         }
     }
@@ -98,14 +101,14 @@ __device__ void bitonic_sort_step(T *dev_values, int j, int k, int n, Cmp cmp) {
             /* Sort ascending */
             if (cmp(dev_values[ixj], dev_values[i])) {
                 /* exchange(i,ixj); */
-                swap(dev_values[i], dev_values[ixj]);
+                cu_swap(dev_values[i], dev_values[ixj]);
             }
         }
         if ((i & k) != 0) {
             /* Sort descending */
             if (cmp(dev_values[i], dev_values[ixj])) {
                 /* exchange(i,ixj); */
-                swap(dev_values[i], dev_values[ixj]);
+                cu_swap(dev_values[i], dev_values[ixj]);
             }
         }
     }
@@ -116,7 +119,7 @@ __device__ void bitonic_sort_merge(T* values, int k, int n, Cmp cmp) {
     unsigned int i; /* Sorting partners: i and ixj */
     i = threadIdx.x + blockDim.x * threadIdx.y;
     if(i + k < n && cmp(values[i + k], values[i]))
-        swap(values[i], values[i + k]);
+        cu_swap(values[i], values[i + k]);
 }
 
 __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject_id::Cmp cmp, size_t length_from, size_t length_to, BucketData *largerBuckets, unsigned int *largerBucketsLastIdx) {
@@ -324,8 +327,8 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
                                               (sortBuffer.pBucketData, sortBuffer.last, cmp, 0, my_size, sortBuffer.pBucketData2, sortBuffer.last2);
         CHECK_FOR_ERROR();
         gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.last2, sizeof(unsigned int), cudaMemcpyDeviceToHost));
-        swap(sortBuffer.last2, sortBuffer.last);
-        swap(sortBuffer.pBucketData, sortBuffer.pBucketData2);
+        cu_swap(sortBuffer.last2, sortBuffer.last);
+        cu_swap(sortBuffer.pBucketData, sortBuffer.pBucketData2);
     }
 }
 

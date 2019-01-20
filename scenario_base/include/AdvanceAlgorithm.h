@@ -91,6 +91,14 @@ private:
     static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
     static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
       std::shared_ptr<BaseVisualizationEngine> createVisualizationEngine(std::shared_ptr<BaseScenario> &scenario) override { return std::make_shared<VISUALIZATION_TYPE>(scenario); }
+
+
+#define ADVANCE_ALGO_INIT_WITH_OPT(CLASS_TYPE, SCENARIO_TYPE, OPTIMIZATION_SCENARIO_TYPE, VISUALIZATION_TYPE) \
+    static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
+    static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
+    static std::shared_ptr<BaseScenario> createOptimizationScenario() { return std::make_shared<OPTIMIZATION_SCENARIO_TYPE>();}\
+    std::shared_ptr<BaseVisualizationEngine> createVisualizationEngine(std::shared_ptr<BaseScenario> &scenario) override { return std::make_shared<VISUALIZATION_TYPE>(scenario); }
+
 #else
 
 #define ADVANCE_ALGO_INIT(CLASS_TYPE, SCENARIO_TYPE, VISUALIZATION_TYPE) \
