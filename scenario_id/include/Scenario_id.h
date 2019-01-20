@@ -19,7 +19,10 @@ public:
 
 
     double getTraveledDistance() override {
-        return 0;
+        double distance = 0;
+        for(auto &car : cars)
+            distance += car.travelled_distance;
+        return distance;
     }
 };
 
