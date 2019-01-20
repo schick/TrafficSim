@@ -24,7 +24,9 @@ bool SimpleArgumentParser::load(int argc, char *argv[]) {
 
     for (; i < args_names.size(); i++) {
         args.emplace_back(argv[i + 1]);
+#ifdef DEBUG_MSGS
         printf("Argument: %s := %s\n", args_names[i].c_str(), args[i].c_str());
+#endif
     }
 
     std::string name;
@@ -36,7 +38,9 @@ bool SimpleArgumentParser::load(int argc, char *argv[]) {
             return false;
         }
         kwargs[idx] = argv[i + 2];
+#ifdef DEBUG_MSGS
         printf("Argument: %s := %s\n", kwargs_names[idx].substr(1).c_str(), kwargs[idx].c_str());
+#endif
         i += 2;
     }
     return true;
