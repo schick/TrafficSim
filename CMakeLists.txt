@@ -44,7 +44,12 @@ IF(ALL_ALGOS)
 ENDIF()
 
 IF(WITH_CUDA) # enable cuda
-    enable_language(CUDA)
+    find_package(CUDA)
+    enable_language(CUDA OPTIONAL)
+    if(CUDA_FOUND AND CMAKE_CUDA_COMPILER)
+    else()
+        set(WITH_CUDA OFF)
+    endif()
 ENDIF()
 
 if(DEBUG_MSGS) # enable debugging in source code
