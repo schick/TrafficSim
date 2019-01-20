@@ -12,12 +12,10 @@
 #include <exception>
 #include <stdexcept>
 
-#ifdef DEBUG_MSGS
+#ifdef DEBUG
 #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #else
-// #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
-// #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #endif
 
 
