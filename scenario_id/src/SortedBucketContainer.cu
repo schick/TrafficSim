@@ -304,12 +304,12 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
 
     TrafficObject_id::Cmp cmp;
     unsigned int my_size = size;
-    cudaMemset(sortBuffer.last, 0, sizeof(unsigned int));
-    cudaSortKernel<<<2048, my_size, my_size * sizeof(TrafficObject_id*)>>>(container, cmp, 0, my_size, sortBuffer.pBucketData, sortBuffer.last);
+    cudaMemset(sortBuffer.pBucketDataNumFilled, 0, sizeof(unsigned int));
+    cudaSortKernel<<<2048, my_size, my_size * sizeof(TrafficObject_id*)>>>(container, cmp, 0, my_size, sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled);
     CHECK_FOR_ERROR();
 
     unsigned int lastHost;
-    gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.last, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.pBucketDataNumFilled, sizeof(unsigned int), cudaMemcpyDeviceToHost));
     while (lastHost != 0) {
         // printf("lastHost: %d\n", lastHost);
         my_size *= 2;
@@ -321,20 +321,20 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
             size = my_size;
         }
         // printf("size: %u\n", my_size);
-        cudaMemset(sortBuffer.last2, 0, sizeof(unsigned int));
+        cudaMemset(sortBuffer.pBucketDataNumFilled2, 0, sizeof(unsigned int));
         // printf("%lu, %p, %u, %p\n", lastHost, sortBuffer.pBucketData, my_size, sortBuffer.pBucketData2);
         cudaSortKernel2<<< lastHost, my_size, my_size * sizeof(TrafficObject_id*)>> >
-                                              (sortBuffer.pBucketData, sortBuffer.last, cmp, 0, my_size, sortBuffer.pBucketData2, sortBuffer.last2);
+                                              (sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled, cmp, 0, my_size, sortBuffer.pBucketData2, sortBuffer.pBucketDataNumFilled2);
         CHECK_FOR_ERROR();
-        gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.last2, sizeof(unsigned int), cudaMemcpyDeviceToHost));
-        cu_swap(sortBuffer.last2, sortBuffer.last);
+        gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.pBucketDataNumFilled2, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+        cu_swap(sortBuffer.pBucketDataNumFilled2, sortBuffer.pBucketDataNumFilled);
         cu_swap(sortBuffer.pBucketData, sortBuffer.pBucketData2);
     }
 }
 
 void SortedBucketContainer::SortFixedSize(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer) {
     TrafficObject_id::Cmp cmp;
-    cudaSortKernel<<<2048, 1024, 1024 * sizeof(TrafficObject_id*)>>>(container, cmp, 0, 100000000, sortBuffer.pBucketData, sortBuffer.last);
+    cudaSortKernel<<<2048, 1024, 1024 * sizeof(TrafficObject_id*)>>>(container, cmp, 0, 100000000, sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled);
     CHECK_FOR_ERROR();
 }
 
@@ -861,11 +861,11 @@ void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *containe
         (container, sortBuffer.preSumOut, buffer_size, sortBuffer.reinsert_buffer, sortBuffer.reinsert_buffer_size);
     CHECK_FOR_ERROR()*/
 
-    gpuErrchk(cudaMemsetAsync(sortBuffer.multiScanTmp, 0, sortBuffer.multiScanTmpBytes));
-    MoveToContainerKernel<<<256, 256>>>(container, sortBuffer.reinsert_buffer, sortBuffer.preSumOut + scenario.cars.size() - 1, sortBuffer.multiScanTmp);
+    gpuErrchk(cudaMemsetAsync(sortBuffer.laneCounter, 0, sortBuffer.laneCounterSize * sizeof(unsigned int)));
+    MoveToContainerKernel<<<256, 256>>>(container, sortBuffer.reinsert_buffer, sortBuffer.preSumOut + scenario.cars.size() - 1, sortBuffer.laneCounter);
     CHECK_FOR_ERROR();
 
-    SetTempSizeKernel<<<number_of_lanes / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.multiScanTmp);
+    SetTempSizeKernel<<<number_of_lanes / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.laneCounter);
     CHECK_FOR_ERROR();
 
 }
