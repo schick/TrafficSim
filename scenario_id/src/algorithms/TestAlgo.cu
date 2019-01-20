@@ -183,6 +183,21 @@ __global__ void testBucketsForInvalidLaneKernel(SortedBucketContainer *container
             TrafficObject_id *object = bucket.buffer[object_idx];
             if(object == nullptr) printf("Wrong length in %lu\n", bucket_id);
             assert(object != nullptr);
+            if(object->lane != bucket_id) {
+                printf("Car(%lu) is not in Bucket(%lu)\n", object->id, object->lane);
+                printf("Bucket(%lu) contents: ", container->buckets[object->lane].id);
+                for (int i = 0; i < container->buckets[object->lane].size; i++) {
+                    TrafficObject_id *p_obj = container->buckets[object->lane].buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+                printf("Bucket(%lu) contents: ", bucket.id);
+                for (int i = 0; i < bucket.size; i++) {
+                    TrafficObject_id *p_obj = bucket.buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+            }
             assert(object->lane == bucket_id);
             if (object_idx > 0) {
                 if (!cmp(bucket.buffer[object_idx - 1], object)) {

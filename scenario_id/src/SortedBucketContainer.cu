@@ -130,17 +130,17 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
     extern __shared__ TrafficObject_id *device_values[];
     assert(device_values != nullptr);
     for(size_t bucket_idx = first_bucket_idx; bucket_idx < bucket_count; bucket_idx += block_count) {
-#ifdef RUN_WITH_TESTS
-        if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
-            printf("Bucket(%lu) contents before sorting: ", bucket_idx);
-            for (int i = 0; i < buckets[bucket_idx].size; i++) {
-                TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
-                printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
-            }
-            printf("\n");
-        }
-#endif
         if (length_from <= buckets[bucket_idx].size && buckets[bucket_idx].size <= length_to) {
+#ifdef RUN_WITH_TESTS
+            if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
+                printf("Bucket(%lu) contents before sorting: ", buckets[bucket_idx].id);
+                for (int i = 0; i < buckets[bucket_idx].size; i++) {
+                    TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+            }
+#endif
             assert(buckets[bucket_idx].size <= GetBlockDim());
 
             if (buckets[bucket_idx].size > 1) {
@@ -166,12 +166,19 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                     bitonic_sort_merge(device_values, k, n, cmp);
                     __syncthreads();
                 }
-
                 if (GetThreadIdx() < n)
                     device_values_[GetThreadIdx()] = device_values[GetThreadIdx()];
-
-
             }
+#ifdef RUN_WITH_TESTS
+            if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
+                printf("Bucket(%lu) contents after sorting : ", buckets[bucket_idx].id);
+                for (int i = 0; i < buckets[bucket_idx].size; i++) {
+                    TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+            }
+#endif
         } else {
             if(GetThreadIdx() == 0)
                 if(buckets[bucket_idx].size > length_to) {
@@ -182,16 +189,6 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                     //printf("lower: %lu (%lu, %lu)\n", buckets[bucket_idx].size, length_from, length_to);
                 }
         }
-#ifdef RUN_WITH_TESTS
-        if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
-            printf("Bucket(%lu) contents after sorting: ", bucket_idx);
-            for (int i = 0; i < buckets[bucket_idx].size; i++) {
-                TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
-                printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
-            }
-            printf("\n");
-        }
-#endif
 
     }
 }
