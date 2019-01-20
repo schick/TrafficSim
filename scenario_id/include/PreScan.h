@@ -5,7 +5,7 @@
 #ifndef TRAFFIC_SIM_PRESCAN_H
 #define TRAFFIC_SIM_PRESCAN_H
 
-#include <stddef.h>
+#include <cstddef>
 
 #ifdef __CUDACC__
 #define CUDA_HOSTDEV __host__ __device__

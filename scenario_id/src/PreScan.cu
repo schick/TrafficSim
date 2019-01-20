@@ -15,6 +15,18 @@ size_t GetRequiredPreSumReqBufferSize(size_t size, size_t batch_count) {
     return total_size;
 }
 
+__global__ void TestPreSum(size_t *out, size_t *in, int size) {
+    if (GetGlobalIdx() == 0) printf("Test presum...\n");
+    if(GetGlobalIdx() < size && GetGlobalIdx() > 0) {
+        assert(out[GetGlobalIdx()] - out[GetGlobalIdx() - 1] == in[GetGlobalIdx()]);
+    }
+    if(GetGlobalIdx() == 0) {
+        assert(out[GetGlobalIdx()] == in[GetGlobalIdx()]);
+    }
+
+}
+
+
 void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int batch_count) {
     assert(IsPowerOfTwo(batch_count));
     assert(out_size >= GetRequiredPreSumReqBufferSize(size, batch_count));
@@ -50,6 +62,9 @@ void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int bat
     }
     // offset -= step_size;
     // size_t * res = out + offset;
+#ifdef RUN_WITH_TESTS
+    TestPreSum<<<size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(out, in, size);
+#endif
 }
 
 
