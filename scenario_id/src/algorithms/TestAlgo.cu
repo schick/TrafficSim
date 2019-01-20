@@ -576,6 +576,11 @@ void static_advance(size_t steps, Scenario_id &scenario) {
     }
 
     device_cuda_scenario->retriveData(&scenario);
+
+    gpuErrchk(cudaFree(dev_left_neighbors));
+    gpuErrchk(cudaFree(dev_own_neighbors));
+    gpuErrchk(cudaFree(dev_right_neighbors));
+    gpuErrchk(cudaFree(device_changes));
 }
 
 void CudaAlgorithm::advance(size_t steps) {
