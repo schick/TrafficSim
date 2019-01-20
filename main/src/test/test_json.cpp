@@ -59,7 +59,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
 
 #define JSON_TEST_PATH std::string("tests/")
 
-#define _CREATE_TEST(NAME, PATH, ALGO, ACCURACY) TEST(test##ALGO##ACCURACY, NAME) {\
+#define _CREATE_TEST(NAME, PATH, ALGO, ACCURACY) TEST(Test##ALGO##WithPrecision##ACCURACY, NAME) {\
     test_file(STR(ALGO), JSON_TEST_PATH + PATH, 1e-##ACCURACY);\
 }
 
@@ -124,7 +124,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     ASSERT_NO_THROW(optimizer->optimize());
 }
 
-#define _CREATE_OPTIMIZATION(NAME, PATH, ALGO, OPT_ALGO) TEST(Optimize_##OPT_ALGO##_##ALGO, NAME) {\
+#define _CREATE_OPTIMIZATION(NAME, PATH, ALGO, OPT_ALGO) TEST(Test##OPT_ALGO##With##ALGO, NAME) {\
     testRandom(STR(OPT_ALGO), STR(ALGO), JSON_TEST_PATH + PATH);\
 }
 
@@ -133,6 +133,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm, RandomOptimizer);
 
 _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");
+
 _CREATE_OPTIMIZATIONS(tiny_400_steps, "44-tiny_400timestep_optimize.json");
 
 
