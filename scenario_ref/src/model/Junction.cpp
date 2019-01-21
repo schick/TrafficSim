@@ -30,7 +30,7 @@ void Junction::initializeSignals() {
 void Junction::setSignals() {
     for(int i = 0; i < 4; i++) {
         for(RedTrafficLight &l : mRedTrafficLights[i]) {
-            if (!signals.empty() && signals[current_signal].direction == i) {
+            if (signals.empty() || signals[current_signal].direction == i) {
                 // green light
                 l.switchOff();
             } else {
