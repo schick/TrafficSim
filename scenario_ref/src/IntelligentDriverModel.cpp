@@ -59,8 +59,8 @@ double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
     if (car->getLane()->isRed) {
-        auto trafficLight = &TrafficLight(car->getLane());
-        setLeadingTrafficObject(leading_vehicle, *car, *trafficLight);
+        auto trafficLight = TrafficLight(car->getLane());
+        setLeadingTrafficObject(leading_vehicle, *car, trafficLight);
     }
     
     double with_lead = 0.0;
