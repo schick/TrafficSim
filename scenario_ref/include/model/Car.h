@@ -72,12 +72,13 @@ public:
 
     virtual void updateKinematicState();
 
-    double getTraveledDistance();
+    double getTravelledDistance();
+    void setTravelledDistance(double value);
 
 
 private:
 
-    double traveledDistance = 0.0;
+    double travelledDistance = 0.0;
 
 };
 

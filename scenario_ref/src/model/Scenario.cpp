@@ -154,10 +154,10 @@ json Scenario::toJson() {
     return output;
 }
 
-double Scenario::getTraveledDistance() {
+double Scenario::getTravelledDistance() {
     double sum;
     for (Car &car : cars) {
-        sum += car.getTraveledDistance();
+        sum += car.getTravelledDistance();
     }
     return sum;
 }

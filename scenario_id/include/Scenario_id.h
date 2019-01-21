@@ -18,7 +18,7 @@ public:
     json toJson();
 
 
-    double getTraveledDistance() override {
+    double getTravelledDistance() override {
         double distance = 0;
         for(auto &car : cars)
             distance += car.travelled_distance;

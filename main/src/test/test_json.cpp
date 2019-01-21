@@ -24,7 +24,7 @@ void test_file(std::string algorithm, std::string fn, double genauigkeit) {
     ASSERT_TRUE(advancer.get() != nullptr && "Advancer not registered.");
     EXPECT_NO_THROW(advancer->advance(input["time_steps"]));
 
-    double total_distance = advancer->getScenario()->getTraveledDistance();
+    double total_distance = advancer->getScenario()->getTravelledDistance();
 
     printf("Distance: %.2f\n", total_distance);
 

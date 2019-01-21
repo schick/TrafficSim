@@ -47,7 +47,7 @@ nlohmann::json RandomOptimizer::optimize() {
         randomInitialization(*scenario);
         advancer->advance(scenarioData["time_steps"]);
 
-        double total_distance = scenario->getTraveledDistance();
+        double total_distance = scenario->getTravelledDistance();
 
 #ifdef DEBUG_MSGS
         printf("Distance: %.2f\n", total_distance);
