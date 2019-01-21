@@ -7,13 +7,25 @@
 #include <assert.h>
 #include <vector>
 
-int GetRequiredPreSumReqBufferSize(int size, int batch_count) {
-    int total_size = 0;
-    for(int step_size = size; step_size >= 1; step_size = step_size == 1 ? 0 : step_size / batch_count + 1) {
+size_t GetRequiredPreSumReqBufferSize(size_t size, size_t batch_count) {
+    size_t total_size = 0;
+    for(size_t step_size = size; step_size >= 1; step_size = step_size == 1 ? 0 : step_size / batch_count + 1) {
         total_size += step_size;
     }
     return total_size;
 }
+
+__global__ void TestPreSum(size_t *out, size_t *in, int size) {
+    if (GetGlobalIdx() == 0) printf("Test presum...\n");
+    if(GetGlobalIdx() < size && GetGlobalIdx() > 0) {
+        assert(out[GetGlobalIdx()] - out[GetGlobalIdx() - 1] == in[GetGlobalIdx()]);
+    }
+    if(GetGlobalIdx() == 0) {
+        assert(out[GetGlobalIdx()] == in[GetGlobalIdx()]);
+    }
+
+}
+
 
 void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int batch_count) {
     assert(IsPowerOfTwo(batch_count));
@@ -50,6 +62,9 @@ void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int bat
     }
     // offset -= step_size;
     // size_t * res = out + offset;
+#ifdef RUN_WITH_TESTS
+    TestPreSum<<<size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(out, in, size);
+#endif
 }
 
 

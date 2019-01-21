@@ -2,12 +2,34 @@
 include_directories(include)
 
 # add library with all logic
-SET(SOURCE_FILES src/model/Car.cpp src/model/Junction.cpp src/model/Lane.cpp src/model/RedTrafficLight.cpp
-        src/model/Road.cpp src/model/Scenario.cpp src/model/TrafficObject.cpp
+SET(SOURCE_FILES
+        include/model/Car.h
+        src/model/Car.cpp
+        include/model/Junction.h
+        src/model/Junction.cpp
+        include/model/Lane.h
+        src/model/Lane.cpp
+        include/model/RedTrafficLight.h
+        src/model/RedTrafficLight.cpp
+        include/model/Road.h
+        src/model/Road.cpp
+        include/model/Scenario.h
+        src/model/Scenario.cpp
+        include/model/TrafficObject.h
+        src/model/TrafficObject.cpp
+        include/algorithms/SequentialAlgorithm.h
         src/algorithms/SequentialAlgorithm.cpp
+        include/algorithms/OpenMPAlgorithm.h
         src/algorithms/OpenMPAlgorithm.cpp
-        src/IntelligentDriverModel.cpp include/NeighborFinder.h src/LaneChangeModel.cpp include/LaneChangeModel.h src/NeighborFinder.cpp
+        include/IntelligentDriverModel.h
+        src/IntelligentDriverModel.cpp
+        include/NeighborFinder.h
+        src/NeighborFinder.cpp
+        include/LaneChangeModel.h
+        src/LaneChangeModel.cpp
+        include/optimization/model/OptimizeScenario.h
         src/optimization/model/OptimizeScenario.cpp
+        include/optimization/RandomOptimizer.h
         src/optimization/RandomOptimizer.cpp)
 
 if(OpenCV_FOUND)

@@ -14,10 +14,6 @@
 #include <map>
 #include "AlgorithmWrapper.h"
 
-
-#define MAX(a, b) (a < b ? b : a)
-#define MIN(a, b) (a < b ? a : b)
-
 #ifdef __CUDACC__
 #define CUDA_HOSTDEV __host__ __device__
 #define CUDA_HOST __host__
@@ -27,8 +23,6 @@
 #define CUDA_HOST
 #define CUDA_DEV
 #endif
-
-
 
 class CudaAlgorithm : public AdvanceAlgorithm {
 

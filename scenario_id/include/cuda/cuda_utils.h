@@ -12,12 +12,10 @@
 #include <exception>
 #include <stdexcept>
 
-#ifdef DEBUG_MSGS
+#ifdef DEBUG
 #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #else
-// #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
-// #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #endif
 
 
@@ -126,7 +124,7 @@ CUDA_HOSTDEV T *upper_bound(T *__first, T *__last, const T& __val) {
 
 
 template<typename T>
-CUDA_HOSTDEV inline void swap(T &t1, T &t2) {
+CUDA_HOSTDEV inline void cu_swap(T &t1, T &t2) {
     T t = t1;
     t1 = t2;
     t2 = t;

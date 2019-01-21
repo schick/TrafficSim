@@ -7,6 +7,9 @@
 #include "SortedBucketContainer.h"
 #include "PreScan.h"
 
+#define MAX(a, b) (a < b ? b : a)
+#define MIN(a, b) (a < b ? a : b)
+
 CUDA_HOSTDEV inline void GetBucketIdxFromGlobalIdx(size_t globalIdx, size_t *sizePrefixSum, size_t sizePrefixSumLen, size_t *bucket_idx, size_t *element_idx) {
     size_t *lb = upper_bound<size_t>(sizePrefixSum, sizePrefixSum + sizePrefixSumLen, globalIdx);
     *element_idx = lb == sizePrefixSum ? globalIdx : globalIdx - *(lb - 1);
@@ -33,7 +36,7 @@ CUDA_GLOB void BitonicSortMergeKernel(BucketData *buckets, size_t num_buckets, s
 
     unsigned int i = element_idx;
     if(i + k < n && cmp(bucket[i + k], bucket[i]))
-        swap(bucket[i], bucket[i + k]);
+        cu_swap(bucket[i], bucket[i + k]);
 
 
 #ifdef RUN_WITH_TESTS
@@ -71,14 +74,14 @@ CUDA_GLOB void BitonicSortStepKernel(BucketData *buckets, size_t num_buckets, si
             /* Sort ascending */
             if (cmp(bucket[ixj], bucket[i])) {
                 /* exchange(i,ixj); */
-                swap(bucket[i], bucket[ixj]);
+                cu_swap(bucket[i], bucket[ixj]);
             }
         }
         if ((i & k) != 0) {
             /* Sort descending */
             if (cmp(bucket[i], bucket[ixj])) {
                 /* exchange(i,ixj); */
-                swap(bucket[i], bucket[ixj]);
+                cu_swap(bucket[i], bucket[ixj]);
             }
         }
     }
@@ -98,14 +101,14 @@ __device__ void bitonic_sort_step(T *dev_values, int j, int k, int n, Cmp cmp) {
             /* Sort ascending */
             if (cmp(dev_values[ixj], dev_values[i])) {
                 /* exchange(i,ixj); */
-                swap(dev_values[i], dev_values[ixj]);
+                cu_swap(dev_values[i], dev_values[ixj]);
             }
         }
         if ((i & k) != 0) {
             /* Sort descending */
             if (cmp(dev_values[i], dev_values[ixj])) {
                 /* exchange(i,ixj); */
-                swap(dev_values[i], dev_values[ixj]);
+                cu_swap(dev_values[i], dev_values[ixj]);
             }
         }
     }
@@ -116,7 +119,7 @@ __device__ void bitonic_sort_merge(T* values, int k, int n, Cmp cmp) {
     unsigned int i; /* Sorting partners: i and ixj */
     i = threadIdx.x + blockDim.x * threadIdx.y;
     if(i + k < n && cmp(values[i + k], values[i]))
-        swap(values[i], values[i + k]);
+        cu_swap(values[i], values[i + k]);
 }
 
 __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject_id::Cmp cmp, size_t length_from, size_t length_to, BucketData *largerBuckets, unsigned int *largerBucketsLastIdx) {
@@ -127,17 +130,17 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
     extern __shared__ TrafficObject_id *device_values[];
     assert(device_values != nullptr);
     for(size_t bucket_idx = first_bucket_idx; bucket_idx < bucket_count; bucket_idx += block_count) {
-#ifdef RUN_WITH_TESTS
-        if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
-            printf("Bucket(%lu) contents before sorting: ", bucket_idx);
-            for (int i = 0; i < buckets[bucket_idx].size; i++) {
-                TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
-                printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
-            }
-            printf("\n");
-        }
-#endif
         if (length_from <= buckets[bucket_idx].size && buckets[bucket_idx].size <= length_to) {
+#ifdef RUN_WITH_TESTS
+            if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
+                printf("Bucket(%lu) contents before sorting: ", buckets[bucket_idx].id);
+                for (int i = 0; i < buckets[bucket_idx].size; i++) {
+                    TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+            }
+#endif
             assert(buckets[bucket_idx].size <= GetBlockDim());
 
             if (buckets[bucket_idx].size > 1) {
@@ -163,12 +166,19 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                     bitonic_sort_merge(device_values, k, n, cmp);
                     __syncthreads();
                 }
-
                 if (GetThreadIdx() < n)
                     device_values_[GetThreadIdx()] = device_values[GetThreadIdx()];
-
-
             }
+#ifdef RUN_WITH_TESTS
+            if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
+                printf("Bucket(%lu) contents after sorting : ", buckets[bucket_idx].id);
+                for (int i = 0; i < buckets[bucket_idx].size; i++) {
+                    TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
+                    printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
+                }
+                printf("\n");
+            }
+#endif
         } else {
             if(GetThreadIdx() == 0)
                 if(buckets[bucket_idx].size > length_to) {
@@ -179,16 +189,6 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                     //printf("lower: %lu (%lu, %lu)\n", buckets[bucket_idx].size, length_from, length_to);
                 }
         }
-#ifdef RUN_WITH_TESTS
-        if(i == 0 && buckets[bucket_idx].id == BUCKET_TO_ANALYZE) {
-            printf("Bucket(%lu) contents after sorting: ", bucket_idx);
-            for (int i = 0; i < buckets[bucket_idx].size; i++) {
-                TrafficObject_id *p_obj = buckets[bucket_idx].buffer[i];
-                printf(" %lu(%.2f), ", p_obj == nullptr ? (size_t )-1 : p_obj->id, p_obj == nullptr ? -1. : p_obj->x);
-            }
-            printf("\n");
-        }
-#endif
 
     }
 }
@@ -301,12 +301,12 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
 
     TrafficObject_id::Cmp cmp;
     unsigned int my_size = size;
-    cudaMemset(sortBuffer.last, 0, sizeof(unsigned int));
-    cudaSortKernel<<<2048, my_size, my_size * sizeof(TrafficObject_id*)>>>(container, cmp, 0, my_size, sortBuffer.pBucketData, sortBuffer.last);
+    cudaMemset(sortBuffer.pBucketDataNumFilled, 0, sizeof(unsigned int));
+    cudaSortKernel<<<2048, my_size, my_size * sizeof(TrafficObject_id*)>>>(container, cmp, 0, my_size, sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled);
     CHECK_FOR_ERROR();
 
     unsigned int lastHost;
-    gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.last, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.pBucketDataNumFilled, sizeof(unsigned int), cudaMemcpyDeviceToHost));
     while (lastHost != 0) {
         // printf("lastHost: %d\n", lastHost);
         my_size *= 2;
@@ -318,23 +318,16 @@ void SortedBucketContainer::SortInSizeSteps(SortedBucketContainer *container, Sc
             size = my_size;
         }
         // printf("size: %u\n", my_size);
-        cudaMemset(sortBuffer.last2, 0, sizeof(unsigned int));
+        cudaMemset(sortBuffer.pBucketDataNumFilled2, 0, sizeof(unsigned int));
         // printf("%lu, %p, %u, %p\n", lastHost, sortBuffer.pBucketData, my_size, sortBuffer.pBucketData2);
         cudaSortKernel2<<< lastHost, my_size, my_size * sizeof(TrafficObject_id*)>> >
-                                              (sortBuffer.pBucketData, sortBuffer.last, cmp, 0, my_size, sortBuffer.pBucketData2, sortBuffer.last2);
+                                              (sortBuffer.pBucketData, sortBuffer.pBucketDataNumFilled, cmp, 0, my_size, sortBuffer.pBucketData2, sortBuffer.pBucketDataNumFilled2);
         CHECK_FOR_ERROR();
-        gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.last2, sizeof(unsigned int), cudaMemcpyDeviceToHost));
-        swap(sortBuffer.last2, sortBuffer.last);
-        swap(sortBuffer.pBucketData, sortBuffer.pBucketData2);
+        gpuErrchk(cudaMemcpy(&lastHost, sortBuffer.pBucketDataNumFilled2, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+        cu_swap(sortBuffer.pBucketDataNumFilled2, sortBuffer.pBucketDataNumFilled);
+        cu_swap(sortBuffer.pBucketData, sortBuffer.pBucketData2);
     }
 }
-
-void SortedBucketContainer::SortFixedSize(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer) {
-    TrafficObject_id::Cmp cmp;
-    cudaSortKernel<<<2048, 1024, 1024 * sizeof(TrafficObject_id*)>>>(container, cmp, 0, 100000000, sortBuffer.pBucketData, sortBuffer.last);
-    CHECK_FOR_ERROR();
-}
-
 
 void SortedBucketContainer::Sort(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer) {
     SortInSizeSteps(container, scenario, sortBuffer);
@@ -371,50 +364,6 @@ void SortedBucketContainer::FetchBucketSizes(BucketData *buckets, size_t num_buc
     CHECK_FOR_ERROR();
 }
 
-
-__global__ void MergeBlockWisePreScan(size_t *out, size_t out_size, size_t *in, size_t in_size, size_t buffer_size, size_t skip_count) {
-    assert(IsPowerOfTwo(buffer_size));
-    size_t idx = GetThreadIdx();
-    size_t offset = GetBlockIdx() * buffer_size * skip_count;
-
-    assert(GetBlockDim() * 2 == buffer_size);
-    assert((2 * GetBlockDim() + 1) * skip_count - 1 + GetGridDim() * buffer_size * skip_count >= in_size);
-
-    extern __shared__ size_t temp[];
-
-    if ((2 * idx + 1) * skip_count - 1 + offset < in_size)
-        temp[2 * idx] = in[(2 * idx + 1) * skip_count - 1 + offset];
-    else
-        temp[2 * idx] = 0;
-
-    if ((2 * idx + 2) * skip_count - 1 + offset < in_size)
-        temp[2 * idx + 1] = in[(2 * idx + 2) * skip_count - 1 + offset];
-    else
-        temp[2 * idx + 1] = 0;
-
-    __syncthreads();
-
-    PreScan(temp, idx, buffer_size);
-
-    __syncthreads();
-
-    assert(2 * GetBlockDim() + 1 + buffer_size * GetGridDim() >= out_size);
-    if(2 * idx + buffer_size * GetBlockIdx() < out_size)
-        out[2 * idx + buffer_size * GetBlockIdx()] = temp[2 * idx];
-    if(2 * idx + 1 + buffer_size * GetBlockIdx() < out_size)
-        out[2 * idx + 1 + buffer_size * GetBlockIdx()] = temp[2 * idx + 1];
-}
-
-__global__ void MergeBlockWisePreScanStep2(size_t *out, size_t *in, size_t n, size_t buffer_size, size_t out_size) {
-    size_t idx = GetThreadIdx();
-    size_t offset = GetBlockIdx() * n;
-
-    if (GetBlockIdx() > 0 && idx + offset < out_size) {
-        out[idx + offset] += in[GetBlockIdx() - 1];
-    }
-
-}
-
 __global__ void SetTempSizeKernel(SortedBucketContainer *container, unsigned int *temp_value) {
     size_t lane_id = GetGlobalIdx();
 
@@ -422,6 +371,8 @@ __global__ void SetTempSizeKernel(SortedBucketContainer *container, unsigned int
 
     if (lane_id < container->bucket_count) {
         container->buckets[lane_id].size += temp_value[lane_id];
+        container->buckets[lane_id].size = MIN(container->buckets[lane_id].size,
+                container->buckets[lane_id].buffer_size);
 #ifdef RUN_WITH_TESTS
         if (lane_id == BUCKET_TO_ANALYZE)
             printf("New Temporary Bucket(%lu) size (added %u): %lu\n", (size_t) BUCKET_TO_ANALYZE,temp_value[lane_id],
@@ -481,13 +432,8 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
         if (bucket_idx >= container->bucket_count) return;
-#ifdef DEBUG_MSGS
-        if (element_idx >= container->buckets[bucket_idx].size)
-            printf("ERROR: %lu: %lu, %lu, %lu, %lu\n", idx, bucket_idx, container->bucket_count, element_idx,
-                   container->buckets[bucket_idx].size);
-#endif
         assert(bucket_idx < container->bucket_count);
-        assert(element_idx < container->buckets[bucket_idx].size);
+        if(element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
         bool found = false;
         size_t new_size;
         auto &bucket = container->buckets[bucket_idx];
@@ -626,87 +572,22 @@ __device__ inline bool isInWrongLane(SortedBucketContainer *container, TrafficOb
     return (object < supposed_bucket.buffer || supposed_bucket.buffer + supposed_bucket.size <= object);
 }
 
-
-__global__ void BlockWisePreScan(SortedBucketContainer *container, size_t *g_odata, size_t n) {
-    assert(IsPowerOfTwo(n));
-    extern __shared__ size_t temp[];// allocated on invocation
-
-    size_t traffic_object_id = GetThreadIdx();
-    size_t buffer_offset = GetBlockIdx() * n;
-    assert(n == GetBlockDim() * 2);
-    assert(GetGlobalDim() * 2 >= container->main_buffer_size);
-
-    TrafficObject_id **p_obj1 = container->main_buffer + 2 * traffic_object_id + buffer_offset;
-    TrafficObject_id **p_obj2 = container->main_buffer + 2 * traffic_object_id + 1 + buffer_offset;
-    // if(GetGlobalIdx() == 0) printf("Starting...\n");
-
-    if(p_obj1 < container->main_buffer + container->main_buffer_size && p_obj1 != nullptr) {
-        temp[2 * traffic_object_id] = isInWrongLane(container, p_obj1) ? 1 : 0; // load input into shared memory
-        //printf("Got one. %lu, %lu, %lu \n", traffic_object_id, buffer_offset, temp[2 * traffic_object_id]);
-    } else
-        temp[2 * traffic_object_id] = 0;
-
-    if(p_obj2 < container->main_buffer + container->main_buffer_size && p_obj2 != nullptr) {
-        temp[2 * traffic_object_id + 1] = isInWrongLane(container, p_obj2) ? 1 : 0;  // load input into shared memory
-        //printf("Got one. %lu, %lu, %lu \n", traffic_object_id, buffer_offset, temp[2 * traffic_object_id + 1]);
-    } else
-        temp[2 * traffic_object_id + 1] = 0;
-
-    PreScan(temp, traffic_object_id, n);
-
-    __syncthreads();
-
-    if(p_obj1 < container->main_buffer + container->main_buffer_size)
-        g_odata[2 * traffic_object_id + buffer_offset] = temp[2*traffic_object_id]; // write results to device memory
-    if(p_obj2 < container->main_buffer + container->main_buffer_size)
-        g_odata[2 * traffic_object_id+1 + buffer_offset] = temp[2*traffic_object_id+1];
-
-}
-
-__global__ void MoveToReinsertBufferKernel(SortedBucketContainer *container, size_t *prefixSum, size_t n,
-                                     TrafficObject_id **reinsert_buffer, size_t buffer_size) {
-
-    size_t idx = GetGlobalIdx();
-
-    assert(GetGlobalDim() >= n);
-
-    if (idx >= n) return;
-
-    if ((idx == 0 && prefixSum[0] > 0) || (idx != 0 && prefixSum[idx] != prefixSum[idx - 1])){
-        size_t insert_id = idx == 0 ? 0 : prefixSum[idx - 1];
-        if(insert_id >= buffer_size) {
-            printf("%lu, %lu\n", insert_id, buffer_size);
-        }
-
-        if(!(insert_id < buffer_size && container->main_buffer[idx] != nullptr)) {
-            printf("%lu: %lu - %lu\n", idx, prefixSum[idx], idx == 0 ? (size_t )-1 : prefixSum[idx - 1]);
-        }
-
-        assert(insert_id < buffer_size && container->main_buffer[idx] != nullptr);
-        reinsert_buffer[insert_id] = container->main_buffer[idx];
-        container->main_buffer[idx] = nullptr;
-#ifdef RUN_WITH_TESTS
-        if (reinsert_buffer[insert_id]->id == CAR_TO_ANALYZE) {
-            printf("Car(%lu) moved to ReinsertBuffer(#%lu)\n", reinsert_buffer[insert_id]->id, insert_id);
-        }
-#endif
-    }
-}
-
-
-
 __global__
 void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **objectsToInsert, size_t *n, unsigned int *temp_value) {
     for(size_t idx = GetGlobalIdx(); idx < *n; idx += GetGlobalDim()) {
-
         int insert_offset = atomicAdd(temp_value + objectsToInsert[idx]->lane, 1);
         auto &bucket = container->buckets[objectsToInsert[idx]->lane];
-        assert(bucket.size + insert_offset < bucket.buffer_size);
-#ifdef DEBUG_MSGS
+        // assert(bucket.size + insert_offset < bucket.buffer_size);
+#ifdef DEBUG
         if(bucket.size + insert_offset >= bucket.buffer_size) {
+            // TODO: handle buffer overflow with seperate buffer (adapt find_nearest,
+            // TODO: and always put in reinsert buffer to try and reintegrate those back into normal container)
+
             printf("Buffer-Overflow for Lane(%lu)\n", objectsToInsert[idx]->lane);
+            continue;
         }
 #endif
+        assert(bucket.size + insert_offset < bucket.buffer_size);
         bucket.buffer[bucket.size + insert_offset] = objectsToInsert[idx];
 #ifdef RUN_WITH_TESTS
         if (objectsToInsert[idx]->id == CAR_TO_ANALYZE) {
@@ -715,60 +596,6 @@ void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **
 #endif
     }
 }
-
-void MyPreScan(Scenario_id &scenario, SortedBucketContainer *container, SortBuffer &sortBuffer) {
-
-    assert(IsPowerOfTwo(PRE_SUM_BLOCK_SIZE));
-
-    size_t buffer_size = SortedBucketContainer::getBufferSize(scenario, 4.);
-
-    BlockWisePreScan<<<buffer_size / PRE_SUM_BLOCK_SIZE + 1, PRE_SUM_BLOCK_SIZE / 2, PRE_SUM_BLOCK_SIZE * sizeof(size_t)>>>(container, sortBuffer.preSumOut, PRE_SUM_BLOCK_SIZE);
-    CHECK_FOR_ERROR();
-
-#ifdef RUN_WITH_TESTS
-    std::vector<size_t> preSumHost(buffer_size);
-    gpuErrchk(cudaMemcpy(preSumHost.data(), sortBuffer.temporary_pre_sum_buffers[0], sortBuffer.temporary_pre_sum_buffer_sizes[0] * sizeof(size_t), cudaMemcpyDeviceToHost));
-    CHECK_FOR_ERROR();
-#endif
-
-    size_t *previousPreSumTemp, *preSumTemp;
-    size_t previousPreSumTempSize, preSumTempSize;
-    for(size_t i=1; i < sortBuffer.temporary_pre_sum_buffers.size(); i++) {
-        preSumTemp = sortBuffer.temporary_pre_sum_buffers[i];
-        preSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i];
-        previousPreSumTemp = sortBuffer.temporary_pre_sum_buffers[i - 1];
-        previousPreSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i - 1];
-
-        MergeBlockWisePreScan<<<preSumTempSize / PRE_SUM_BLOCK_SIZE + 1, PRE_SUM_BLOCK_SIZE / 2, PRE_SUM_BLOCK_SIZE * sizeof(size_t )>>>(preSumTemp, preSumTempSize, previousPreSumTemp, previousPreSumTempSize, PRE_SUM_BLOCK_SIZE, PRE_SUM_BLOCK_SIZE);
-        CHECK_FOR_ERROR();
-
-#ifdef RUN_WITH_TESTS
-        gpuErrchk(cudaMemcpy(preSumHost.data(), preSumTemp, preSumTempSize * sizeof(size_t), cudaMemcpyDeviceToHost));
-        CHECK_FOR_ERROR();
-#endif
-    }
-
-    for(size_t i=sortBuffer.temporary_pre_sum_buffer_sizes.size() - 1; i > 0; i--) {
-        preSumTemp = sortBuffer.temporary_pre_sum_buffers[i];
-        preSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i];
-        previousPreSumTemp = sortBuffer.temporary_pre_sum_buffers[i - 1];
-        previousPreSumTempSize = sortBuffer.temporary_pre_sum_buffer_sizes[i - 1];
-
-#ifdef RUN_WITH_TESTS
-        gpuErrchk(cudaMemcpy(preSumHost.data(), preSumTemp, preSumTempSize * sizeof(size_t), cudaMemcpyDeviceToHost));
-        CHECK_FOR_ERROR();
-#endif
-
-        MergeBlockWisePreScanStep2<<<preSumTempSize, PRE_SUM_BLOCK_SIZE, PRE_SUM_BLOCK_SIZE * sizeof(size_t )>>>(previousPreSumTemp, preSumTemp, PRE_SUM_BLOCK_SIZE, previousPreSumTempSize, previousPreSumTempSize);
-        CHECK_FOR_ERROR();
-    }
-#ifdef RUN_WITH_TESTS
-    gpuErrchk(cudaMemcpy(preSumHost.data(), sortBuffer.temporary_pre_sum_buffers[0], sortBuffer.temporary_pre_sum_buffer_sizes[0] * sizeof(size_t), cudaMemcpyDeviceToHost));
-    CHECK_FOR_ERROR();
-#endif
-
-}
-
 
 __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t car_count, size_t *sizes, size_t num_sizes,
         size_t *lanePreSum, size_t lanePreSumSize) {
@@ -787,8 +614,6 @@ __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t 
         // printf("%lu - %lu.%lu: Lane(%lu) : %lu\n", i, bucket_idx, element_idx, container->buckets[bucket_idx].buffer[element_idx]->lane, sizes[i]);
     }
 }
-
-
 
 __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, size_t *prefixSum, size_t n,
                                            TrafficObject_id **reinsert_buffer, size_t buffer_size,
@@ -817,8 +642,6 @@ __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, si
     }
 }
 
-
-int i = 0;
 void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *container, SortBuffer &sortBuffer) {
 
     size_t number_of_lanes = scenario.lanes.size();
@@ -841,7 +664,6 @@ void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *containe
         (container, sortBuffer.preSumOut, scenario.cars.size(), sortBuffer.reinsert_buffer, sortBuffer.reinsert_buffer_size,
                 sortBuffer.laneBucketPreSumBuffer, scenario.lanes.size());
     CHECK_FOR_ERROR();
-    i++;
 
 #ifdef RUN_WITH_TESTS
     std::vector<size_t> preSumHost(buffer_size);
@@ -852,17 +674,11 @@ void RestoreCorrectBucket(Scenario_id &scenario, SortedBucketContainer *containe
     CHECK_FOR_ERROR();
 #endif
 
-    /* MyPreScan(scenario, container, sortBuffer);
-
-    MoveToReinsertBufferKernel<<<buffer_size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>
-        (container, sortBuffer.preSumOut, buffer_size, sortBuffer.reinsert_buffer, sortBuffer.reinsert_buffer_size);
-    CHECK_FOR_ERROR()*/
-
-    gpuErrchk(cudaMemsetAsync(sortBuffer.multiScanTmp, 0, sortBuffer.multiScanTmpBytes));
-    MoveToContainerKernel<<<256, 256>>>(container, sortBuffer.reinsert_buffer, sortBuffer.preSumOut + scenario.cars.size() - 1, sortBuffer.multiScanTmp);
+    gpuErrchk(cudaMemsetAsync(sortBuffer.laneCounter, 0, sortBuffer.laneCounterSize * sizeof(unsigned int)));
+    MoveToContainerKernel<<<256, 256>>>(container, sortBuffer.reinsert_buffer, sortBuffer.preSumOut + scenario.cars.size() - 1, sortBuffer.laneCounter);
     CHECK_FOR_ERROR();
 
-    SetTempSizeKernel<<<number_of_lanes / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.multiScanTmp);
+    SetTempSizeKernel<<<number_of_lanes / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.laneCounter);
     CHECK_FOR_ERROR();
 
 }

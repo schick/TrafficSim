@@ -41,7 +41,7 @@ void trafficSim::calculate(nlohmann::json &input, SimpleArgumentParser &p) {
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiate(p["algorithm"], input);
     if (advancer == nullptr) {
-        printf("Algorithm not found: %s", p["algorithm"].c_str());
+        printf("Algorithm not found.");
         exit(-1);
     }
 

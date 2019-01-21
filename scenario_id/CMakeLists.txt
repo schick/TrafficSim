@@ -5,12 +5,19 @@ include_directories(include)
 
 # by_id library
 SET(SOURCE_FILES_BY_ID
+        include/Car_id.h
         src/Car_id.cpp
+        include/Junction_id.h
         src/Junction.cpp
+        include/Lane_id.h
         src/Lane.cpp
+        include/RedTrafficLight_id.h
         src/RedTrafficLight_id.cpp
+        include/Road_id.h
         src/Road_id.cpp
+        include/Scenario_id.h
         src/Scenario.cpp
+        include/TrafficObject_id.h
         src/TrafficObject.cpp)
 
 IF(OpenCV_FOUND)
@@ -32,11 +39,17 @@ IF(WITH_CUDA)
     add_definitions(-DWITH_CUDA)
 
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
+            include/AlgorithmWrapper.h
             src/AlgorithmWrapper.cu
+            include/algorithms/CudaAlgorithm.h
             src/algorithms/TestAlgo.cu
+            include/PreScan.h
             src/PreScan.cu
+            include/cuda/cuda_utils.h
             src/cuda_utils.cu
+            include/SortedBucketContainer.h
             src/SortedBucketContainer.cu
+            include/SortBuffer.h
             src/SortBuffer.cu )
 ELSE()
     message(STATUS "WITHOUT cuda")

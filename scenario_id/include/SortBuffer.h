@@ -15,14 +15,15 @@ class SortBuffer {
 public:
     size_t batch_count = SUGGESTED_THREADS;
     size_t *bucketSizes, *bucketSizePreSum;
-    std::vector<size_t *> temporary_pre_sum_buffers;
-    std::vector<size_t> temporary_pre_sum_buffer_sizes;
+
     size_t *preSumIn;
     size_t preSumInLen;
     size_t *preSumOut;
     size_t preSumOutLen;
 
-    unsigned int *multiScanTmp;
+    unsigned int *laneCounter;
+    size_t laneCounterSize;
+
     TrafficObject_id **reinsert_buffer;
     size_t reinsert_buffer_size;
     size_t multiScanTmpBytes;
@@ -30,12 +31,12 @@ public:
     BucketData *pBucketData;
     BucketData *pBucketData2;
 
-    unsigned int *last;
-    unsigned int *last2;
+    unsigned int *pBucketDataNumFilled;
+    unsigned int *pBucketDataNumFilled2;
 
     size_t preSumBatchSize;
-    int lanePreSumBufferSize;
-    size_t *laneBucketSizeBuffer, *laneBucketPreSumBuffer;
+    size_t lanePreSumBufferSize;
+    size_t *laneBucketPreSumBuffer;
 
 
     SortBuffer(Scenario_id &scenario, size_t preSumBatchSize);
