@@ -4,11 +4,21 @@ project(cmake_and_cuda LANGUAGES CXX)
 include_directories(include)
 
 # by_id library
-SET(SOURCE_FILES_BY_ID src/Car_id.cpp src/Junction.cpp src/Lane.cpp src/RedTrafficLight_id.cpp
-        src/Road_id.cpp src/Scenario.cpp src/TrafficObject.cpp
-        src/algorithms/SequentialAlgorithm_id.cpp
-        src/algorithms/OpenMPAlgorithm_id.cpp
-        src/algorithms/CudaAlgorithm.cpp src/AlgorithmWrapper.cpp src/algorithms/SequentialCudaDataAlgorithm_id.cpp)
+SET(SOURCE_FILES_BY_ID
+        include/Car_id.h
+        src/Car_id.cpp
+        include/Junction_id.h
+        src/Junction.cpp
+        include/Lane_id.h
+        src/Lane.cpp
+        include/RedTrafficLight_id.h
+        src/RedTrafficLight_id.cpp
+        include/Road_id.h
+        src/Road_id.cpp
+        include/Scenario_id.h
+        src/Scenario.cpp
+        include/TrafficObject_id.h
+        src/TrafficObject.cpp)
 
 IF(OpenCV_FOUND)
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID} src/Visualization.cpp)
@@ -23,16 +33,24 @@ IF(WITH_CUDA)
     find_package(CUDA 9.0 REQUIRED)
 
     # Pass options to NVCC
-    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++17)
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std=c++14)
     list(APPEND CUDA_NVCC_FLAGS "-O3")
 
     add_definitions(-DWITH_CUDA)
 
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
-            src/cudacontainer.cu
+            include/AlgorithmWrapper.h
             src/AlgorithmWrapper.cu
-            #src/algorithms/CudaAlgorithm2_id.cu
-            src/algorithms/TestAlgo.cu)
+            include/algorithms/CudaAlgorithm.h
+            src/algorithms/TestAlgo.cu
+            include/PreScan.h
+            src/PreScan.cu
+            include/cuda/cuda_utils.h
+            src/cuda_utils.cu
+            include/SortedBucketContainer.h
+            src/SortedBucketContainer.cu
+            include/SortBuffer.h
+            src/SortBuffer.cu )
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()
@@ -41,7 +59,7 @@ add_library(scenario_id ${SOURCE_FILES_BY_ID})
 
 IF(WITH_CUDA)
     set_property(TARGET scenario_id PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
-    target_compile_features(scenario_id PUBLIC cxx_std_17)
+    target_compile_features(scenario_id PUBLIC cxx_std_14)
     set_target_properties(scenario_id PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 ENDIF()
 

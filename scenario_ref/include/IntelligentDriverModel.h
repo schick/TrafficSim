@@ -4,6 +4,7 @@
 
 
 #include <model/Car.h>
+#include "model/Scenario.h"
 
 class IntelligentDriverModel {
 public:
@@ -11,7 +12,7 @@ public:
      * advance car based of data
      * @param data data representing the change
      */
-    static void advanceStep(Car &car);
+    static void advanceStep(Car &car, Scenario &scenario);
 
     /**
      * calculate the desired acceleration. base calculation on leading object
@@ -27,11 +28,9 @@ public:
 
 
 private:
-    static void updateKinematicState(Car &car);
+    static void updateLane(Car &car, Scenario &scenario);
 
-    static void updateLane(Car &car);
-
-    static void moveCarAcrossJunction(Car &Car);
+    static void moveCarAcrossJunction(Car &Car, Scenario &scenario);
 
     static bool isCarOverJunction(Car &car);
 

@@ -9,6 +9,7 @@
 
 
 void Junction::initializeSignals() {
+
     if(!signals.empty()) {
         current_signal = 0;
         current_signal_time_left = signals[current_signal].duration;
@@ -18,10 +19,11 @@ void Junction::initializeSignals() {
 }
 
 void Junction::setSignals() {
+
     for (int i = 0; i < 4; i++) {
         if (incoming[i] != nullptr) {
             for (Lane *l : incoming[i]->lanes) {
-                if (!signals.empty() && 
+                if (!signals.empty() &&
                     signals[current_signal].direction == i) {
                     // green light
                     l->isRed = false;
@@ -31,8 +33,10 @@ void Junction::setSignals() {
                     l->isRed = true;
                 }
             }
+
         }
     }
+
 }
 
 void Junction::updateSignals() {
@@ -41,4 +45,15 @@ void Junction::updateSignals() {
         current_signal_time_left = signals[current_signal].duration;
         setSignals();
     }
+}
+
+std::vector<Junction::Direction> Junction::getPossibleDirections() {
+    std::vector<Junction::Direction> directionVector;
+    for (int i = 0; i < 4; i++) {
+        if (incoming[i] != nullptr) {
+            directionVector.emplace_back((Direction) i);
+        }
+    }
+
+    return directionVector;
 }

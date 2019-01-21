@@ -31,13 +31,15 @@ public:
     using create_f = std::shared_ptr<AdvanceAlgorithm>(std::shared_ptr<BaseScenario> scenario);
     // constructor type for a scenario ontop which this algorithm works
     using create_scenario_f = std::shared_ptr<BaseScenario>();
+    // constructor type for a scenario ontop which this algorithm works
+    using create_optimization_scenario_f = std::shared_ptr<BaseScenario>();
 
     // register a factory class with given name, AdvanceAlgorithm and BaseScenario constructors
-    static void registrate(std::string const & name, create_f * fp, create_scenario_f * sc);
+    static void registrate(std::string const & name, create_f * fp, create_scenario_f * sc, create_optimization_scenario_f *osc);
 
     // create a AdvanceAlgorithm instance based on given name
-    static std::shared_ptr<AdvanceAlgorithm> instantiate(std::string const & name, std::shared_ptr<BaseScenario> scenario);
     static std::shared_ptr<AdvanceAlgorithm> instantiate(std::string const & name, json &scenario);
+    static std::shared_ptr<AdvanceAlgorithm> instantiateOptimization(std::string const & name, json &scenario_data);
 
     // create a visualization that works with the BaseScenario for this algorithm
     virtual std::shared_ptr<BaseVisualizationEngine> createVisualizationEngine(std::shared_ptr<BaseScenario> &scenario) { return nullptr; }
@@ -48,7 +50,7 @@ public:
     {
         explicit Registrar(std::string const & name)
         {
-            AdvanceAlgorithm::registrate(name, &D::create, &D::createScenario);
+            AdvanceAlgorithm::registrate(name, &D::create, &D::createScenario, &D::createOptimizationScenario);
         }
         // make non-copyable, etc.
     };
@@ -71,6 +73,7 @@ private:
     typedef struct {
         AdvanceAlgorithm::create_f *creater;
         AdvanceAlgorithm::create_scenario_f *scenario_creator;
+        AdvanceAlgorithm::create_optimization_scenario_f *optimization_scenario_creator;
     } creator_struct;
 
     // static registry
@@ -88,10 +91,25 @@ private:
     static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
     static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
       std::shared_ptr<BaseVisualizationEngine> createVisualizationEngine(std::shared_ptr<BaseScenario> &scenario) override { return std::make_shared<VISUALIZATION_TYPE>(scenario); }
+
+
+#define ADVANCE_ALGO_INIT_WITH_OPT(CLASS_TYPE, SCENARIO_TYPE, OPTIMIZATION_SCENARIO_TYPE, VISUALIZATION_TYPE) \
+    static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
+    static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
+    static std::shared_ptr<BaseScenario> createOptimizationScenario() { return std::make_shared<OPTIMIZATION_SCENARIO_TYPE>();}\
+    std::shared_ptr<BaseVisualizationEngine> createVisualizationEngine(std::shared_ptr<BaseScenario> &scenario) override { return std::make_shared<VISUALIZATION_TYPE>(scenario); }
+
 #else
+
 #define ADVANCE_ALGO_INIT(CLASS_TYPE, SCENARIO_TYPE, VISUALIZATION_TYPE) \
     static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
-    static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }
-#endif
+    static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
+    static std::shared_ptr<BaseScenario> createOptimizationScenario() { return nullptr; }
 
+#define ADVANCE_ALGO_INIT_WITH_OPT(CLASS_TYPE, SCENARIO_TYPE, OPTIMIZATION_SCENARIO_TYPE, VISUALIZATION_TYPE) \
+    static std::shared_ptr<AdvanceAlgorithm> create(std::shared_ptr<BaseScenario> scenario) { return std::make_shared<CLASS_TYPE>(scenario); } \
+    static std::shared_ptr<BaseScenario> createScenario() { return std::make_shared<SCENARIO_TYPE>(); }\
+    static std::shared_ptr<BaseScenario> createOptimizationScenario() { return std::make_shared<OPTIMIZATION_SCENARIO_TYPE>();}
+
+#endif
 #endif //PROJECT_ADVANCEALGORITHM_H

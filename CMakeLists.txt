@@ -7,15 +7,15 @@ if(MSVC)
 endif(MSVC)
 
 function(copy_test_files target)
-	if (MSVC)
-	    add_custom_command(TARGET ${target} PRE_BUILD
-	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-	                       ${CMAKE_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
-	else(MSVC)
-	    add_custom_command(TARGET ${target} PRE_BUILD
-	                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-	                       ${CMAKE_SOURCE_DIR}/tests $<TARGET_FILE_DIR:${target}>/tests)
-	endif(MSVC)
+    if (MSVC)
+        add_custom_command(TARGET ${target} PRE_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${CMAKE_SOURCE_DIR}/tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
+    else(MSVC)
+        add_custom_command(TARGET ${target} PRE_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${CMAKE_SOURCE_DIR}/tests $<TARGET_FILE_DIR:${target}>/tests)
+    endif(MSVC)
 endfunction()
 
 option(VISUALIZATION "Disable Visualization to dismiss opencv dependency" OFF)
@@ -44,7 +44,12 @@ IF(ALL_ALGOS)
 ENDIF()
 
 IF(WITH_CUDA) # enable cuda
-    enable_language(CUDA)
+    find_package(CUDA)
+    enable_language(CUDA OPTIONAL)
+    if(CUDA_FOUND AND CMAKE_CUDA_COMPILER)
+    else()
+        set(WITH_CUDA OFF)
+    endif()
 ENDIF()
 
 if(DEBUG_MSGS) # enable debugging in source code
@@ -100,17 +105,17 @@ add_subdirectory(scenario_ref)
 add_subdirectory(scenario_id)
 
 # create final executable
-include_directories(include)
+include_directories(main/include)
 
 
-add_executable(traffic_sim src/main.cpp src/util/SimpleArgumentParser.cpp)
+add_executable(traffic_sim main/src/main.cpp main/src/util/SimpleArgumentParser.cpp main/src/TrafficSim.cpp)
 
 
 IF(WITH_CUDA)
     set_property(TARGET traffic_sim PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
     set_property(TARGET traffic_sim PROPERTY CUDA_SEPARABLE_COMPILATION ON)
-    target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
-    target_compile_features(traffic_sim PUBLIC cxx_std_17)
+    # target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
+    target_compile_features(traffic_sim PUBLIC cxx_std_14)
 
     add_definitions(-DWITH_CUDA)
 ELSE()
@@ -128,13 +133,13 @@ copy_test_files(traffic_sim)
 IF (BUILD_TESTS)
     message(STATUS "building tests")
     include(GoogleTest)
-    add_executable(json_test src/test/test_json.cpp)
+    add_executable(json_test main/src/test/test_json.cpp)
     target_link_libraries(json_test gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(json_test scenario_ref scenario_id )
     gtest_discover_tests(json_test)
     copy_test_files(json_test)
 
-    add_executable(benchmark src/test/benchmark.cpp)
+    add_executable(benchmark main/src/test/benchmark.cpp)
     target_link_libraries(benchmark scenario_ref scenario_id scenario_base)
     copy_test_files(benchmark)
 
@@ -143,5 +148,5 @@ ELSE()
 ENDIF()
 
 
-add_executable(compare src/compare_algorithms.cpp)
+add_executable(compare main/src/test/compare_algorithms.cpp)
 target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})

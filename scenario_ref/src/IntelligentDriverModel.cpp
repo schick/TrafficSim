@@ -4,23 +4,17 @@
 #include <assert.h>
 #include <math.h>
 
-void IntelligentDriverModel::advanceStep(Car &car) {
-    updateKinematicState(car);
-    updateLane(car);
+void IntelligentDriverModel::advanceStep(Car &car, Scenario &scenario) {
+    car.updateKinematicState();
+    updateLane(car, scenario);
 }
 
-void IntelligentDriverModel::updateKinematicState(Car &car) {
-    car.a = car.new_acceleration;
-    car.v = std::max(car.v + car.a, 0.);
-    car.setPosition(car.getPosition() + car.v);
-}
 
-void IntelligentDriverModel::updateLane(Car &car) {
+void IntelligentDriverModel::updateLane(Car &car, Scenario &scenario) {
     // check for junction
     if (isCarOverJunction(car)) {
-        moveCarAcrossJunction(car);
-    }
-    else {
+        moveCarAcrossJunction(car, scenario);
+    } else {
         // just do a lane change if wanted
         if (car.new_lane_offset != 0) {
             // lane_offset should be validated in this case
@@ -29,15 +23,15 @@ void IntelligentDriverModel::updateLane(Car &car) {
     }
 }
 
-void IntelligentDriverModel::moveCarAcrossJunction(Car &car) {
-    assert(!car.turns.empty());
-
+void IntelligentDriverModel::moveCarAcrossJunction(Car &car, Scenario &scenario) {
     Lane *old_lane = car.getLane();
 
     // subtract moved position on current lane from distance
     auto oldLaneLength = old_lane->length;
     car.setPosition(car.getPosition() - oldLaneLength);
 
+    double &incoming_counter = old_lane->road.to->incoming_counter[(old_lane->road.getDirection() + 2) % 4];
+    incoming_counter += car.v / scenario.total_steps * (scenario.total_steps - scenario.current_step);
     // select direction based on current direction and turn
     int direction = (old_lane->road.getDirection() + car.turns.front() + 2) % 4;
 

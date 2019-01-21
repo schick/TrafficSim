@@ -32,12 +32,13 @@ public:
      * traffic light signal
      */
     struct Signal {
+        Signal() {};
         Signal(uint64_t duration, Direction direction) : duration(duration), direction(direction) {}
         uint64_t duration;
         Direction direction;
     };
 
-    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing() {};
+    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing(), incoming_counter() {};
 
     /**
      * signals to cycle through
@@ -66,6 +67,14 @@ public:
      * update signals. called each timestep.
      */
     void updateSignals();
+
+    std::array<double, 4> incoming_counter;
+
+    /**
+     * Return a vector containing all possible Direction
+     * @return the direction vector
+     */
+    std::vector<Direction> getPossibleDirections();
 
 private:
 

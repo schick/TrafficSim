@@ -10,15 +10,14 @@
 #include "util/json.hpp"
 #include "Scenario_id.h"
 
-void Scenario_id::parse(json input) {
-
+void Scenario_id::parse(json &input) {
     parseJunctions(input);
-
     parseRoads(input);
-
     parseCars(input);
-
     initJunctions();
+#ifdef DEBUG_MSGS
+    printf("%lu Cars\n%lu Lanes\n%lu Junctions\n", cars.size(), lanes.size(), junctions.size());
+#endif
 }
 
 void Scenario_id::parseJunctions(json &input) {
@@ -52,8 +51,7 @@ Junction_id::Direction calcDirectionOfRoad(Junction_id &from, Junction_id &to) {
     } else if (from.x > to.x) {
         return Junction_id::Direction::WEST;
     }
-    printf("ERROR: not a valid road...");
-    exit(-1);
+    throw std::runtime_error("ERROR: not a valid road...");
 }
 
 void Scenario_id::parseRoads(json &input) {

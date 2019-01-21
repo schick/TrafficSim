@@ -2,7 +2,8 @@
 include_directories(include)
 
 SET(SOURCE_FILES_S_BASE
-        src/AdvanceAlgorithm.cpp)
+        src/AdvanceAlgorithm.cpp
+        src/BaseOptimizer.cpp)
 
 add_library(scenario_base ${SOURCE_FILES_S_BASE})
 

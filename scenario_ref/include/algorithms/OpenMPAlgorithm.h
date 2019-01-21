@@ -7,15 +7,17 @@
 
 #include "AdvanceAlgorithm.h"
 #include "model/Scenario.h"
+#include "optimization/model/OptimizeScenario.h"
+
+#ifdef VISUALIZATION_ENABLED
 #include "Visualization.h"
-#include "IntelligentDriverModel.h"
+#endif
 
 class OpenMPAlgorithm : public AdvanceAlgorithm {
 
 public:
-    ADVANCE_ALGO_INIT(OpenMPAlgorithm, Scenario, Visualization);
-
-
+    ADVANCE_ALGO_INIT_WITH_OPT(OpenMPAlgorithm, Scenario, OptimizeScenario, Visualization);
+    
     explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
     void calculateCarChanges();
@@ -26,7 +28,7 @@ public:
     void advanceCars();
     void advanceTrafficLights();
     void advance(size_t steps) override;
-    void sortLanesAndCalculateAcceleration();
+    void sortLanes();
 };
 
 #endif //PROJECT_OPENMPALGORITHM_H

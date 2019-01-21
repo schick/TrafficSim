@@ -25,18 +25,18 @@ void Visualization::close() {
 void Visualization::initialize() {
     // calculate borders
     Point2d min(10000, 10000), max(-10000, -10000);
-    for (std::shared_ptr<Junction> &junction : scenario->junctions) {
-        if (junction->x < min.x) {
-            min.x = junction->x;
+    for (Junction &junction : scenario->junctions) {
+        if (junction.x < min.x) {
+            min.x = junction.x;
         }
-        if (junction->y < min.y) {
-            min.y = junction->y;
+        if (junction.y < min.y) {
+            min.y = junction.y;
         }
-        if (junction->x > max.x) {
-            max.x = junction->x;
+        if (junction.x > max.x) {
+            max.x = junction.x;
         }
-        if (junction->y > max.y) {
-            max.y = junction->y;
+        if (junction.y > max.y) {
+            max.y = junction.y;
         }
     }
     // fix pixel_per_m to match max_size
@@ -55,15 +55,15 @@ void Visualization::initialize() {
     base_image = Mat::zeros(Point(base_image_size), CV_8UC3);
     base_image.setTo(Scalar(175, 175, 175));
 
-    for (std::shared_ptr<Road> &r: scenario->roads) {
-        size_t count = r->lanes.size() * 2;
-        line(base_image, junctionPoint(r->from), junctionPoint(r->to),
+    for (Road &r: scenario->roads) {
+        size_t count = r.lanes.size() * 2;
+        line(base_image, junctionPoint(r.from), junctionPoint(r.to),
              Scalar(50, 50, 50), (int) (lane_width * count * pixel_per_m));
     }
 
     // print junctions
-    for (std::shared_ptr<Junction> &junction : scenario->junctions) {
-        circle(base_image, junctionPoint(junction.get()),
+    for (Junction &junction : scenario->junctions) {
+        circle(base_image, junctionPoint(&junction),
                (int) (35. * pixel_per_m / 2.),
                Scalar(100, 100, 100), -1);
     }
@@ -109,17 +109,17 @@ void Visualization::render_image() {
     numFrame++;
     Mat image = base_image.clone();
 
-    for(std::shared_ptr<Junction> &j: scenario->junctions) {
+    for(Junction &j: scenario->junctions) {
         for (int i = 0; i < 4; i++) {
-            if (j->incoming[i] != nullptr)
-                circle(image, junctionPoint(j.get()) + (directionVector(static_cast<Junction::Direction>(i)) * junction_radius * pixel_per_m), pixel_per_m * 1,
-                       (j->signals[j->current_signal].direction == i) ? Scalar(0, 255, 0) : Scalar(0, 0, 255), -1);
+            if (j.incoming[i] != nullptr)
+                circle(image, junctionPoint(&j) + (directionVector(static_cast<Junction::Direction>(i)) * junction_radius * pixel_per_m), pixel_per_m * 1,
+                       (j.signals[j.current_signal].direction == i) ? Scalar(0, 255, 0) : Scalar(0, 0, 255), -1);
         }
     }
 
-    for(std::shared_ptr<Car> &car : scenario->cars) {
-        Point2d from = junctionPoint(car->getLane()->road->from);
-        Point2d to = junctionPoint(car->getLane()->road->to);
+    for(Car &car : scenario->cars) {
+        Point2d from = junctionPoint(car.getLane()->road.from);
+        Point2d to = junctionPoint(car.getLane()->road.to);
         Point2d dir = (to - from);
 
         //get directions
@@ -131,8 +131,8 @@ void Visualization::render_image() {
         auto scaledOuterLaneDir = outerLaneDir * pixel_per_m;
 
         //calculate offsets
-        Point2d carOffset = scaledDir * (car->getPosition() - car->length / 2);
-        Point2d laneOffset = scaledOuterLaneDir * ((double) car->getLane()->lane) * lane_width;
+        Point2d carOffset = scaledDir * (car.getPosition() - car.length / 2);
+        Point2d laneOffset = scaledOuterLaneDir * ((double) car.getLane()->lane) * lane_width;
         Point2d laneBorderOffset = scaledOuterLaneDir * lane_border;
         Point2d carSizeOffset = scaledDir * car_length + scaledOuterLaneDir * car_width;
 
@@ -144,7 +144,7 @@ void Visualization::render_image() {
         rectangle(image, start, end, Scalar(0, 0, 255), -1);
 
         circle(image, front_middle, (int) (car_width / 4 * pixel_per_m), Scalar(0, 255, 255), -1);
-        putText(image, std::to_string(car->id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
+        putText(image, std::to_string(car.id), start, 0, pixel_per_m / 14, Scalar(255, 255, 0), 2);
     }
 
     // no need to flip image -> linkshändisches koordinatensystem

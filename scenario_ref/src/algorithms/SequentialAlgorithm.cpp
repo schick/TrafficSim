@@ -4,6 +4,7 @@
 
 #include "algorithms/SequentialAlgorithm.h"
 
+#include "IntelligentDriverModel.h"
 
 void SequentialAlgorithm::calculateCarChanges() {
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
@@ -14,7 +15,7 @@ void SequentialAlgorithm::calculateCarChanges() {
 
 void SequentialAlgorithm::advanceCars() {
     for (Car &car : getRefScenario()->cars) {
-        IntelligentDriverModel::advanceStep(car);
+        IntelligentDriverModel::advanceStep(car, *getRefScenario());
     }
 }
 
@@ -41,5 +42,6 @@ void SequentialAlgorithm::advance(size_t steps) {
         calculateCarChanges();
         advanceCars();
         advanceTrafficLights();
+        getRefScenario()->current_step++;
     }
 }
