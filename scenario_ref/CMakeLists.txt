@@ -29,6 +29,8 @@ SET(SOURCE_FILES
         src/LaneChangeModel.cpp
         include/optimization/model/OptimizeScenario.h
         src/optimization/model/OptimizeScenario.cpp
+        include/optimization/DistributionOptimizer.h
+        src/optimization/DistributionOptimizer.cpp
         include/optimization/RandomOptimizer.h
         src/optimization/RandomOptimizer.cpp)
 

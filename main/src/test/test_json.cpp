@@ -4,7 +4,6 @@
 
 #include "util/json.hpp"
 #include "util/register_algorithms.h"
-#include "optimization/RandomOptimizer.h"
 
 
 using json = nlohmann::json;
@@ -130,6 +129,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
 
 #define _CREATE_OPTIMIZATIONS(NAME, PATH) \
     _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, RandomOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, DistributionOptimizer);\
     _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm, RandomOptimizer);
 
 _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");

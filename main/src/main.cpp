@@ -7,7 +7,6 @@
 
 #include "util/json.hpp"
 #include "util/SimpleArgumentParser.h"
-#include "util/register_algorithms.h"
 
 #ifdef VISUALIZATION_ENABLED
 #include "BaseVisualizationEngine.h"
