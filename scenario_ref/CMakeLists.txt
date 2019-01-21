@@ -34,7 +34,9 @@ SET(SOURCE_FILES
         include/optimization/DistributionOptimizer.h
         src/optimization/DistributionOptimizer.cpp
         include/optimization/RandomOptimizer.h
-        src/optimization/RandomOptimizer.cpp)
+        src/optimization/RandomOptimizer.cpp
+        include/optimization/model/SignalLayout.h
+        src/optimization/model/SignalLayout.cpp )
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)
