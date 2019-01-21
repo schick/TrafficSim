@@ -121,6 +121,10 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     ASSERT_TRUE(optimizer->hasValidAlgorithm() && "AdvanceAlgorithm not registered.");
 
     ASSERT_NO_THROW(optimizer->optimize());
+
+    if (optimization == "RandomOptimizer") {
+        printf("Iterations: %i", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
+    }
 }
 
 #define _CREATE_OPTIMIZATION(NAME, PATH, ALGO, OPT_ALGO) TEST(Test##OPT_ALGO##With##ALGO, NAME) {\

@@ -7,14 +7,25 @@
 
 
 #include "optimization/BaseOptimizer.h"
+#include <mutex>
 
 class RandomOptimizer : public BaseOptimizer {
+
+private:
+
+    int iterations = 0;
+
+    std::mutex solutionLock;
 
 public:
 
     RandomOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
 
     nlohmann::json optimize() override;
+
+    int getIterations() {
+        return iterations;
+    }
 
 };
 

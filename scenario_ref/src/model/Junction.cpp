@@ -48,3 +48,14 @@ void Junction::updateSignals() {
         setSignals();
     }
 }
+
+std::vector<Junction::Direction> Junction::getPossibleDirections() {
+    std::vector<Junction::Direction> directionVector;
+    for (int i = 0; i < 4; i++) {
+        if (incoming[i] != nullptr) {
+            directionVector.emplace_back((Direction) i);
+        }
+    }
+
+    return directionVector;
+}
