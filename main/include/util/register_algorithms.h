@@ -11,10 +11,12 @@
 
 #include "optimization/RandomOptimizer.h"
 #include "optimization/DistributionOptimizer.h"
+#include "optimization/DistributionOpenMPOptimizer.h"
 
 REGISTER_ALGORITHM(OpenMPAlgorithm);
 REGISTER_ALGORITHM(SequentialAlgorithm);
 
+REGISTER_OPTIMIZER(DistributionOpenMPOptimizer);
 REGISTER_OPTIMIZER(DistributionOptimizer);
 REGISTER_OPTIMIZER(RandomOptimizer);
 
