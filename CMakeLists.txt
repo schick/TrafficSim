@@ -43,8 +43,40 @@ IF(ALL_ALGOS)
     add_definitions(-DALL_ALGORITHMS)
 ENDIF()
 
+
+find_package(CUDA)
+
+if (CUDA_FOUND)
+    #Get CUDA compute capability
+
+    set(OUTPUTFILE ${CMAKE_CURRENT_SOURCE_DIR}/main/src/util/cuda_script) # No suffix required
+    set(CUDAFILE ${CMAKE_CURRENT_SOURCE_DIR}/main/src/util/cuda_info.cu)
+    execute_process(COMMAND nvcc -lcuda ${CUDAFILE} -o ${OUTPUTFILE})
+    execute_process(COMMAND sleep 0.5)
+    execute_process(COMMAND ${OUTPUTFILE} RESULT_VARIABLE CUDA_RETURN_CODE OUTPUT_VARIABLE ARCH)
+
+    if(CUDA_RETURN_CODE EQUAL 0)
+        set(CUDA_SUCCESS "TRUE")
+    else()
+        set(CUDA_SUCCESS "FALSE")
+    endif()
+
+    if (${CUDA_SUCCESS})
+        message(STATUS "CUDA Architecture: ${ARCH}")
+        message(STATUS "CUDA Version: ${CUDA_VERSION_STRING}")
+        message(STATUS "CUDA Path: ${CUDA_TOOLKIT_ROOT_DIR}")
+        message(STATUS "CUDA Libararies: ${CUDA_LIBRARIES}")
+        message(STATUS "CUDA Performance Primitives: ${CUDA_npp_LIBRARY}")
+
+        set(CUDA_NVCC_FLAGS "${ARCH}")
+        add_definitions(-DGPU) #You may not require this
+
+    else()
+        message(WARNING ${ARCH})
+    endif()
+endif()
+
 IF(WITH_CUDA) # enable cuda
-    find_package(CUDA)
     enable_language(CUDA OPTIONAL)
     if(CUDA_FOUND AND CMAKE_CUDA_COMPILER)
     else()
