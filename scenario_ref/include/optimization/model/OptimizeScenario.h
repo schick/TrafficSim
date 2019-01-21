@@ -17,7 +17,9 @@ public:
     // Return signals as json
     json toJson() override;
 
+    void reset();
 private:
+    nlohmann::json parsedJson;
 
     void parseSignals(const json &input) override;
 
