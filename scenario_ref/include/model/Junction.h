@@ -68,8 +68,13 @@ public:
      */
     void updateSignals();
 
-
     std::array<double, 4> incoming_counter;
+
+    /**
+     * Return a vector containing all possible Direction
+     * @return the direction vector
+     */
+    std::vector<Direction> getPossibleDirections();
 
 private:
 

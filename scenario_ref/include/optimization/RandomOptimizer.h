@@ -7,12 +7,15 @@
 
 
 #include "optimization/BaseOptimizer.h"
+#include <mutex>
 
 class RandomOptimizer : public BaseOptimizer {
 
 private:
 
     int iterations = 0;
+
+    std::mutex solutionLock;
 
 public:
 
