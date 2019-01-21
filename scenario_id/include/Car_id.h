@@ -35,6 +35,7 @@ public:
     size_t turns_begin;
     size_t turns_count;
     size_t current_turn_offset;
+    double travelled_distance;
 
     //definition from ilias:
     static constexpr double min_s = 0.001;
@@ -82,7 +83,8 @@ public:
                 : length(length), target_velocity(target_velocity), max_acceleration(max_acceleration),
                     target_deceleration(target_deceleration), min_distance(min_distance),
                     target_headway(target_headway), politeness(politeness), turns_begin(turns_begin),
-                    turns_count(turns_count), current_turn_offset(0), TrafficObject_id(id, length, lane, x, v, a) {}
+                    turns_count(turns_count), current_turn_offset(0), TrafficObject_id(id, length, lane, x, v, a),
+                    travelled_distance(0) {}
 
     /**
      * calculate advance-data for next step

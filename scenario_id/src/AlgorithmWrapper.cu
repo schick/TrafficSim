@@ -357,6 +357,7 @@ CUDA_HOSTDEV void AlgorithmWrapper::updateKinematicState(Car_id &car, Car_id::Ad
     car.a = data.acceleration;
     car.v = C_MAX(car.v + car.a, 0.);
     car.x = (car.x + car.v);
+    car.travelled_distance += car.v;
 }
 
 

@@ -12,7 +12,7 @@
 class BaseOptimizer {
 
 public:
-    BaseOptimizer(nlohmann::json &scenarioData, std::string &algorithm): scenarioData(scenarioData), algorithm(algorithm) {
+    BaseOptimizer(nlohmann::json &scenarioData, const std::string &algorithm): scenarioData(scenarioData), algorithm(algorithm) {
         minTravelLength = scenarioData["min_travel_distance"];
     }
 
@@ -25,14 +25,14 @@ public:
     virtual nlohmann::json optimize() = 0;
 
     /** simple registry */
-    using create_f = std::shared_ptr<BaseOptimizer>(nlohmann::json &scenarioData, std::string &algorithm);
+    using create_f = std::shared_ptr<BaseOptimizer>(nlohmann::json &scenarioData, const std::string &algorithm);
     static void register_algorithm(const std::string &name, create_f *creator);
-    static std::shared_ptr<BaseOptimizer> instantiate(const std::string &name, nlohmann::json &scenarioData, std::string &algorithm);
+    static std::shared_ptr<BaseOptimizer> instantiate(const std::string &name, nlohmann::json &scenarioData, const std::string &algorithm);
 
 protected:
 
     nlohmann::json &scenarioData;
-    std::string &algorithm;
+    std::string algorithm;
 
     double minTravelLength;
 
@@ -45,7 +45,7 @@ private:
 template <typename D>
 class DefaultConstructorRegistrar {
 public:
-    static std::shared_ptr<BaseOptimizer> default_creator(nlohmann::json &scenarioData, std::string &algorithm) {
+    static std::shared_ptr<BaseOptimizer> default_creator(nlohmann::json &scenarioData, const std::string &algorithm) {
         return std::make_shared<D>(scenarioData, algorithm);
     }
 

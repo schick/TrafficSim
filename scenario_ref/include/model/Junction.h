@@ -38,7 +38,7 @@ public:
         Direction direction;
     };
 
-    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing() {};
+    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing(), incoming_counter() {};
 
     /**
      * signals to cycle through
@@ -67,6 +67,9 @@ public:
      * update signals. called each timestep.
      */
     void updateSignals();
+
+
+    std::array<double, 4> incoming_counter;
 
 private:
 

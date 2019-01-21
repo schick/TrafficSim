@@ -16,7 +16,7 @@ private:
 
 public:
 
-    RandomOptimizer(nlohmann::json &scenarioData, std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
+    RandomOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
 
     nlohmann::json optimize() override;
 

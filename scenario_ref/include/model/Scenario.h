@@ -30,6 +30,8 @@ public:
     std::vector<Road> roads;
     std::vector<Lane> lanes;
     std::vector<Car> cars;
+    size_t current_step;
+    size_t total_steps;
 
     // Main parse function
     void parse(json &input) override;
@@ -40,8 +42,8 @@ public:
     // Set RedTrafficLights depending on set Signals
     void initJunctions();
 
-    // Get sum of traveledDistance of all cars
-    double getTraveledDistance() override;
+    // Get sum of travelledDistance of all cars
+    double getTravelledDistance() override;
 
 protected:
 

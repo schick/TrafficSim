@@ -8,13 +8,13 @@
 #include <fstream>
 #include <chrono>
 #include "optimization/RandomOptimizer.h"
+#include "util/register_algorithms.h"
 
 
 
 void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
-    std::string algorithm = "SequentialAlgorithm";
 
-    std::shared_ptr<BaseOptimizer> optimizer = BaseOptimizer::instantiate("RandomOptimizer", input, algorithm);
+    std::shared_ptr<BaseOptimizer> optimizer = BaseOptimizer::instantiate("DistributionOpenMPOptimizer", input, "SequentialAlgorithm");
 
     json output = optimizer->optimize();
 

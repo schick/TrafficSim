@@ -13,7 +13,7 @@ void BaseOptimizer::register_algorithm(const std::string &name, create_f *creato
     registry().insert({name, creator});
 }
 
-std::shared_ptr<BaseOptimizer> BaseOptimizer::instantiate(const std::string &name, nlohmann::json &scenarioData, std::string &algorithm) {
+std::shared_ptr<BaseOptimizer> BaseOptimizer::instantiate(const std::string &name, nlohmann::json &scenarioData, const std::string &algorithm) {
     auto it = registry().find(name);
     return it == registry().end() ? nullptr : it->second(scenarioData, algorithm);
 }

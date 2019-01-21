@@ -54,9 +54,13 @@ void Car::updateKinematicState() {
     a = new_acceleration;
     v = std::max(v + a, 0.);
     setPosition(getPosition() + v);
-    traveledDistance += v;
+    travelledDistance += v;
 }
 
-double Car::getTraveledDistance() {
-    return traveledDistance;
+double Car::getTravelledDistance() {
+    return travelledDistance;
+}
+
+void Car::setTravelledDistance(double value) {
+    travelledDistance = value;
 }
