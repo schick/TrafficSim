@@ -9,6 +9,8 @@ void Scenario::parse(json &input) {
     parseRoads(input);
     parseCars(input);
     initJunctions();
+    total_steps = input["time_steps"];
+    current_step = 0;
 }
 
 //JUNCTIONS

@@ -9,6 +9,8 @@ void OptimizeScenario::parse(nlohmann::json &input) {
     parseJunctions(input);
     parseRoads(input);
     parseCars(input);
+    total_steps = input["time_steps"];
+    current_step = 0;
 }
 
 json OptimizeScenario::toJson() {
