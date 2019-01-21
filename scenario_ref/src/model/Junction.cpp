@@ -9,15 +9,6 @@
 
 
 void Junction::initializeSignals() {
-    for(int i = 0; i < 4; i++) {
-        /* if initialize signals is called more than once cleanup is needed. (for example in optimization) */
-        for(RedTrafficLight &tl : mRedTrafficLights[i]) tl.removeFromLane();
-        mRedTrafficLights[i].clear();
-        if (incoming[i] != nullptr) {
-            for(Lane *l : incoming[i]->lanes)
-                mRedTrafficLights[i].emplace_back(l);
-        }
-    }
 
     if(!signals.empty()) {
         current_signal = 0;
@@ -28,17 +19,24 @@ void Junction::initializeSignals() {
 }
 
 void Junction::setSignals() {
-    for(int i = 0; i < 4; i++) {
-        for(RedTrafficLight &l : mRedTrafficLights[i]) {
-            if (signals.empty() || signals[current_signal].direction == i) {
-                // green light
-                l.switchOff();
-            } else {
-                // red light
-                l.switchOn();
+
+    for (int i = 0; i < 4; i++) {
+        if (incoming[i] != nullptr) {
+            for (Lane *l : incoming[i]->lanes) {
+                if (!signals.empty() &&
+                    signals[current_signal].direction == i) {
+                    // green light
+                    l->isRed = false;
+                }
+                else {
+                    // red light
+                    l->isRed = true;
+                }
             }
+
         }
     }
+
 }
 
 void Junction::updateSignals() {

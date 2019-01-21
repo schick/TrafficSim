@@ -2,6 +2,7 @@
 include_directories(include)
 
 # add library with all logic
+
 SET(SOURCE_FILES
         include/model/Car.h
         src/model/Car.cpp
@@ -9,8 +10,8 @@ SET(SOURCE_FILES
         src/model/Junction.cpp
         include/model/Lane.h
         src/model/Lane.cpp
-        include/model/RedTrafficLight.h
-        src/model/RedTrafficLight.cpp
+        include/model/TrafficLight.h
+        src/model/TrafficLight.cpp
         include/model/Road.h
         src/model/Road.cpp
         include/model/Scenario.h

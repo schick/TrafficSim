@@ -7,8 +7,6 @@
 
 #include "Lane.h"
 
-class Lane;
-
 class TrafficObject {
 
 public:

@@ -13,11 +13,16 @@ Lane::NeighboringObjects NeighborFinder::getNeighboringObjects(Lane *lane, Traff
         return neighboringObjects;
 
     //if lane is empty return empty struct
-    if (lane->mTrafficObjects.size() == 0)
-        return Lane::NeighboringObjects();
+    if (lane->mTrafficObjects.size() == 0) {
+       
+        return neighboringObjects;
+    }
 
     auto it = std::lower_bound(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), trafficObject, TrafficObject::Cmp());
     Lane::NeighboringObjects result;
+
+    //auto a = &trafficObject->getLane()->road;
+   
 
     if (it != lane->mTrafficObjects.begin())
         result.back = *(it - 1);
@@ -26,8 +31,10 @@ Lane::NeighboringObjects NeighborFinder::getNeighboringObjects(Lane *lane, Traff
         if (it != lane->mTrafficObjects.end())
             result.front = *it;
     } else {
-        if (it + 1 != lane->mTrafficObjects.end())
+        if (it + 1 != lane->mTrafficObjects.end()) {
             result.front = *(it + 1);
+        }
+        
     }
     return result;
 }

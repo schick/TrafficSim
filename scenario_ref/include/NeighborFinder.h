@@ -7,6 +7,7 @@
 
 #include <model/Lane.h>
 #include <model/TrafficObject.h>
+#include <model/TrafficLight.h>
 
 class NeighborFinder {
 

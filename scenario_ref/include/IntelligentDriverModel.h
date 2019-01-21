@@ -23,12 +23,20 @@ public:
     static double getAcceleration(Car *car, TrafficObject *leading_vehicle);
 
 
+
+
+
+
 private:
     static void updateLane(Car &car, Scenario &scenario);
 
     static void moveCarAcrossJunction(Car &Car, Scenario &scenario);
 
     static bool isCarOverJunction(Car &car);
+
+    static void setLeadingTrafficObject(TrafficObject *&leading_vehicle, Car &car, TrafficLight &trafficLight);
+    
+    static double calculateWithLead(Car &car, TrafficObject &leading_vehicle);
 };
 
 
