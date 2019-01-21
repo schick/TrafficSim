@@ -27,8 +27,9 @@ void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<do
 
     for(auto &junction : scenario.junctions) {
         junction.signals.resize(0);
-        std::vector signal_idxs = {0, 1, 2, 3};
-        double *max_metric = std::max_element(incoming_counts[junction.id].begin(), incoming_counts[junction.id].end());
+
+        std::vector<int> signal_idxs = {0, 1, 2, 3};
+        auto max_metric = std::max_element(incoming_counts[junction.id].begin(), incoming_counts[junction.id].end());
         size_t mean_max_duration = range_random(mean_max_duration_min, mean_max_duration_max);
 
         if(*max_metric > 1e-4) {

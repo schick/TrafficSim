@@ -33,7 +33,10 @@ void SignalLayout::populate(OptimizeScenario &scenario) {
 void SignalLayout::createRandomSignal(Junction &junction) {
     uint64_t junctionId = junction.id;
     std::vector<Junction::Direction> possibleDirections = junction.getPossibleDirections();
-    std::random_shuffle(possibleDirections.begin(), possibleDirections.end());
+    //is deprecated: std::random_shuffle(possibleDirections.begin(), possibleDirections.end()) 
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), g);
 
     std::vector<Junction::Signal> signalsVector;
 

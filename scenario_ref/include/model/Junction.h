@@ -8,7 +8,7 @@
 #include <array>
 #include <vector>
 
-#include "RedTrafficLight.h"
+#include "TrafficLight.h"
 
 class Road;
 
@@ -82,12 +82,6 @@ private:
      * time left in current signal
      */
     uint64_t current_signal_time_left;
-
-
-    /**
-     * red lights for each lane and road.
-     */
-    std::array<std::vector<RedTrafficLight>, 4> mRedTrafficLights;
 
     void setSignals();
 };
