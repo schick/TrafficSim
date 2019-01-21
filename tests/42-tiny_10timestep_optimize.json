@@ -1,5 +1,5 @@
 {
-"min_travel_distance": 2010.72,
+"min_travel_distance": 2020.72,
 "optimize_signals": true,
 "time_steps" : 10,
 "junctions" : [

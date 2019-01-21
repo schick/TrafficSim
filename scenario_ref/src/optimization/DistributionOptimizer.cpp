@@ -8,6 +8,7 @@
 #include <memory>
 #include <stdexcept>
 #include <random>
+#include <optimization/model/SignalLayout.h>
 
 inline unsigned int range_random(size_t min, size_t max) {
     return rand() % (max - min) + min;
@@ -20,13 +21,15 @@ inline unsigned int range_random(size_t max) {
 long seed = std::chrono::system_clock::now().time_since_epoch().count();
 std::default_random_engine generator(seed);
 
-void _randomInitialization(std::vector<std::array<double, 4>> &incoming_counts, OptimizeScenario &scenario) {
+
+void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<double, 4>> &incoming_counts,
+        size_t mean_max_duration_min=9, size_t mean_max_duration_max=15, size_t normal_std=1) {
 
     for(auto &junction : scenario.junctions) {
         junction.signals.resize(0);
         std::vector signal_idxs = {0, 1, 2, 3};
         double *max_metric = std::max_element(incoming_counts[junction.id].begin(), incoming_counts[junction.id].end());
-        size_t mean_max_duration = range_random(9, 15);
+        size_t mean_max_duration = range_random(mean_max_duration_min, mean_max_duration_max);
 
         if(*max_metric > 1e-4) {
             for (size_t idx = 0; idx < 4; idx += 1) {
@@ -34,7 +37,7 @@ void _randomInitialization(std::vector<std::array<double, 4>> &incoming_counts, 
                 size_t signal_idx = signal_idxs[i];
                 signal_idxs.erase(signal_idxs.begin() + i);
                 std::normal_distribution<double> distribution(
-                        incoming_counts[junction.id][signal_idx] / *max_metric * mean_max_duration, 1);
+                        incoming_counts[junction.id][signal_idx] / *max_metric * mean_max_duration, normal_std);
                 auto duration = (size_t) std::abs(std::round(distribution(generator)));
                 if (duration < 5 && duration > 2) duration = 5;
                 if (duration <= 2) continue;
@@ -97,11 +100,16 @@ void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 
     auto *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
     if (scenario == nullptr) throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
 
+    int idx = 0;
     while (!IsDone()) {
-
+        idx++;
         scenario->reset();
-
-        _randomInitialization(incoming_counts, *scenario);
+        if(idx % 2 == 1) {
+            SignalLayout signalLayout(*scenario);
+            signalLayout.populate(*scenario);
+        } else {
+            _randomInitialization(*scenario, incoming_counts, 5, 15, 1);
+        }
 
         advancer->advance(scenarioData["time_steps"]);
 
