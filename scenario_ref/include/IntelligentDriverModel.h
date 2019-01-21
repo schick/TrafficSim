@@ -22,6 +22,10 @@ public:
     static double getAcceleration(Car *car, TrafficObject *leading_vehicle);
 
 
+
+
+
+
 private:
     static void updateKinematicState(Car &car);
 
@@ -31,6 +35,9 @@ private:
 
     static bool isCarOverJunction(Car &car);
 
+    static void setLeadingTrafficObject(TrafficObject *&leading_vehicle, Car &car, TrafficLight &trafficLight);
+    
+    static double calculateWithLead(Car &car, TrafficObject &leading_vehicle);
 };
 
 

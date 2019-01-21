@@ -6,14 +6,8 @@
 
 void TrafficLight::switchOff() {
     associatedLane->isRed = false;
-    //removeFromLane();
 }
 
 void TrafficLight::switchOn() {
-    //moveToLane(mAssociatedLane);
     associatedLane->isRed = true;
-}
-
-bool TrafficLight::isRed() {
-    return getLane() != nullptr;
 }

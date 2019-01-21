@@ -74,12 +74,6 @@ private:
      */
     uint64_t current_signal_time_left;
 
-
-    /**
-     * red lights for each lane and road.
-     */
-    //std::array<std::vector<TrafficLight>, 4> mRedTrafficLights;
-
     void setSignals();
 };
 
