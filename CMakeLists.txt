@@ -149,6 +149,8 @@ IF(WITH_CUDA)
     # target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
     target_compile_features(traffic_sim PUBLIC cxx_std_14)
 
+    target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
+
     add_definitions(-DWITH_CUDA)
 ELSE()
 ENDIF()
@@ -181,4 +183,3 @@ ENDIF()
 
 
 add_executable(compare main/src/test/compare_algorithms.cpp)
-target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
