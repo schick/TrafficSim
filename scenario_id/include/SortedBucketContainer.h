@@ -41,7 +41,7 @@ public:
     CUDA_HOSTDEV static size_t getBufferSize(CudaScenario_id &scenario, float bucket_memory_factor);
     CUDA_HOST static size_t getBufferSize(Scenario_id &scenario, float bucket_memory_factor);
 
-    CUDA_HOST static std::shared_ptr<SortedBucketContainer> fromScenario(Scenario_id &scenario, CudaScenario_id *device_cuda_scenario);
+    CUDA_HOST static std::shared_ptr<SortedBucketContainer> fromScenario(Scenario_id &scenario, CudaScenario_id *device_cuda_scenario, SortBuffer &sortBuffer);
 
     CUDA_HOST static void Sort(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer);
     CUDA_HOST static void FetchBucketSizes(SortedBucketContainer *container, Scenario_id &scenario, size_t *bucketSizes);

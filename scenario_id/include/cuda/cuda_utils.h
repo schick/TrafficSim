@@ -36,6 +36,11 @@
 #define PRE_SUM_BLOCK_SIZE 512
 
 
+#define CUDA_GLOBAL_ITER(VAR_NAME, MAX) size_t each = (MAX) / GetGlobalDim() + 1; \
+    size_t begin = each * GetGlobalIdx(); \
+    for(size_t VAR_NAME = begin; VAR_NAME < begin + each && VAR_NAME < (MAX); VAR_NAME++)
+#define CUDA_GLOBAL_ITER2(NAME, MAX) for(size_t NAME=GetGlobalIdx(); NAME < MAX; NAME += GetGlobalDim())
+
 
 template<typename T, typename Cmp>
 CUDA_HOSTDEV size_t *lower_bound(T *__first, T *__last, const T& __val, Cmp __comp)

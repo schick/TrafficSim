@@ -527,7 +527,7 @@ void static_advance(size_t steps, Scenario_id &scenario) {
     size_t number_of_cars = scenario.cars.size();
 
     CudaScenario_id *device_cuda_scenario = CudaScenario_id::fromScenarioData_device(scenario);
-    std::shared_ptr<SortedBucketContainer> bucket_memory = SortedBucketContainer::fromScenario(scenario, device_cuda_scenario);
+    std::shared_ptr<SortedBucketContainer> bucket_memory = SortedBucketContainer::fromScenario(scenario, device_cuda_scenario, preSumBuffer);
 
     TrafficObject_id **dev_left_neighbors, **dev_own_neighbors, **dev_right_neighbors;
     gpuErrchk(cudaMalloc((void **) &dev_left_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *)));

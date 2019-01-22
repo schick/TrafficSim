@@ -64,6 +64,7 @@ void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int bat
     // size_t * res = out + offset;
 #ifdef RUN_WITH_TESTS
     TestPreSum<<<size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(out, in, size);
+    CHECK_FOR_ERROR();
 #endif
 }
 
