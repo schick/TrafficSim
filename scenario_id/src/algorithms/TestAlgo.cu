@@ -110,9 +110,8 @@ __global__ void test_neighborsKernel(CudaScenario_id *scenario, TrafficObject_id
 
 __global__ void kernel_get_changes(Car_id::AdvanceData *change, CudaScenario_id * scenario_data,
                                    TrafficObject_id **right_lane_neighbors, TrafficObject_id **own_lane_neighbors, TrafficObject_id **left_lane_neighbors) {
-    size_t car_idx = GetGlobalIdx();
     AlgorithmWrapper algorithm_wrapper(*scenario_data);
-    if (car_idx < scenario_data->getNumCars()) {
+    CUDA_GLOBAL_ITER(car_idx, scenario_data->getNumCars()) {
         Lane_id::NeighboringObjectsRef rightNeighbors(right_lane_neighbors[car_idx], right_lane_neighbors[car_idx + scenario_data->getNumCars()]);
         Lane_id::NeighboringObjectsRef ownNeighbors(own_lane_neighbors[car_idx], own_lane_neighbors[car_idx + scenario_data->getNumCars()]);
         Lane_id::NeighboringObjectsRef leftNeighbors(left_lane_neighbors[car_idx], left_lane_neighbors[car_idx + scenario_data->getNumCars()]);
@@ -134,9 +133,8 @@ __global__ void kernel_get_changes(Car_id::AdvanceData *change, CudaScenario_id 
 
 
 __global__ void updateSignalsKernel(CudaScenario_id * scenario_data) {
-    size_t jnt_idx = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
     AlgorithmWrapper algorithm_wrapper(*scenario_data);
-    if (jnt_idx < scenario_data->getNumJunctions()) {
+    CUDA_GLOBAL_ITER(jnt_idx, scenario_data->getNumJunctions()) {
         algorithm_wrapper.updateSignals(*scenario_data->getJunction(jnt_idx));
     }
 }
@@ -163,9 +161,8 @@ __global__ void testChangesKernel(CudaScenario_id *scenario_data, Car_id::Advanc
 
 
 __global__ void applyChangesKernel(Car_id::AdvanceData *change, CudaScenario_id * scenario_data) {
-    size_t car_idx = threadIdx.x + blockDim.x * blockIdx.x + blockDim.y * blockIdx.y;
     AlgorithmWrapper algorithm_wrapper(*scenario_data);
-    if (car_idx < scenario_data->getNumCars()) {
+    CUDA_GLOBAL_ITER(car_idx, scenario_data->getNumCars()) {
         algorithm_wrapper.advanceStep(*scenario_data->getCar(change[car_idx].car), change[car_idx]);
     }
 }
@@ -296,8 +293,7 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
                               TrafficObject_id **nearest_own, TrafficObject_id **nearest_right) {
 
     AlgorithmWrapper wrapper(*scenario);
-
-    for(size_t idx = GetGlobalIdx(); idx < scenario->getNumCars() * 3; idx += GetGlobalDim()) {
+    CUDA_GLOBAL_ITER(idx, scenario->getNumCars() * 3) {
         int lane_offset = (int) (idx % 3) - 1;
         size_t car_idx = idx / 3;
 
@@ -558,23 +554,25 @@ void static_advance(size_t steps, Scenario_id &scenario) {
         CHECK_FOR_ERROR();
 
 #ifdef RUN_WITH_TESTS
-        test_neighborsKernel<<<512, 512>>>(device_cuda_scenario, dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
+        test_neighborsKernel<<<number_of_cars / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>
+            (device_cuda_scenario, dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
         CHECK_FOR_ERROR();
 #endif
 
-        kernel_get_changes << < 512, 512 >> >
-                                     (device_changes, device_cuda_scenario, dev_right_neighbors, dev_own_neighbors, dev_left_neighbors);
+        kernel_get_changes<<<number_of_cars / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>
+            (device_changes, device_cuda_scenario, dev_right_neighbors, dev_own_neighbors, dev_left_neighbors);
         CHECK_FOR_ERROR();
 
 #ifdef RUN_WITH_TESTS
-        testChangesKernel<<<512, 512>>>(device_cuda_scenario, device_changes);
+        testChangesKernel<<<number_of_cars / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>
+            (device_cuda_scenario, device_changes);
         CHECK_FOR_ERROR();
 #endif
 
-        applyChangesKernel << < 512, 512 >> > (device_changes, device_cuda_scenario);
+        applyChangesKernel<<<number_of_cars / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(device_changes, device_cuda_scenario);
         CHECK_FOR_ERROR();
 
-        updateSignalsKernel << < 512, 512 >> > (device_cuda_scenario);
+        updateSignalsKernel<<<scenario.junctions.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(device_cuda_scenario);
         CHECK_FOR_ERROR();
 
     }
