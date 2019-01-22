@@ -150,8 +150,8 @@ public:
     CUDA_HOSTDEV double getAcceleration(TrafficObject_id &car, TrafficObject_id *leading_vehicle);
     CUDA_HOSTDEV double laneChangeMetric(Car_id &car, Lane_id::NeighboringObjects ownNeighbors,
                                          Lane_id::NeighboringObjects otherNeighbors);
-    CUDA_HOSTDEV double laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef ownNeighbors,
-                                         Lane_id::NeighboringObjectsRef otherNeighbors);
+    CUDA_HOSTDEV double laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef &ownNeighbors,
+                                         Lane_id::NeighboringObjectsRef &otherNeighbors, bool isLeftLane);
     CUDA_HOSTDEV double getLaneChangeMetricForLane(TrafficObject_id &trafficObject,
                                       Lane_id *neighboringLane,
                                       const Lane_id::NeighboringObjects &ownNeighbors);
