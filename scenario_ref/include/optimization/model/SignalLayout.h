@@ -9,20 +9,26 @@
 #include <unordered_map>
 #include <model/Junction.h>
 #include "OptimizeScenario.h"
+#include "util/json.hpp"
 
 class SignalLayout {
 
 public:
+    SignalLayout(std::string algorithm, nlohmann::json scenarioData);
 
-    explicit SignalLayout(OptimizeScenario &scenario);
+    double getTravelledDistance() { return travelledDistance; }
 
-    void populate(OptimizeScenario &scenario);
+    nlohmann::json toJson();
 
 private:
 
     std::unordered_map<uint64_t, std::vector<Junction::Signal>> signalsMap;
 
+    double travelledDistance = 0.0;
+
     void createRandomSignal(Junction &junction);
+
+    void populate(OptimizeScenario &scenario);
 
 };
 
