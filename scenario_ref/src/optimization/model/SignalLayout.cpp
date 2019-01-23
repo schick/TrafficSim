@@ -18,6 +18,12 @@ inline unsigned long range_random(size_t max) {
     return range_random(0, max);
 }
 
+inline void shuffleDirections(std::vector<Junction::Direction> &possibleDirections) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), g);
+}
+
 SignalLayout::SignalLayout(OptimizeScenario &scenario) {
     for (Junction &junction : scenario.junctions)
         createRandomSignal(junction);
@@ -33,10 +39,7 @@ void SignalLayout::populate(OptimizeScenario &scenario) {
 void SignalLayout::createRandomSignal(Junction &junction) {
     uint64_t junctionId = junction.id;
     std::vector<Junction::Direction> possibleDirections = junction.getPossibleDirections();
-    //is deprecated: std::random_shuffle(possibleDirections.begin(), possibleDirections.end()) 
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(possibleDirections.begin(), possibleDirections.end(), g);
+    shuffleDirections(possibleDirections);
 
     std::vector<Junction::Signal> signalsVector;
 
