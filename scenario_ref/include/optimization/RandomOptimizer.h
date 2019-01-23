@@ -13,7 +13,7 @@ class RandomOptimizer : public BaseOptimizer {
 
 private:
 
-    int iterations = 0;
+    size_t iterations = 0;
 
     std::mutex solutionLock;
 

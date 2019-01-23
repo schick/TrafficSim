@@ -5,11 +5,12 @@
 #include "optimization/model/SignalLayout.h"
 #include <random>
 #include <algorithm>
+#include <AdvanceAlgorithm.h>
 
 // Helper methods
 inline unsigned long range_random(size_t min, size_t max) {
-    std::random_device rd1;     // only used once to initialise (seed) engine
-    std::mt19937 rng(rd1());    // random-number engine used (Mersenne-Twister in this case)
+    std::random_device rd;     // only used once to initialise (seed) engine
+    std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
     std::uniform_int_distribution<size_t> uni(min,max);
     return uni(rng);
 }
@@ -20,13 +21,35 @@ inline unsigned long range_random(size_t max) {
 
 inline void shuffleDirections(std::vector<Junction::Direction> &possibleDirections) {
     std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(possibleDirections.begin(), possibleDirections.end(), g);
+    std::mt19937 rng(rd());
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), rng);
 }
 
-SignalLayout::SignalLayout(OptimizeScenario &scenario) {
-    for (Junction &junction : scenario.junctions)
+// Constructor
+SignalLayout::SignalLayout(std::string algorithm, nlohmann::json scenarioData) {
+
+    // Instantiate advancer
+    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
+    if (advancer == nullptr) {
+        throw std::runtime_error("Algorithm not found: " + algorithm);
+    }
+
+    // Getting pointer to scenario
+    OptimizeScenario *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+    if (scenario == nullptr) {
+        throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
+    }
+
+    // Creating random signals
+    for (Junction &junction : scenario->junctions)
         createRandomSignal(junction);
+
+    // Populating scenario
+    populate(*scenario);
+
+    // Run advancer and save traveled distance and json
+    advancer->advance(scenarioData["time_steps"]);
+    travelledDistance = scenario->getTravelledDistance();
 }
 
 void SignalLayout::populate(OptimizeScenario &scenario) {
@@ -47,6 +70,27 @@ void SignalLayout::createRandomSignal(Junction &junction) {
         signalsVector.emplace_back(range_random(5, 10), direction);
 
     signalsMap.insert({junctionId, signalsVector});
+}
+
+nlohmann::json SignalLayout::toJson() {
+    json output;
+    for (auto pair : signalsMap) {
+        json out_junction;
+
+        out_junction["id"] = pair.first;
+
+        for (Junction::Signal &signal : pair.second) {
+            json out_signal;
+
+            out_signal["dir"] = static_cast<int>(signal.direction);
+            out_signal["time"] = signal.duration;
+
+            out_junction["signals"].push_back(out_signal);
+        }
+
+        output["junctions"].push_back(out_junction);
+    }
+    return output;
 }
 
 
