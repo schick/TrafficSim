@@ -14,7 +14,7 @@ class SignalLayout {
 
 public:
 
-    SignalLayout(OptimizeScenario &scenario);
+    explicit SignalLayout(OptimizeScenario &scenario);
 
     void populate(OptimizeScenario &scenario);
 

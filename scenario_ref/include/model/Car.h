@@ -41,14 +41,13 @@ public:
     Car(int id, double length, double target_velocity, double max_acceleration, double target_deceleration,
             double min_distance, double target_headway, double politeness,
             double x=0, double v=0, double a=0)
-                : length(length), target_velocity(target_velocity), max_acceleration(max_acceleration),
+                : target_velocity(target_velocity), max_acceleration(max_acceleration),
                     target_deceleration(target_deceleration), min_distance(min_distance),
                     target_headway(target_headway), politeness(politeness), TrafficObject(id, length, x, v, a) {}
     /**
      * properties
      */
     
-    double length;
     double target_velocity;
     double max_acceleration;
     double target_deceleration;
