@@ -23,7 +23,7 @@ public:
 
     nlohmann::json optimize() override;
 
-    int getIterations() {
+    size_t getIterations() {
         return iterations;
     }
 

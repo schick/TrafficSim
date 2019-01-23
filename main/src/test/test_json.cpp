@@ -123,7 +123,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     ASSERT_NO_THROW(optimizer->optimize());
 
     if (optimization == "RandomOptimizer") {
-        printf("Iterations: %i", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
+        printf("Iterations: %zu", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
     }
 }
 
