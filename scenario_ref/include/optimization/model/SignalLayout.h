@@ -24,7 +24,7 @@ public:
 
     struct Cmp {
         bool operator () (SignalLayout &lhs, SignalLayout &rhs) {
-            return lhs.getTravelledDistance() >= rhs.getTravelledDistance();
+            return lhs.getTravelledDistance() > rhs.getTravelledDistance();
         }
     };
 
