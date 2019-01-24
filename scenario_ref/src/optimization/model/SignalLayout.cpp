@@ -106,7 +106,7 @@ void SignalLayout::createRandomSignal(Junction &junction) {
     signalsVector.reserve(possibleDirections.size());
 
     for (Junction::Direction &direction : possibleDirections)
-        signalsVector.emplace_back(range_random(5, 10), direction);
+        signalsVector.emplace_back(range_random(5, 25), direction);
 
     signalsMap.insert({junctionId, signalsVector});
 }
