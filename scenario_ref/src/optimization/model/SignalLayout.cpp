@@ -35,7 +35,7 @@ SignalLayout::SignalLayout(std::string algorithm, nlohmann::json scenarioData) {
     }
 
     // Getting pointer to scenario
-    OptimizeScenario *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+    auto *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
     if (scenario == nullptr) {
         throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
     }
@@ -52,6 +52,7 @@ SignalLayout::SignalLayout(std::string algorithm, nlohmann::json scenarioData) {
     travelledDistance = scenario->getTravelledDistance();
 }
 
+// Class Helper
 void SignalLayout::populate(OptimizeScenario &scenario) {
     for (Junction &junction : scenario.junctions)
         junction.signals = signalsMap.at(junction.id);
@@ -65,6 +66,7 @@ void SignalLayout::createRandomSignal(Junction &junction) {
     shuffleDirections(possibleDirections);
 
     std::vector<Junction::Signal> signalsVector;
+    signalsVector.reserve(possibleDirections.size());
 
     for (Junction::Direction &direction : possibleDirections)
         signalsVector.emplace_back(range_random(5, 10), direction);
@@ -72,6 +74,7 @@ void SignalLayout::createRandomSignal(Junction &junction) {
     signalsMap.insert({junctionId, signalsVector});
 }
 
+// To JSON
 nlohmann::json SignalLayout::toJson() {
     json output;
     for (auto pair : signalsMap) {
