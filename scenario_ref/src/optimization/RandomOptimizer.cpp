@@ -12,7 +12,7 @@
 
 nlohmann::json RandomOptimizer::optimize() {
 
-    constexpr size_t iterationsPerRound = 1200;
+    constexpr size_t iterationsPerRound = 120;
 
     while (true) {
 
