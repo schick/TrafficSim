@@ -124,6 +124,8 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
 
     if (optimization == "RandomOptimizer") {
         printf("Iterations: %zu", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
+    } else if (optimization == "GeneticOptimizer") {
+        printf("Iterations: %zu", dynamic_cast<GeneticOptimizer *>(optimizer.get())->getIterations());
     }
 }
 
@@ -133,6 +135,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
 
 #define _CREATE_OPTIMIZATIONS(NAME, PATH) \
     _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, RandomOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, GeneticOptimizer);\
     _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, DistributionOptimizer);\
     _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, DistributionOpenMPOptimizer);\
 

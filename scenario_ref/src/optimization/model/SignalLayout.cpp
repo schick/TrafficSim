@@ -52,6 +52,43 @@ SignalLayout::SignalLayout(std::string algorithm, nlohmann::json scenarioData) {
     travelledDistance = scenario->getTravelledDistance();
 }
 
+// Merge Constructor
+SignalLayout::SignalLayout(SignalLayout firstParent, SignalLayout secondParent, std::string algorithm, nlohmann::json scenarioData) {
+
+    // Instantiate advancer
+    std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
+    if (advancer == nullptr) {
+        throw std::runtime_error("Algorithm not found: " + algorithm);
+    }
+
+    // Getting pointer to scenario
+    auto *scenario = dynamic_cast<OptimizeScenario *>(advancer->getScenario().get());
+    if (scenario == nullptr) {
+        throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
+    }
+
+    for (Junction &junction : scenario->junctions) {
+
+        // Draw random value
+        unsigned long random = range_random(1, 100);
+
+        if (random <= 45) {
+            signalsMap.insert({junction.id, firstParent.signalsMap.at(junction.id)});
+        } else if (random <= 90) {
+            signalsMap.insert({junction.id, secondParent.signalsMap.at(junction.id)});
+        } else {
+            createRandomSignal(junction);
+        }
+    }
+
+    // Populating scenario
+    populate(*scenario);
+
+    // Run advancer and save traveled distance and json
+    advancer->advance(scenarioData["time_steps"]);
+    travelledDistance = scenario->getTravelledDistance();
+}
+
 // Class Helper
 void SignalLayout::populate(OptimizeScenario &scenario) {
     for (Junction &junction : scenario.junctions)
