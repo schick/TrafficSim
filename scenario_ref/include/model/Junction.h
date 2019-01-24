@@ -48,7 +48,7 @@ public:
     /**
      * current signal
      */
-    size_t current_signal;
+    size_t current_signal = 0;
 
     /**
      * properties
@@ -81,7 +81,7 @@ private:
     /**
      * time left in current signal
      */
-    uint64_t current_signal_time_left;
+    uint64_t current_signal_time_left = 0;
 
     void setSignals();
 };

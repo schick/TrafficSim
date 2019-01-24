@@ -198,29 +198,39 @@ CUDA_HOSTDEV double AlgorithmWrapper::laneChangeMetric(Car_id &car, Lane_id::Nei
 }
 
 
-CUDA_HOSTDEV double AlgorithmWrapper::laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef ownNeighbors, Lane_id::NeighboringObjectsRef otherNeighbors) {
+CUDA_HOSTDEV double AlgorithmWrapper::laneChangeMetric(Car_id &car, Lane_id::NeighboringObjectsRef &ownNeighbors, Lane_id::NeighboringObjectsRef &otherNeighbors, bool isLeftLane) {
 
     if ((otherNeighbors.front == nullptr || (otherNeighbors.front->x - car.x) >= (car.length / 2)) &&
         (otherNeighbors.back == nullptr || (car.x - otherNeighbors.back->x) >= (car.length / 2) + car.min_distance)) {
-        double own_wo_lc = getAcceleration(car, ownNeighbors.front);
-        double own_w_lc = getAcceleration(car, otherNeighbors.front);
 
-        double other_lane_diff = 0;
-        if (otherNeighbors.back != nullptr) {
-            other_lane_diff = getAcceleration(*otherNeighbors.back, &car) -
-                              getAcceleration(*otherNeighbors.back, otherNeighbors.front);
+        double sameLaneAcceleration = car.sameLaneAcceleration;
+        double otherLaneAcceleration = getAcceleration(car, otherNeighbors.front);
+
+        if (otherLaneAcceleration > sameLaneAcceleration) {
+
+            if (isLeftLane) {
+                car.leftLaneAcceleration = otherLaneAcceleration;
+            } else {
+                car.rightLaneAcceleration = otherLaneAcceleration;
+            }
+
+            double other_lane_diff = 0;
+            if (otherNeighbors.back != nullptr) {
+                other_lane_diff = getAcceleration(*otherNeighbors.back, &car) -
+                                  getAcceleration(*otherNeighbors.back, otherNeighbors.front);
+            }
+
+
+            double behind_diff = 0;
+            if (ownNeighbors.back != nullptr) {
+                behind_diff = getAcceleration(*ownNeighbors.back, ownNeighbors.front) -
+                              getAcceleration(*ownNeighbors.back, &car);
+            }
+
+            return otherLaneAcceleration - sameLaneAcceleration + car.politeness * (behind_diff + other_lane_diff);
         }
 
 
-        double behind_diff = 0;
-        if (ownNeighbors.back != nullptr) {
-            behind_diff = getAcceleration(*ownNeighbors.back, ownNeighbors.front) -
-                          getAcceleration(*ownNeighbors.back, &car);
-        }
-
-        if (own_w_lc > own_wo_lc) {
-            return own_w_lc - own_wo_lc + car.politeness * (behind_diff + other_lane_diff);
-        }
     }
     return 0;
 }
@@ -261,9 +271,8 @@ CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car) {
 
 CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car, Lane_id::NeighboringObjects leftNeighbors,
         Lane_id::NeighboringObjects ownNeighbors,Lane_id::NeighboringObjects rightNeighbors) {
+
     Road_id::NeighboringLanes neighboringLanes = getNeighboringLanes(*s.getLane(car.lane));
-    // assert(ownNeighbors.front == getNeighboringObjects(car, *s.getLane(car.lane)).front);
-    // assert(ownNeighbors.back == getNeighboringObjects(car, *s.getLane(car.lane)).back);
 
     double m_left = (neighboringLanes.left == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, leftNeighbors);
     // assert(m_left == getLaneChangeMetricForLane(car, s.getLane(neighboringLanes.left), ownNeighbors));
@@ -292,14 +301,14 @@ CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car, Lane_id
 
 CUDA_HOSTDEV Car_id::AdvanceData AlgorithmWrapper::nextStep(Car_id &car, Lane_id::NeighboringObjectsRef leftNeighbors,
         Lane_id::NeighboringObjectsRef ownNeighbors,Lane_id::NeighboringObjectsRef rightNeighbors) {
+
     Road_id::NeighboringLanes neighboringLanes = getNeighboringLanes(*s.getLane(car.lane));
 
-    // assert(ownNeighbors.front == getNeighboringObjects(car, *s.getLane(car.lane)).front);
-    // assert(ownNeighbors.back == getNeighboringObjects(car, *s.getLane(car.lane)).back);
+    car.sameLaneAcceleration = getAcceleration(car, ownNeighbors.front);
 
-    double m_left = (neighboringLanes.left == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, leftNeighbors);
+    double m_left = (neighboringLanes.left == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, leftNeighbors, true);
     // assert(m_left == getLaneChangeMetricForLane(car, s.getLane(neighboringLanes.left), ownNeighbors));
-    double m_right = (neighboringLanes.right == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, rightNeighbors);
+    double m_right = (neighboringLanes.right == (size_t ) -1) ? 0 : laneChangeMetric(car, ownNeighbors, rightNeighbors, false);
     // assert(m_right == getLaneChangeMetricForLane(car, s.getLane(neighboringLanes.right), ownNeighbors));
 
 

@@ -13,7 +13,7 @@ class RandomOptimizer : public BaseOptimizer {
 
 private:
 
-    int iterations = 0;
+    size_t iterations = 0;
 
     std::mutex solutionLock;
 
@@ -23,7 +23,7 @@ public:
 
     nlohmann::json optimize() override;
 
-    int getIterations() {
+    size_t getIterations() {
         return iterations;
     }
 

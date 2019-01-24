@@ -47,6 +47,10 @@ public:
     double a;
     double length;
 
+    double leftLaneAcceleration;
+    double sameLaneAcceleration;
+    double rightLaneAcceleration;
+
     /**
     * calculate the acceleration with 'leading_vehicle' as lead
     * it will be assumed that 'leading_vehicle' is on current lane

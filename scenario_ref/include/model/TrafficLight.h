@@ -14,7 +14,7 @@ class TrafficLight : public TrafficObject {
 
 public:
     // traffic lights have -1 id, because traffic lights are always at the end of road.
-    TrafficLight(Lane *lane) : associatedLane(lane), TrafficObject(-1, 0, lane->length - 35. / 2.) {}
+    explicit TrafficLight(Lane *lane) : associatedLane(lane), TrafficObject(-1, 0, lane->length - 35. / 2.) {}
     /**
      * switch this light off.
      */

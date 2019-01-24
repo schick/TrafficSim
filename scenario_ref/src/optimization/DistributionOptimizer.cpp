@@ -23,16 +23,16 @@ std::default_random_engine generator(seed);
 
 
 void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<double, 4>> &incoming_counts,
-        size_t mean_max_duration_min=9, size_t mean_max_duration_max=15, size_t normal_std=1) {
+                           size_t mean_max_duration_min = 9, size_t mean_max_duration_max = 15, size_t normal_std = 1) {
 
-    for(auto &junction : scenario.junctions) {
+    for (auto &junction : scenario.junctions) {
         junction.signals.resize(0);
 
         std::vector<int> signal_idxs = {0, 1, 2, 3};
         auto max_metric = std::max_element(incoming_counts[junction.id].begin(), incoming_counts[junction.id].end());
         size_t mean_max_duration = range_random(mean_max_duration_min, mean_max_duration_max);
 
-        if(*max_metric > 1e-4) {
+        if (*max_metric > 1e-4) {
             for (size_t idx = 0; idx < 4; idx += 1) {
                 size_t i = range_random(signal_idxs.size());
                 size_t signal_idx = signal_idxs[i];
@@ -47,12 +47,12 @@ void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<do
             }
         } else {
             size_t max_idx = max_metric - incoming_counts[junction.id].begin();
-            junction.signals.emplace_back(5, (Junction::Direction ) std::min((size_t) 3, max_idx));
+            junction.signals.emplace_back(5, (Junction::Direction) std::min((size_t) 3, max_idx));
         }
-        if(junction.signals.size() == 0) {
+        if (junction.signals.size() == 0) {
             size_t max_idx = 0;
-            for(size_t i=0; i < 4; i++) if (junction.incoming[i] != nullptr) max_idx = i;
-            junction.signals.emplace_back(5, (Junction::Direction ) max_idx);
+            for (size_t i = 0; i < 4; i++) if (junction.incoming[i] != nullptr) max_idx = i;
+            junction.signals.emplace_back(5, (Junction::Direction) max_idx);
         }
         assert(!junction.signals.empty());
     }
@@ -60,7 +60,7 @@ void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<do
 }
 
 void zeroInitialization(OptimizeScenario &scenario) {
-    for(auto &junction : scenario.junctions) {
+    for (auto &junction : scenario.junctions) {
         junction.signals.clear();
     }
     scenario.initJunctions();
@@ -84,7 +84,7 @@ std::vector<std::array<double, 4>> DistributionOptimizer::initialSimulation() {
 
     std::vector<std::array<double, 4>> incoming_counts;
     incoming_counts.reserve(scenario->junctions.size());
-    for(Junction &j : scenario->junctions) incoming_counts.emplace_back(j.incoming_counter);
+    for (Junction &j : scenario->junctions) incoming_counts.emplace_back(j.incoming_counter);
     return incoming_counts;
 }
 
@@ -105,27 +105,35 @@ void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 
     while (!IsDone()) {
         idx++;
         scenario->reset();
+
+        double total_distance = 0.0;
+        json json;
+
         if(idx % 2 == 1) {
-            SignalLayout signalLayout(*scenario);
-            signalLayout.populate(*scenario);
+            SignalLayout signalLayout(algorithm, scenarioData);
+
+            total_distance = signalLayout.getTravelledDistance();
+            json = signalLayout.toJson();
+
         } else {
             _randomInitialization(*scenario, incoming_counts, 5, 15, 1);
+
+            advancer->advance(scenarioData["time_steps"]);
+
+            total_distance = scenario->getTravelledDistance();
+            json = scenario->toJson();
         }
-
-        advancer->advance(scenarioData["time_steps"]);
-
-        double total_distance = scenario->getTravelledDistance();
 
 #ifdef DEBUG_MSGS
         printf("Distance: %.2f / %.2f\n", total_distance, minTravelLength);
 #endif
+
         if (total_distance > minTravelLength) {
             std::scoped_lock lock(validResultsMutex);
-            validResults.push_back(scenario->toJson());
+            validResults.push_back(json);
         }
     }
 }
-
 
 
 nlohmann::json DistributionOptimizer::optimize() {
