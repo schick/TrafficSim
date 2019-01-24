@@ -135,6 +135,7 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
 
 #define _CREATE_OPTIMIZATIONS(NAME, PATH) \
     _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, GeneticOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm, GeneticOptimizer);\
 
 _CREATE_OPTIMIZATIONS(tiny_10_steps, "42-tiny_10timestep_optimize.json");
 _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");

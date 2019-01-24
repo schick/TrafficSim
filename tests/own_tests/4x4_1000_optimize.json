@@ -1,5 +1,5 @@
 {
-"min_travel_distance": 450000.0,
+"min_travel_distance": 430000.0,
 "optimize_signals": true,
     "roads": [
         {

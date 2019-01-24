@@ -16,7 +16,7 @@
 class OpenMPAlgorithm : public AdvanceAlgorithm {
 
 public:
-    ADVANCE_ALGO_INIT(OpenMPAlgorithm, Scenario, Visualization);
+    ADVANCE_ALGO_INIT_WITH_OPT(OpenMPAlgorithm, Scenario, OptimizeScenario, Visualization);
     
     explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
