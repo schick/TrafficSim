@@ -14,7 +14,8 @@ void IntelligentDriverModel::updateLane(Car &car, Scenario &scenario) {
     // check for junction
     if (isCarOverJunction(car)) {
         moveCarAcrossJunction(car, scenario);
-    } else {
+    }
+    else {
         // just do a lane change if wanted
         if (car.new_lane_offset != 0) {
             // lane_offset should be validated in this case
@@ -54,7 +55,7 @@ bool IntelligentDriverModel::isCarOverJunction(Car &car) {
     return car.getPosition() >= car.getLane()->length;
 }
 
-double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_vehicle) {   
+double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_vehicle) {
     double vel_fraction = (car->v / std::min(car->getLane()->road.limit, car->target_velocity));
     double without_lead = 1. - vel_fraction * vel_fraction * vel_fraction * vel_fraction; // faster than pow
 
@@ -62,7 +63,7 @@ double IntelligentDriverModel::getAcceleration(Car *car, TrafficObject *leading_
         auto trafficLight = TrafficLight(car->getLane());
         setLeadingTrafficObject(leading_vehicle, *car, trafficLight);
     }
-    
+
     double with_lead = 0.0;
     if (leading_vehicle != nullptr) {
         with_lead = calculateWithLead(*car, *leading_vehicle);
