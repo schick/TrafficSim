@@ -9,7 +9,7 @@
 #include "algorithms/OpenMPAlgorithm.h"
 #include "algorithms/CudaAlgorithm.h"
 
-#include "optimization/RandomOptimizer.h"
+#include "optimization/ParallelRandomOptimizer.h"
 #include "optimization/GeneticOptimizer.h"
 #include "optimization/DistributionOptimizer.h"
 #include "optimization/DistributionOpenMPOptimizer.h"
@@ -19,7 +19,7 @@ REGISTER_ALGORITHM(SequentialAlgorithm);
 
 REGISTER_OPTIMIZER(DistributionOpenMPOptimizer);
 REGISTER_OPTIMIZER(DistributionOptimizer);
-REGISTER_OPTIMIZER(RandomOptimizer);
+REGISTER_OPTIMIZER(ParallelRandomOptimizer);
 REGISTER_OPTIMIZER(GeneticOptimizer);
 
 #ifdef WITH_CUDA

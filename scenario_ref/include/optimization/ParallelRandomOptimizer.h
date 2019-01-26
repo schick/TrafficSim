@@ -9,7 +9,7 @@
 #include "optimization/BaseOptimizer.h"
 #include <mutex>
 
-class RandomOptimizer : public BaseOptimizer {
+class ParallelRandomOptimizer : public BaseOptimizer {
 
 private:
 
@@ -19,7 +19,7 @@ private:
 
 public:
 
-    RandomOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
+    ParallelRandomOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
 
     nlohmann::json optimize() override;
 

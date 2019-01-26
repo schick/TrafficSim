@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
-#include "optimization/RandomOptimizer.h"
+#include "optimization/ParallelRandomOptimizer.h"
 #include "util/register_algorithms.h"
 
 

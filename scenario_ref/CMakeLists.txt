@@ -34,8 +34,8 @@ SET(SOURCE_FILES
         src/optimization/DistributionOpenMPOptimizer.cpp
         include/optimization/DistributionOptimizer.h
         src/optimization/DistributionOptimizer.cpp
-        include/optimization/RandomOptimizer.h
-        src/optimization/RandomOptimizer.cpp
+        include/optimization/ParallelRandomOptimizer.h
+        src/optimization/ParallelRandomOptimizer.cpp
         include/optimization/model/SignalLayout.h
         src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h)
 

@@ -2,7 +2,7 @@
 // Created by maxi on 1/18/19.
 //
 
-#include "optimization/RandomOptimizer.h"
+#include "optimization/ParallelRandomOptimizer.h"
 #include "AdvanceAlgorithm.h"
 #include "optimization/model/OptimizeScenario.h"
 #include "optimization/model/SignalLayout.h"
@@ -10,7 +10,7 @@
 #include <memory>
 #include <stdexcept>
 
-nlohmann::json RandomOptimizer::optimize() {
+nlohmann::json ParallelRandomOptimizer::optimize() {
 
     constexpr size_t iterationsPerRound = 120;
 
