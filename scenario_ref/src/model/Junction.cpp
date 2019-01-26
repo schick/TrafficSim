@@ -23,8 +23,7 @@ void Junction::setSignals() {
     for (int i = 0; i < 4; i++) {
         if (incoming[i] != nullptr) {
             for (Lane *l : incoming[i]->lanes) {
-                if (!signals.empty() &&
-                    signals[current_signal].direction == i) {
+                if (signals.empty() || signals[current_signal].direction == i) {
                     // green light
                     l->isRed = false;
                 }
