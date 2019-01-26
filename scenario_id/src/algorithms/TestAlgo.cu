@@ -344,12 +344,12 @@ void static_advance(size_t steps, Scenario_id &scenario) {
     std::shared_ptr<SortedBucketContainer> bucket_memory = SortedBucketContainer::fromScenario(scenario, device_cuda_scenario, preSumBuffer);
 
     TrafficObject_id **dev_left_neighbors, **dev_own_neighbors, **dev_right_neighbors;
-    gpuErrchk(cudaMalloc((void **) &dev_left_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *)));
-    gpuErrchk(cudaMalloc((void **) &dev_own_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *)));
-    gpuErrchk(cudaMalloc((void **) &dev_right_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *)));
+    GPU_ALLOC((void **) &dev_left_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *))
+    GPU_ALLOC((void **) &dev_own_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *))
+    GPU_ALLOC((void **) &dev_right_neighbors, 2 * number_of_cars * sizeof(TrafficObject_id *))
 
     Car_id::AdvanceData *device_changes;
-    gpuErrchk(cudaMalloc((void **) &device_changes, scenario.cars.size() * sizeof(Car_id::AdvanceData)));
+    GPU_ALLOC((void **) &device_changes, scenario.cars.size() * sizeof(Car_id::AdvanceData))
 
 #ifdef DEBUG_MSGS
     printf("Starting to advance scenario...\n\n");

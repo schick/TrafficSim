@@ -36,6 +36,18 @@
 #define PRE_SUM_BLOCK_SIZE 512
 
 
+
+extern size_t total_gpu_alloc;
+#ifdef DEBUG_MSGS
+#define GPU_ALLOC(B, S) \
+    gpuErrchk(cudaMalloc(B, S)); \
+    total_gpu_alloc += S; \
+    printf("Allocated: %7.2f, Total: %7.2f in %s:%d\n", (double) S / 1024. / 1024., (double) total_gpu_alloc / 1024. / 1024., __FILE__, __LINE__);
+#else
+#define GPU_ALLOC(B, S) \
+    gpuErrchk(cudaMalloc(B, S));
+#endif
+
 #define CUDA_GLOBAL_ITER(VAR_NAME, MAX) size_t each = (MAX) / GetGlobalDim() + 1; \
     size_t begin = each * GetGlobalIdx(); \
     for(size_t VAR_NAME = begin; VAR_NAME < begin + each && VAR_NAME < (MAX); VAR_NAME++)
