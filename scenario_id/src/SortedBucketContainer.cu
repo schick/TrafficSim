@@ -476,6 +476,7 @@ CUDA_GLOB void bucketMemoryLoadKernel2(SortedBucketContainer *bucketmem, CudaSce
     CUDA_GLOBAL_ITER(car_idx, cuda_device_scenario->getNumCars()) {
         auto car = cuda_device_scenario->getCar(car_idx);
         size_t insert_offset = atomicAdd(temp_value + car->lane, 1);
+        assert(insert_offset < bucketmem->buckets[car->lane].buffer_size);
         bucketmem->buckets[car->lane].buffer[insert_offset] = car;
     }
 }

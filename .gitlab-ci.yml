@@ -13,7 +13,7 @@ build:pc189:
       - traffic_sim
   script:
     - source ~/pdmkp_env
-    - cmake -DCMAKE_BUILD_TYPE=RELEASE -DWITH_CUDA=ON -DVISUALIZATION=OFF -DUSE_CIN=ON -DDEBUG_MSGS=OFF -DBUILD_TESTS=OFF .
+    - cmake -DWITH_CUDA=ON -DVISUALIZATION=OFF -DUSE_CIN=ON -DDEBUG_MSGS=OFF -DBUILD_TESTS=OFF .
     - make traffic_sim
 
 build:pc205:
