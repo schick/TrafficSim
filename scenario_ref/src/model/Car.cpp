@@ -71,8 +71,11 @@ void Car::moveToLane(Lane *lane) {
     }
     this->lane = lane;
     std::lock_guard<std::mutex> lock(lane->laneLock);
-    lane->mTrafficObjects.push_back(this);
-    lane->isSorted = false;
+    auto it = std::upper_bound(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), this, TrafficObject::Cmp());
+    lane->mTrafficObjects.insert(it, this);
+
+    //lane->mTrafficObjects.push_back(this);
+    //lane->isSorted = false;
 }
 
 void Car::removeFromLane() {
@@ -83,9 +86,10 @@ void Car::removeFromLane() {
 
     std::lock_guard<std::mutex> lock(lane->laneLock);
     auto position = std::find(lane->mTrafficObjects.rbegin(), lane->mTrafficObjects.rend(), this);
-    std::iter_swap(position, lane->mTrafficObjects.end() - 1);
-    lane->mTrafficObjects.pop_back();
-    lane->isSorted = false;
+    lane->mTrafficObjects.erase(--position.base());
+    //std::iter_swap(position, lane->mTrafficObjects.end() - 1);
+    //lane->mTrafficObjects.pop_back();
+    //lane->isSorted = false;
     lane = nullptr;
 }
 
