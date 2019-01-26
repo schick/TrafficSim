@@ -13,8 +13,6 @@
 #include "PreScan.h"
 #include "SortBuffer.h"
 
-#define THREADS 512 // 2^9
-
 __device__ void test_right_lane_neighbors(TrafficObject_id **neighbors, CudaScenario_id *scenario) {
     AlgorithmWrapper algorithmWrapper(*scenario);
     size_t car_id = GetGlobalIdx();
@@ -90,7 +88,7 @@ __device__ void test_own_lane_neighbors(TrafficObject_id **neighbors, CudaScenar
         assert(neighbors[scenario->getNumCars() + car_id] == nullptr);
     } else {
         if(!(neighbors[scenario->getNumCars() +car_id] != nullptr && neighbors[scenario->getNumCars() +car_id]->id == neig.back)) {
-            printf("c - %5lu, FrontCar(%5lu) at Lane(%lu)\n", car_id, neig.back, scenario->getCar(neig.back)->lane);
+            printf("c - %5lu, FrontCar(%5lu/%5lu) at Lane(%lu)\n", car_id, neig.back, scenario->getNumCars(), scenario->getCar(neig.back)->lane);
         }
         assert(neighbors[scenario->getNumCars() +car_id ] != nullptr && neighbors[scenario->getNumCars() +car_id]->id == neig.back);
     }
@@ -224,33 +222,6 @@ __global__ void testBucketsForInvalidLaneKernel(SortedBucketContainer *container
         }
     }
 }
-__global__ void collect_changedKernel(SortedBucketContainer *container) {
-    BucketData last_bucket = container->buckets[container->bucket_count - 1];
-    TrafficObject_id **it = container->main_buffer + GetGlobalIdx();
-    if(it < last_bucket.buffer + last_bucket.size) {
-        if ((*it) == nullptr) return;
-        BucketData supposed_bucket = container->buckets[(**it).lane];
-        if(it < supposed_bucket.buffer || supposed_bucket.buffer + supposed_bucket.size <= it) {
-            printf("%lu is in wrong lane (actual: %lu). (%lu) \n", (**it).id, (**it).lane, (it - container->main_buffer));
-        }
-    }
-
-}
-
-__device__ inline void insert_into_bucket(size_t idx, BucketData &bucket, TrafficObject_id **reinsertBuffer,  size_t *insert_into_lane, size_t n, size_t lane_id, size_t offset) {
-    if (idx + offset < n) {
-        if ((idx == 0 && insert_into_lane[0] > 0) || (idx != 0 && insert_into_lane[idx] != insert_into_lane[idx - 1])) {
-            size_t insert_id = idx == 0 ? 0 : insert_into_lane[idx - 1];
-            assert(bucket.buffer[bucket.size + insert_id] == nullptr);
-            bucket.buffer[bucket.size + insert_id] = reinsertBuffer[idx + offset];
-#ifdef RUN_WITH_TESTS
-            if (reinsertBuffer[idx + offset]->id == CAR_TO_ANALYZE) {
-                printf("Car(%lu) from ReinsertBuffer(#%lu) to Bucket(%lu)\n", reinsertBuffer[idx + offset]->id, idx + offset, lane_id);
-            }
-#endif
-        }
-    }
-}
 
 __device__ void find_nearest_for_car_on_lane(CudaScenario_id *scenario, SortedBucketContainer *container, TrafficObject_id &car, TrafficObject_id *&front, TrafficObject_id *&back) {
 
@@ -297,9 +268,6 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
         int lane_offset = (int) (idx % 3) - 1;
         size_t car_idx = idx / 3;
 
-        if (car_idx >= scenario->getNumCars())
-            return;
-
         TrafficObject_id car = *scenario->getCar(car_idx);
         size_t lane_id = (size_t) -1;
         TrafficObject_id **nearest = nullptr;
@@ -332,7 +300,7 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
         if (lane_id == (size_t) -1) {
             nearest_back = nullptr;
             nearest_font = nullptr;
-            return;
+            continue;
         }
 
         size_t n = container->buckets[lane_id].size;
@@ -365,156 +333,6 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
 
     }
 }
-
-__global__ void find_nearest(CudaScenario_id *scenario, SortedBucketContainer *container, TrafficObject_id **nearest_left,
-                             TrafficObject_id **nearest_own, TrafficObject_id **nearest_right) {
-    AlgorithmWrapper wrapper(*scenario);
-
-    size_t car_idx = GetGlobalIdx();
-    int lane_offset = (int)(car_idx % 3) - 1;
-    car_idx /= 3;
-
-    if (car_idx >= scenario->getNumCars())
-        return;
-
-    TrafficObject_id car = *scenario->getCar(car_idx);
-    size_t lane_id = (size_t ) -1;
-    TrafficObject_id **nearest = nullptr;
-    Road_id::NeighboringLanes n_lanes;
-    switch (lane_offset) {
-        case 1:
-            n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
-            lane_id = n_lanes.right;
-            nearest = nearest_right;
-            break;
-        case 0:
-            lane_id = car.lane;
-            nearest = nearest_own;
-            break;
-        case -1:
-            n_lanes = wrapper.getNeighboringLanes(*scenario->getLane(car.lane));
-            lane_id = n_lanes.left;
-            nearest = nearest_left;
-            break;
-        default:
-            assert(false);
-    }
-    car.lane = lane_id;
-    TrafficObject_id *&nearest_font = nearest[car_idx];
-    TrafficObject_id *&nearest_back = nearest[car_idx + scenario->getNumCars()];
-
-    if (lane_id == (size_t) -1) {
-        nearest_back = nullptr;
-        nearest_font = nullptr;
-        return;
-    }
-
-    size_t n = container->buckets[lane_id].size;
-
-    nearest_font = nullptr; nearest_back = nullptr;
-
-    if (n == 0) {
-        nearest_back = nullptr;
-        nearest_font = nullptr;
-    } else {
-        TrafficObject_id **lane_objects = container->buckets[lane_id].buffer;
-        size_t search_idx = n / 2;
-        size_t from = 0;
-        size_t to = n;
-
-
-        if (n == 1) {
-            assert(lane_objects[0] != nullptr);
-            if (*lane_objects[0] == car) {
-                nearest_font = nullptr;
-                nearest_back = nullptr;
-            } else if (*lane_objects[0] > car) {
-                nearest_font = lane_objects[0];
-                nearest_back = nullptr;
-            } else if (*lane_objects[0] < car) {
-                nearest_back = lane_objects[0];
-                nearest_font = nullptr;
-            }
-        } else {
-            while (true) {
-                assert(lane_objects[search_idx] != nullptr);
-#ifdef DEBUG_MSGS
-                if (car.id == CAR_TO_ANALYZE)
-                    printf("Find (%lu/%lu) on Lane(%lu): %lu/%.2f, Current(%lu) %lu/%.2f, Index: %lu/%lu/%lu \n",
-                           car.id, scenario->getCar(car_idx)->lane, lane_id, car.lane, car.x,
-                           lane_objects[search_idx]->id, lane_objects[search_idx]->lane, lane_objects[search_idx]->x,
-                           from,
-                           search_idx, to);
-#endif
-                if (*lane_objects[search_idx] < car) {
-                    if (search_idx + 1 == n || *lane_objects[search_idx + 1] >= car) {
-                        break;
-                    }
-                    from = search_idx + 1;
-                    search_idx += (to - from) / 4 == 0 ? 1 : (to - from) / 4;
-                } else {
-                    to = search_idx;
-                    search_idx -= (to - from) / 4 == 0 ? 1 : (to - from) / 4;
-                }
-                if ((to - from) == 1)
-                    break;
-            }
-
-            assert(lane_objects[search_idx] != nullptr);
-
-#ifdef DEBUG_MSGS
-            if (car.id == CAR_TO_ANALYZE)
-                printf("Find (%lu/%lu) on Lane(%lu): %lu/%.2f, Current(%lu) %lu/%.2f, Index: %lu/%lu/%lu \n",
-                       car.id, scenario->getCar(car_idx)->lane, lane_id, car.lane, car.x,
-                       lane_objects[search_idx]->id, lane_objects[search_idx]->lane, lane_objects[search_idx]->x, from,
-                       search_idx, to);
-#endif
-            assert(search_idx < n && (*lane_objects[search_idx] < car || search_idx == 0));
-
-
-            if (search_idx == 0 && *lane_objects[search_idx] >= car) {
-                nearest_back = nullptr;
-                while (search_idx < n && *lane_objects[search_idx] == car) search_idx++;
-                if (search_idx < n)
-                    nearest_font = lane_objects[search_idx];
-                else
-                    nearest_font = nullptr;
-            } else {
-                if (search_idx < n)
-                    nearest_back = lane_objects[search_idx];
-                else
-                    nearest_back = nullptr;
-                search_idx++;
-                while (search_idx < n && *lane_objects[search_idx] == car) search_idx++;
-                if (search_idx < n) {
-                    nearest_font = lane_objects[search_idx];
-                } else {
-                    nearest_font = nullptr;
-                }
-            }
-        }
-    }
-
-#ifdef DEBUG_MSGS
-    if(car.id == CAR_TO_ANALYZE) {
-        printf("Found(%lu/%lu) on Lane(%lu): %lu %lu\n", car.id, scenario->getCar(car_idx)->lane, lane_id,
-               (nearest_back != nullptr ? nearest_back->id : (size_t) -1),
-               nearest_font != nullptr ? nearest_font->id : (size_t) -1);
-    }
-#endif
-
-    Lane_id *l = scenario->getLane(car.lane);
-    RedTrafficLight_id *tl = scenario->getLight(l->traffic_light);
-    if(tl->isRed()) {
-        if (car < *tl && (nearest_font == nullptr || *tl < *nearest_font)) {
-            nearest_font = tl;
-        }
-        if (car > *tl && (nearest_back == nullptr || *tl > *nearest_back)) {
-            nearest_back = tl;
-        }
-    }
-}
-
 
 void static_advance(size_t steps, Scenario_id &scenario) {
 

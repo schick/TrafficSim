@@ -431,7 +431,7 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
     for (size_t idx = GetGlobalIdx(); idx < 2 * n; idx += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
         assert(bucket_idx < container->bucket_count);
         if(element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
         bool found = false;
@@ -643,7 +643,7 @@ __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t 
     for(size_t i=GetGlobalIdx(); i < car_count; i += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(i, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
 #ifdef DEBUG_MSGS
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", i,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
@@ -661,7 +661,7 @@ __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, si
     for(size_t idx = GetGlobalIdx(); idx < n; idx += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", idx,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
 
