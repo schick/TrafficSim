@@ -8,7 +8,7 @@
 
 void OpenMPAlgorithm::calculateCarChanges() {
 #pragma omp parallel for
-    for (int i = 0; i < getRefScenario()->cars.size(); i++) {
+    for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
         car.nextStep();
     }
@@ -16,7 +16,7 @@ void OpenMPAlgorithm::calculateCarChanges() {
 
 void OpenMPAlgorithm::advanceCars() {
 #pragma omp parallel for
-    for (int i = 0; i < getRefScenario()->cars.size(); i++) {
+    for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
         IntelligentDriverModel::advanceStep(car, *getRefScenario());
     }
@@ -24,7 +24,7 @@ void OpenMPAlgorithm::advanceCars() {
 
 void OpenMPAlgorithm::advanceTrafficLights() {
 #pragma omp parallel for
-    for (int i = 0; i < getRefScenario()->junctions.size(); i++) {
+    for (size_t i = 0; i < getRefScenario()->junctions.size(); i++) {
         Junction &junction = getRefScenario()->junctions[i];
         junction.updateSignals();
     }
@@ -32,7 +32,7 @@ void OpenMPAlgorithm::advanceTrafficLights() {
 
 void OpenMPAlgorithm::sortLanes() {
 #pragma omp parallel for
-    for (int i = 0; i < getRefScenario()->lanes.size(); i++) {
+    for (size_t i = 0; i < getRefScenario()->lanes.size(); i++) {
         Lane &lane = getRefScenario()->lanes[i];
         if (!lane.isSorted) {
             std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
@@ -43,7 +43,7 @@ void OpenMPAlgorithm::sortLanes() {
 
 void OpenMPAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
-        //sortLanes();
+        sortLanes();
         calculateCarChanges();
         advanceCars();
         advanceTrafficLights();
