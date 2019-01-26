@@ -182,3 +182,8 @@ ENDIF()
 
 add_executable(compare main/src/test/compare_algorithms.cpp)
 target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
+
+add_executable(generate_scenario  scenario_id/src/cuda_utils.cu main/src/generate_scenario.cpp main/src/generate_scenario.cu main/src/util/SimpleArgumentParser.cpp)
+set_property(TARGET generate_scenario PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+set_property(TARGET generate_scenario PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+# target_link_libraries(generate_scenario ${CUDA_LIBRARIES})
