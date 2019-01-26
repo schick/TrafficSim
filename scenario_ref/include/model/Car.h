@@ -70,7 +70,7 @@ public:
     void calcSameLaneAcceleration(TrafficObject *leadingObject) override;
     double getSameLaneAcceleration() override;
 
-    virtual void updateKinematicState();
+    void updateKinematicState();
 
     double getTravelledDistance();
     void setTravelledDistance(double value);
