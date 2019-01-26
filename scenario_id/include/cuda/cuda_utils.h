@@ -15,7 +15,8 @@
 #ifdef DEBUG
 #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #else
-#define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
+// #define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
+#define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #endif
 
 
