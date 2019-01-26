@@ -20,8 +20,8 @@ public:
 protected:
 
     bool IsDone();
-    std::vector<std::array<double, 4>> initialSimulation();
-    void randomTestsUntilDone(std::vector<std::array<double, 4>> &incoming_counts);
+    std::vector<std::array<uint64_t , 4>> initialSimulation(size_t steps);
+    void randomTestsUntilDone(std::vector<std::array<uint64_t , 4>> &incoming_counts);
 
     std::mutex validResultsMutex;
     std::vector<nlohmann::json> validResults;

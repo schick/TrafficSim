@@ -22,8 +22,8 @@ long seed = std::chrono::system_clock::now().time_since_epoch().count();
 std::default_random_engine generator(seed);
 
 
-void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<double, 4>> &incoming_counts,
-                           size_t mean_max_duration_min = 9, size_t mean_max_duration_max = 15, size_t normal_std = 1) {
+void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<uint64_t, 4>> &incoming_counts,
+                           size_t mean_max_duration_min = 9, size_t mean_max_duration_max = 15, double normal_std = 1) {
 
     for (auto &junction : scenario.junctions) {
         junction.signals.resize(0);
@@ -38,7 +38,7 @@ void _randomInitialization(OptimizeScenario &scenario, std::vector<std::array<do
                 size_t signal_idx = signal_idxs[i];
                 signal_idxs.erase(signal_idxs.begin() + i);
                 std::normal_distribution<double> distribution(
-                        incoming_counts[junction.id][signal_idx] / *max_metric * mean_max_duration, normal_std);
+                        (double) incoming_counts[junction.id][signal_idx] / *max_metric * mean_max_duration, normal_std);
                 auto duration = (size_t) std::abs(std::round(distribution(generator)));
                 if (duration < 5 && duration > 2) duration = 5;
                 if (duration <= 2) continue;
@@ -66,7 +66,7 @@ void zeroInitialization(OptimizeScenario &scenario) {
     scenario.initJunctions();
 }
 
-std::vector<std::array<double, 4>> DistributionOptimizer::initialSimulation() {
+std::vector<std::array<uint64_t , 4>> DistributionOptimizer::initialSimulation(size_t steps) {
     std::shared_ptr<BaseScenario> last_scenario;
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
@@ -76,15 +76,23 @@ std::vector<std::array<double, 4>> DistributionOptimizer::initialSimulation() {
     if (scenario == nullptr) throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
 
     zeroInitialization(*scenario);
-    advancer->advance(scenarioData["time_steps"]);
+
+    advancer->advance(steps);
 
 #ifdef DEBUG_MSGS
     printf("Max distance: %.2f\n", scenario->getTravelledDistance());
 #endif
 
-    std::vector<std::array<double, 4>> incoming_counts;
-    incoming_counts.reserve(scenario->junctions.size());
-    for (Junction &j : scenario->junctions) incoming_counts.emplace_back(j.incoming_counter);
+    std::vector<std::array<uint64_t , 4>> incoming_counts;
+    incoming_counts.resize(scenario->junctions.size());
+
+    #pragma omp parallel for
+    for (size_t idx = 0; idx < scenario->junctions.size(); idx++) {
+        for(int i=0; i < 4; i++) {
+            incoming_counts[idx][i] = scenario->junctions[idx].incoming_counter[i];
+        }
+    }
+
     return incoming_counts;
 }
 
@@ -93,7 +101,7 @@ bool DistributionOptimizer::IsDone() {
     return !validResults.empty();
 }
 
-void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 4>> &incoming_counts) {
+void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<uint64_t, 4>> &incoming_counts) {
 
     std::shared_ptr<AdvanceAlgorithm> advancer = AdvanceAlgorithm::instantiateOptimization(algorithm, scenarioData);
     if (advancer == nullptr) throw std::runtime_error("Algorithm not found: " + algorithm);
@@ -102,6 +110,10 @@ void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 
     if (scenario == nullptr) throw std::runtime_error("Algorithm '" + algorithm + "' with wrong scenario type for 'RandomOptimizer'");
 
     int idx = 0;
+    size_t steps = scenarioData["time_steps"];
+    double max = 0;
+    constexpr double f = 0.0;
+    double _std = 0;
     while (!IsDone()) {
         idx++;
         scenario->reset();
@@ -109,24 +121,32 @@ void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 
         double total_distance = 0.0;
         json json;
 
-        if(idx % 2 == 1) {
+        if(steps < 50) {
             SignalLayout signalLayout(algorithm, scenarioData);
 
             total_distance = signalLayout.getTravelledDistance();
             json = signalLayout.toJson();
 
+#ifdef DEBUG_MSGS
+            printf("Totally random distance: %10.2f / %10.2f / %10.2f\n", total_distance, max, minTravelLength);
+#endif
         } else {
-            _randomInitialization(*scenario, incoming_counts, 5, 15, 1);
 
-            advancer->advance(scenarioData["time_steps"]);
+            _randomInitialization(*scenario, incoming_counts, 10, 20, _std);
+
+            advancer->advance(steps);
 
             total_distance = scenario->getTravelledDistance();
+
             json = scenario->toJson();
-        }
 
 #ifdef DEBUG_MSGS
-        printf("Distance: %.2f / %.2f\n", total_distance, minTravelLength);
+            printf("Distribution distance  : %10.2f / %10.2f / %10.2f\n", total_distance, max, minTravelLength);
 #endif
+            //_std += 0.1;
+        }
+
+        max = total_distance > max ? total_distance : max;
 
         if (total_distance > minTravelLength) {
             std::scoped_lock lock(validResultsMutex);
@@ -138,7 +158,7 @@ void DistributionOptimizer::randomTestsUntilDone(std::vector<std::array<double, 
 
 nlohmann::json DistributionOptimizer::optimize() {
 
-    std::vector<std::array<double, 4>> incoming_counts = initialSimulation();
+    std::vector<std::array<uint64_t, 4>> incoming_counts = initialSimulation((size_t ) scenarioData["time_steps"] / 4);
 
     randomTestsUntilDone(incoming_counts);
 

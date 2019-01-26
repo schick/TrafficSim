@@ -257,7 +257,7 @@ void SortedBucketContainer::SortLargeBuckets(BucketData *buckets, size_t num_buc
 
 
     SizeType *dev_num_cars_n_max_bucket_len;
-    gpuErrchk(cudaMalloc((void **) &dev_num_cars_n_max_bucket_len, 2 * sizeof(SizeType)));
+    GPU_ALLOC((void **) &dev_num_cars_n_max_bucket_len, 2 * sizeof(SizeType))
     SizeType *dev_num_cars = dev_num_cars_n_max_bucket_len;
     SizeType *dev_max_bucket_len = dev_num_cars_n_max_bucket_len + 1;
 
@@ -431,7 +431,7 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
     for (size_t idx = GetGlobalIdx(); idx < 2 * n; idx += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
         assert(bucket_idx < container->bucket_count);
         if(element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
         bool found = false;
@@ -476,6 +476,7 @@ CUDA_GLOB void bucketMemoryLoadKernel2(SortedBucketContainer *bucketmem, CudaSce
     CUDA_GLOBAL_ITER(car_idx, cuda_device_scenario->getNumCars()) {
         auto car = cuda_device_scenario->getCar(car_idx);
         size_t insert_offset = atomicAdd(temp_value + car->lane, 1);
+        assert(insert_offset < bucketmem->buckets[car->lane].buffer_size);
         bucketmem->buckets[car->lane].buffer[insert_offset] = car;
     }
 }
@@ -569,14 +570,14 @@ __global__ void InitializeKernel(CudaScenario_id *scenario, SortedBucketContaine
 }
 std::shared_ptr<SortedBucketContainer> SortedBucketContainer::fromScenario(Scenario_id &scenario, CudaScenario_id *device_cuda_scenario, SortBuffer &sortBuffer) {
     TrafficObject_id **main_buffer;
-    gpuErrchk(cudaMalloc((void**) &main_buffer, SortedBucketContainer::getBufferSize(scenario, 4) * sizeof(TrafficObject_id*)));
+    GPU_ALLOC((void**) &main_buffer, SortedBucketContainer::getBufferSize(scenario, 4) * sizeof(TrafficObject_id*))
 
     BucketData *buckets;
-    gpuErrchk(cudaMalloc((void**) &buckets, scenario.lanes.size() * sizeof(BucketData)));
+    GPU_ALLOC((void**) &buckets, scenario.lanes.size() * sizeof(BucketData))
 
     // allocate bucket class
     SortedBucketContainer *bucket_memory;
-    gpuErrchk(cudaMalloc((void**) &bucket_memory, sizeof(SortedBucketContainer)));
+    GPU_ALLOC((void**) &bucket_memory, sizeof(SortedBucketContainer))
 
     // initialize bucket class
     CalculateBucketSizes<<<MAX(SUGGESTED_THREADS, scenario.lanes.size() / SUGGESTED_THREADS + 1), SUGGESTED_THREADS>>>
@@ -590,7 +591,7 @@ std::shared_ptr<SortedBucketContainer> SortedBucketContainer::fromScenario(Scena
     CHECK_FOR_ERROR();
 
     unsigned int *tmp;
-    gpuErrchk(cudaMalloc((void**) &tmp, scenario.lanes.size() * sizeof(unsigned int )));
+    GPU_ALLOC((void**) &tmp, scenario.lanes.size() * sizeof(unsigned int ))
     gpuErrchk(cudaMemset(tmp, 0, scenario.lanes.size() * sizeof(unsigned int )));
 
     bucketMemoryLoadKernel2<<<scenario.cars.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(bucket_memory, device_cuda_scenario, tmp);
@@ -639,11 +640,11 @@ void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **
 
 __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t car_count, size_t *sizes, size_t num_sizes,
         size_t *lanePreSum, size_t lanePreSumSize) {
-    assert(num_sizes >= container->main_buffer_size);
-    for(size_t i=GetGlobalIdx(); i < car_count; i += GetGlobalDim()) {
+    assert(num_sizes >= car_count);
+    CUDA_GLOBAL_ITER(i, car_count) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(i, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
 #ifdef DEBUG_MSGS
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", i,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
@@ -661,7 +662,7 @@ __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, si
     for(size_t idx = GetGlobalIdx(); idx < n; idx += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) return;
+        if (bucket_idx >= container->bucket_count) continue;
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", idx,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
 

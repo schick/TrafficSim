@@ -5,13 +5,13 @@
 #include "optimization/DistributionOpenMPOptimizer.h"
 
 nlohmann::json DistributionOpenMPOptimizer::optimize() {
-
-    std::vector<std::array<double, 4>> incoming_counts = initialSimulation();
+    throw  std::runtime_error("bla");
+   /* std::vector<std::array<double, 4>> incoming_counts = initialSimulation();
 
     #pragma omp parallel
     {
         randomTestsUntilDone(incoming_counts);
     };
 
-    return validResults.front();
+    return validResults.front();*/
 }

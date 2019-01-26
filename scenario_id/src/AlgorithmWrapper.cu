@@ -20,19 +20,19 @@ __global__ void  get_nearest_objects(CudaScenario_id* scenario, size_t *nearest_
 
 CudaScenario_id *CudaScenario_id::fromScenarioData_device(ScenarioData_id &scenario) {
     CudaScenario_id cudaScenarioId;
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.junctions, scenario.junctions.size() * sizeof(Junction_id)));
+    GPU_ALLOC((void**) &cudaScenarioId.junctions, scenario.junctions.size() * sizeof(Junction_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.junctions, scenario.junctions.data(), scenario.junctions.size() * sizeof(Junction_id), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.signals, scenario.signals.size() * sizeof(Junction_id::Signal)));
+    GPU_ALLOC((void**) &cudaScenarioId.signals, scenario.signals.size() * sizeof(Junction_id::Signal))
     gpuErrchk(cudaMemcpy(cudaScenarioId.signals, scenario.signals.data(), scenario.signals.size() * sizeof(Junction_id::Signal), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.traffic_lights, scenario.traffic_lights.size() * sizeof(RedTrafficLight_id)));
+    GPU_ALLOC((void**) &cudaScenarioId.traffic_lights, scenario.traffic_lights.size() * sizeof(RedTrafficLight_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.traffic_lights, scenario.traffic_lights.data(), scenario.traffic_lights.size() * sizeof(RedTrafficLight_id), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.roads, scenario.roads.size() * sizeof(Road_id)));
+    GPU_ALLOC((void**) &cudaScenarioId.roads, scenario.roads.size() * sizeof(Road_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.roads, scenario.roads.data(), scenario.roads.size() * sizeof(Road_id), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.lanes, scenario.lanes.size() * sizeof(Lane_id)));
+    GPU_ALLOC((void**) &cudaScenarioId.lanes, scenario.lanes.size() * sizeof(Lane_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.lanes, scenario.lanes.data(), scenario.lanes.size() * sizeof(Lane_id), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.cars, scenario.cars.size() * sizeof(Car_id)));
+    GPU_ALLOC((void**) &cudaScenarioId.cars, scenario.cars.size() * sizeof(Car_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.cars, scenario.cars.data(), scenario.cars.size() * sizeof(Car_id), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc((void**) &cudaScenarioId.turns, scenario.turns.size() * sizeof(Car_id::TurnDirection)));
+    GPU_ALLOC((void**) &cudaScenarioId.turns, scenario.turns.size() * sizeof(Car_id::TurnDirection))
     gpuErrchk(cudaMemcpy(cudaScenarioId.turns, scenario.turns.data(), scenario.turns.size() * sizeof(Car_id::TurnDirection), cudaMemcpyHostToDevice));
 
     cudaScenarioId.num_cars = scenario.cars.size();
@@ -44,7 +44,7 @@ CudaScenario_id *CudaScenario_id::fromScenarioData_device(ScenarioData_id &scena
     cudaScenarioId.num_turns = scenario.turns.size();
 
     CudaScenario_id *device_cuda_scenario;
-    gpuErrchk(cudaMalloc((void**) &device_cuda_scenario, sizeof(CudaScenario_id)));
+    GPU_ALLOC((void**) &device_cuda_scenario, sizeof(CudaScenario_id))
     gpuErrchk(cudaMemcpy(device_cuda_scenario, &cudaScenarioId, sizeof(CudaScenario_id), cudaMemcpyHostToDevice));
     return device_cuda_scenario;
 }

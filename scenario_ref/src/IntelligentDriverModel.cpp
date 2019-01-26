@@ -31,8 +31,8 @@ void IntelligentDriverModel::moveCarAcrossJunction(Car &car, Scenario &scenario)
     auto oldLaneLength = old_lane->length;
     car.setPosition(car.getPosition() - oldLaneLength);
 
-    double &incoming_counter = old_lane->road.to->incoming_counter[(old_lane->road.getDirection() + 2) % 4];
-    incoming_counter += car.v / scenario.total_steps * (scenario.total_steps - scenario.current_step);
+    auto &incoming_counter = old_lane->road.to->incoming_counter[(old_lane->road.getDirection() + 2) % 4];
+    incoming_counter += car.v / scenario.total_steps * (scenario.total_steps - scenario.current_step) * 100;
     // select direction based on current direction and turn
     int direction = (old_lane->road.getDirection() + car.turns.front() + 2) % 4;
 

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "TrafficLight.h"
+#include "atomic"
 
 class Road;
 
@@ -39,6 +40,12 @@ public:
     };
 
     Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing(), incoming_counter() {};
+    Junction(const Junction &other) :
+            signals(other.signals), current_signal(other.current_signal), current_signal_time_left(other.current_signal_time_left),
+            id(other.id), x(other.x), y(other.y),
+            outgoing(other.outgoing), incoming(other.incoming), incoming_counter() {
+        for(int i = 0; i < 4; i++) incoming_counter[i] = other.incoming_counter[i].load();
+    }
 
     /**
      * signals to cycle through
@@ -68,7 +75,7 @@ public:
      */
     void updateSignals();
 
-    std::array<double, 4> incoming_counter;
+    std::array<std::atomic<uint64_t >, 4> incoming_counter;
 
     /**
      * Return a vector containing all possible Direction

@@ -12,9 +12,6 @@ int main() {
     constexpr int steps = 1000;
 
     std::vector<std::string> files = {
-            "tests/own_tests/16x16.json",
-            "tests/own_tests/32x32.json",
-            "tests/own_tests/64x64.json",
             "tests/own_tests/128_5_20695_103475.json",
             "tests/own_tests/256_5_83.751_418.755.json"
     };
