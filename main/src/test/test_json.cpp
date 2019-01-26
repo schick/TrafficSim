@@ -123,7 +123,9 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
     ASSERT_NO_THROW(optimizer->optimize());
 
     if (optimization == "RandomOptimizer") {
-        printf("Iterations: %i", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
+        printf("Iterations: %zu", dynamic_cast<RandomOptimizer *>(optimizer.get())->getIterations());
+    } else if (optimization == "GeneticOptimizer") {
+        printf("Iterations: %zu", dynamic_cast<GeneticOptimizer *>(optimizer.get())->getIterations());
     }
 }
 
@@ -132,13 +134,14 @@ void testRandom(std::string optimization, std::string algorithm, std::string fn)
 }
 
 #define _CREATE_OPTIMIZATIONS(NAME, PATH) \
-    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, RandomOptimizer);\
-    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, DistributionOptimizer);\
-    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, DistributionOpenMPOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, SequentialAlgorithm, GeneticOptimizer);\
+    _CREATE_OPTIMIZATION(NAME, PATH, OpenMPAlgorithm, GeneticOptimizer);\
 
 _CREATE_OPTIMIZATIONS(tiny_10_steps, "42-tiny_10timestep_optimize.json");
 _CREATE_OPTIMIZATIONS(tiny_100_steps, "42-tiny_100timestep_optimize.json");
 _CREATE_OPTIMIZATIONS(tiny_400_steps, "44-tiny_400timestep_optimize.json");
+_CREATE_OPTIMIZATIONS(4x4_100, "own_tests/4x4_100_optimize.json");
+_CREATE_OPTIMIZATIONS(4x4_1000, "own_tests/4x4_1000_optimize.json");
 
 
 int main(int argc, char **argv) {

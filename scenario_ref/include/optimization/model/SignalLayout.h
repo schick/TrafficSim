@@ -14,16 +14,23 @@
 class SignalLayout {
 
 public:
-
     SignalLayout(std::string algorithm, nlohmann::json scenarioData);
+
+    SignalLayout (SignalLayout firstParent, SignalLayout secondParent, std::string algorithm, nlohmann::json scenarioData);
 
     double getTravelledDistance() { return travelledDistance; }
 
     nlohmann::json toJson();
 
-private:
+    struct Cmp {
+        bool operator () (SignalLayout &lhs, SignalLayout &rhs) {
+            return lhs.getTravelledDistance() > rhs.getTravelledDistance();
+        }
+    };
 
     std::unordered_map<uint64_t, std::vector<Junction::Signal>> signalsMap;
+
+private:
 
     double travelledDistance = 0.0;
 

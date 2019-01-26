@@ -14,7 +14,7 @@
 
 void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
 
-    std::shared_ptr<BaseOptimizer> optimizer = BaseOptimizer::instantiate("DistributionOpenMPOptimizer", input, "SequentialAlgorithm");
+    std::shared_ptr<BaseOptimizer> optimizer = BaseOptimizer::instantiate("GeneticOptimizer", input, "OpenMPAlgorithm");
 
     json output = optimizer->optimize();
 

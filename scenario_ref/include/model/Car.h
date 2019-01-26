@@ -23,32 +23,17 @@ public:
         STRAIGHT = 2,
         RIGHT = 3
     };
-
-    /**
-     * some constructor
-     * @param id
-     * @param length
-     * @param target_velocity
-     * @param max_acceleration
-     * @param target_deceleration
-     * @param min_distance
-     * @param target_headway
-     * @param politeness
-     * @param x
-     * @param v
-     * @param a
-     */
+    
     Car(int id, double length, double target_velocity, double max_acceleration, double target_deceleration,
             double min_distance, double target_headway, double politeness,
             double x=0, double v=0, double a=0)
-                : length(length), target_velocity(target_velocity), max_acceleration(max_acceleration),
+                : target_velocity(target_velocity), max_acceleration(max_acceleration),
                     target_deceleration(target_deceleration), min_distance(min_distance),
-                    target_headway(target_headway), politeness(politeness), TrafficObject(id, length, x, v, a) {}
+                    target_headway(target_headway), politeness(politeness), lane(nullptr), TrafficObject(id, length, x, v, a) {}
     /**
      * properties
      */
     
-    double length;
     double target_velocity;
     double max_acceleration;
     double target_deceleration;
@@ -75,10 +60,32 @@ public:
     double getTravelledDistance();
     void setTravelledDistance(double value);
 
+    /**
+     * move this object to a specific lane.
+     * @param lane lane to move object to
+     */
+    void moveToLane(Lane *lane);
+
+    /**
+     * remove object from any lane it may be assigned to
+     */
+    void removeFromLane();
+
+    /**
+     * get currently assigned lane
+     * @return currently assigned lane
+     */
+    Lane *getLane();
+
 
 private:
 
     double travelledDistance = 0.0;
+
+    /**
+     * current lane
+     */
+    Lane *lane;
 
 };
 

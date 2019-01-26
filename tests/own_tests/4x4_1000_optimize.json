@@ -1,0 +1,3496 @@
+{
+"min_travel_distance": 430000.0,
+"optimize_signals": true,
+    "roads": [
+        {
+            "lanes": 2, 
+            "junction1": 0, 
+            "limit": 90, 
+            "junction2": 1
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 0, 
+            "limit": 120, 
+            "junction2": 4
+        }, 
+        {
+            "lanes": 3, 
+            "junction1": 1, 
+            "limit": 90, 
+            "junction2": 11
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 2, 
+            "limit": 50, 
+            "junction2": 3
+        }, 
+        {
+            "lanes": 3, 
+            "junction1": 2, 
+            "limit": 70, 
+            "junction2": 5
+        }, 
+        {
+            "lanes": 2, 
+            "junction1": 3, 
+            "limit": 30, 
+            "junction2": 4
+        }, 
+        {
+            "lanes": 2, 
+            "junction1": 3, 
+            "limit": 100, 
+            "junction2": 6
+        }, 
+        {
+            "lanes": 2, 
+            "junction1": 4, 
+            "limit": 120, 
+            "junction2": 7
+        }, 
+        {
+            "lanes": 2, 
+            "junction1": 5, 
+            "limit": 50, 
+            "junction2": 6
+        }, 
+        {
+            "lanes": 3, 
+            "junction1": 5, 
+            "limit": 30, 
+            "junction2": 8
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 6, 
+            "limit": 70, 
+            "junction2": 7
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 6, 
+            "limit": 70, 
+            "junction2": 9
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 7, 
+            "limit": 70, 
+            "junction2": 10
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 8, 
+            "limit": 30, 
+            "junction2": 9
+        }, 
+        {
+            "lanes": 3, 
+            "junction1": 9, 
+            "limit": 70, 
+            "junction2": 10
+        }, 
+        {
+            "lanes": 1, 
+            "junction1": 10, 
+            "limit": 90, 
+            "junction2": 11
+        }
+    ], 
+    "time_steps": 1000,
+    "junctions": [
+        {
+            "y": 2, 
+            "x": 0, 
+            "id": 0, 
+            "signals": [
+                {
+                    "dir": 2, 
+                    "time": 5
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 4
+                }
+            ]
+        }, 
+        {
+            "y": 3, 
+            "x": 0, 
+            "id": 1, 
+            "signals": [
+                {
+                    "dir": 0, 
+                    "time": 9
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 8
+                }
+            ]
+        }, 
+        {
+            "y": 0, 
+            "x": 1, 
+            "id": 2, 
+            "signals": [
+                {
+                    "dir": 2, 
+                    "time": 4
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 12
+                }
+            ]
+        }, 
+        {
+            "y": 1, 
+            "x": 1, 
+            "id": 3, 
+            "signals": [
+                {
+                    "dir": 0, 
+                    "time": 8
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 8
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 15
+                }
+            ]
+        }, 
+        {
+            "y": 2, 
+            "x": 1, 
+            "id": 4, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 12
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 15
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 15
+                }
+            ]
+        }, 
+        {
+            "y": 0, 
+            "x": 2, 
+            "id": 5, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 9
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 5
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 12
+                }
+            ]
+        }, 
+        {
+            "y": 1, 
+            "x": 2, 
+            "id": 6, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 6
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 13
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 13
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 10
+                }
+            ]
+        }, 
+        {
+            "y": 2, 
+            "x": 2, 
+            "id": 7, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 10
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 6
+                }, 
+                {
+                    "dir": 1, 
+                    "time": 6
+                }
+            ]
+        }, 
+        {
+            "y": 0, 
+            "x": 3, 
+            "id": 8, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 4
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 14
+                }
+            ]
+        }, 
+        {
+            "y": 1, 
+            "x": 3, 
+            "id": 9, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 11
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 8
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 13
+                }
+            ]
+        }, 
+        {
+            "y": 2, 
+            "x": 3, 
+            "id": 10, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 10
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 9
+                }, 
+                {
+                    "dir": 2, 
+                    "time": 6
+                }
+            ]
+        }, 
+        {
+            "y": 3, 
+            "x": 3, 
+            "id": 11, 
+            "signals": [
+                {
+                    "dir": 3, 
+                    "time": 12
+                }, 
+                {
+                    "dir": 0, 
+                    "time": 9
+                }
+            ]
+        }
+    ], 
+    "cars": [
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 6.594709215072225
+            }, 
+            "target_deceleration": 3.476186914437511, 
+            "max_acceleration": 2.2998364870759023, 
+            "target_headway": 1.2398525738079225, 
+            "politeness": 0.4710445721451363, 
+            "route": [
+                2, 
+                0, 
+                3
+            ], 
+            "target_velocity": 109.0, 
+            "id": 0, 
+            "min_distance": 3.0830667720061724
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 44.41759922113977
+            }, 
+            "target_deceleration": 3.1615448078756057, 
+            "max_acceleration": 2.210004066457673, 
+            "target_headway": 1.6330771790919227, 
+            "politeness": 0.1517149390717596, 
+            "route": [
+                2, 
+                1, 
+                3
+            ], 
+            "target_velocity": 117.0, 
+            "id": 1, 
+            "min_distance": 3.964638868076776
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 35.59991065808122
+            }, 
+            "target_deceleration": 2.375306003331966, 
+            "max_acceleration": 1.8854113332326525, 
+            "target_headway": 2.0180724292911982, 
+            "politeness": 0.3426792436285667, 
+            "route": [
+                2, 
+                2, 
+                0
+            ], 
+            "target_velocity": 80.0, 
+            "id": 2, 
+            "min_distance": 2.0795794232402054
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 23.291073014701723
+            }, 
+            "target_deceleration": 2.82990595847083, 
+            "max_acceleration": 2.809659642243619, 
+            "target_headway": 2.9889056263101796, 
+            "politeness": 0.1842070743020607, 
+            "route": [
+                2, 
+                3
+            ], 
+            "target_velocity": 115.0, 
+            "id": 3, 
+            "min_distance": 3.8023080527588453
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 1, 
+                "from": 4, 
+                "distance": 86.73838637614449
+            }, 
+            "target_deceleration": 2.1069883603086175, 
+            "max_acceleration": 1.9797339034831625, 
+            "target_headway": 1.2467316726939555, 
+            "politeness": 0.2410148272237642, 
+            "route": [
+                1, 
+                3
+            ], 
+            "target_velocity": 131.0, 
+            "id": 4, 
+            "min_distance": 2.4952037466190347
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 82.6070074936487
+            }, 
+            "target_deceleration": 3.7020520857655725, 
+            "max_acceleration": 1.4611495367461529, 
+            "target_headway": 2.943735750564608, 
+            "politeness": 0.324363340770047, 
+            "route": [
+                0, 
+                2
+            ], 
+            "target_velocity": 134.0, 
+            "id": 5, 
+            "min_distance": 2.5718351314745966
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 12.189185460628138
+            }, 
+            "target_deceleration": 3.1534927615085215, 
+            "max_acceleration": 1.9726359009299876, 
+            "target_headway": 2.322275632712813, 
+            "politeness": 0.3963661885486467, 
+            "route": [
+                3, 
+                3, 
+                1
+            ], 
+            "target_velocity": 104.0, 
+            "id": 6, 
+            "min_distance": 3.344310681801802
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 2, 
+                "from": 10, 
+                "distance": 57.68562478389177
+            }, 
+            "target_deceleration": 3.9613392593560546, 
+            "max_acceleration": 1.198426402823863, 
+            "target_headway": 1.2646183440038474, 
+            "politeness": 0.3397652568013344, 
+            "route": [
+                0, 
+                0, 
+                0, 
+                0
+            ], 
+            "target_velocity": 130.0, 
+            "id": 7, 
+            "min_distance": 3.2224104714827693
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 72.59263636731377
+            }, 
+            "target_deceleration": 3.951505499408926, 
+            "max_acceleration": 2.629504421372674, 
+            "target_headway": 1.3506058242507122, 
+            "politeness": 0.22976234500123152, 
+            "route": [
+                3, 
+                0, 
+                2
+            ], 
+            "target_velocity": 127.0, 
+            "id": 8, 
+            "min_distance": 2.8377746135582993
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 74.97394399340297
+            }, 
+            "target_deceleration": 2.3737186262333374, 
+            "max_acceleration": 1.4422353692800773, 
+            "target_headway": 1.0505054897582229, 
+            "politeness": 0.3532018208122193, 
+            "route": [
+                3, 
+                2, 
+                0, 
+                1
+            ], 
+            "target_velocity": 105.0, 
+            "id": 9, 
+            "min_distance": 2.166423109383981
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 17.918695951434604
+            }, 
+            "target_deceleration": 2.6981303140345214, 
+            "max_acceleration": 1.7977902621704627, 
+            "target_headway": 2.0383595031391524, 
+            "politeness": 0.1314722661250619, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 116.0, 
+            "id": 10, 
+            "min_distance": 3.5534754389077783
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 17.24466189803111
+            }, 
+            "target_deceleration": 3.6749268010685228, 
+            "max_acceleration": 2.9363555749983963, 
+            "target_headway": 2.5734853178169725, 
+            "politeness": 0.30581872325467185, 
+            "route": [
+                2, 
+                2, 
+                3, 
+                2
+            ], 
+            "target_velocity": 97.0, 
+            "id": 11, 
+            "min_distance": 2.9138916929614656
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 0, 
+                "from": 0, 
+                "distance": 47.70357884588095
+            }, 
+            "target_deceleration": 2.943012178267864, 
+            "max_acceleration": 2.7734248922394933, 
+            "target_headway": 2.558592086469891, 
+            "politeness": 0.2710583427321147, 
+            "route": [
+                0, 
+                2
+            ], 
+            "target_velocity": 144.0, 
+            "id": 12, 
+            "min_distance": 3.6003504628602343
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 5, 
+                "distance": 31.69972051496869
+            }, 
+            "target_deceleration": 2.9046090810353986, 
+            "max_acceleration": 2.6354837004033946, 
+            "target_headway": 1.8094537635156782, 
+            "politeness": 0.13793354870895685, 
+            "route": [
+                1, 
+                3, 
+                0
+            ], 
+            "target_velocity": 79.0, 
+            "id": 13, 
+            "min_distance": 3.0567485624601733
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 8, 
+                "distance": 38.165728966123325
+            }, 
+            "target_deceleration": 3.031611084311098, 
+            "max_acceleration": 1.625358188669527, 
+            "target_headway": 2.7265518814027434, 
+            "politeness": 0.2709252772290449, 
+            "route": [
+                3, 
+                0, 
+                2, 
+                3
+            ], 
+            "target_velocity": 120.0, 
+            "id": 14, 
+            "min_distance": 3.7922117239226822
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 95.53075045333749
+            }, 
+            "target_deceleration": 3.4744599741171047, 
+            "max_acceleration": 2.5666458573792124, 
+            "target_headway": 1.8456595167482466, 
+            "politeness": 0.2506425509838891, 
+            "route": [
+                1, 
+                3, 
+                0, 
+                0
+            ], 
+            "target_velocity": 126.0, 
+            "id": 15, 
+            "min_distance": 2.4909037442956565
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 2, 
+                "from": 5, 
+                "distance": 6.2865783223324145
+            }, 
+            "target_deceleration": 2.608457234646262, 
+            "max_acceleration": 1.0178385679098365, 
+            "target_headway": 2.46692596957651, 
+            "politeness": 0.4410991346998815, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 125.0, 
+            "id": 16, 
+            "min_distance": 2.976563530232643
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 51.85344916850979
+            }, 
+            "target_deceleration": 3.927197577094859, 
+            "max_acceleration": 1.0948721205366063, 
+            "target_headway": 2.2283001239345794, 
+            "politeness": 0.3575164082057519, 
+            "route": [
+                2, 
+                0
+            ], 
+            "target_velocity": 98.0, 
+            "id": 17, 
+            "min_distance": 3.602686611086577
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 1, 
+                "from": 3, 
+                "distance": 20.988659431118773
+            }, 
+            "target_deceleration": 3.000367899784669, 
+            "max_acceleration": 2.9354680342244914, 
+            "target_headway": 1.7994924037798288, 
+            "politeness": 0.4321435767639016, 
+            "route": [
+                2, 
+                3, 
+                1, 
+                2
+            ], 
+            "target_velocity": 103.0, 
+            "id": 18, 
+            "min_distance": 3.6873041135763676
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 62.2119246667308
+            }, 
+            "target_deceleration": 2.6505552098533816, 
+            "max_acceleration": 1.2970982221595189, 
+            "target_headway": 1.098255472691877, 
+            "politeness": 0.2613373736429866, 
+            "route": [
+                0, 
+                3
+            ], 
+            "target_velocity": 104.0, 
+            "id": 19, 
+            "min_distance": 2.787600709344069
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 83.53103238044811
+            }, 
+            "target_deceleration": 2.805094460848954, 
+            "max_acceleration": 1.9033724235731329, 
+            "target_headway": 1.294989370412831, 
+            "politeness": 0.4598766482497334, 
+            "route": [
+                1, 
+                1, 
+                2
+            ], 
+            "target_velocity": 70.0, 
+            "id": 20, 
+            "min_distance": 3.88313133329683
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 1, 
+                "from": 9, 
+                "distance": 41.56441664197078
+            }, 
+            "target_deceleration": 3.4235284292725137, 
+            "max_acceleration": 1.0600007653470693, 
+            "target_headway": 1.3586090736488121, 
+            "politeness": 0.1845222407145601, 
+            "route": [
+                3, 
+                2, 
+                2, 
+                1
+            ], 
+            "target_velocity": 148.0, 
+            "id": 21, 
+            "min_distance": 2.2952939753893062
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 13.007265576973804
+            }, 
+            "target_deceleration": 3.782633707922506, 
+            "max_acceleration": 2.1167113190451006, 
+            "target_headway": 1.7077237786605404, 
+            "politeness": 0.1109247196281828, 
+            "route": [
+                3, 
+                1
+            ], 
+            "target_velocity": 107.0, 
+            "id": 22, 
+            "min_distance": 2.0389993923435314
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 40.1851582556535
+            }, 
+            "target_deceleration": 3.4105212842090964, 
+            "max_acceleration": 2.3622651147231046, 
+            "target_headway": 2.6219733051466427, 
+            "politeness": 0.3318290197649166, 
+            "route": [
+                0, 
+                1, 
+                2, 
+                3
+            ], 
+            "target_velocity": 145.0, 
+            "id": 23, 
+            "min_distance": 2.211749183809094
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 2, 
+                "from": 11, 
+                "distance": 46.18976459802483
+            }, 
+            "target_deceleration": 3.085954613877332, 
+            "max_acceleration": 2.136541358723223, 
+            "target_headway": 2.435922740840063, 
+            "politeness": 0.3221338704524855, 
+            "route": [
+                3, 
+                2, 
+                1
+            ], 
+            "target_velocity": 73.0, 
+            "id": 24, 
+            "min_distance": 3.930772625281425
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 53.844663957765434
+            }, 
+            "target_deceleration": 2.2665146581476936, 
+            "max_acceleration": 2.6665075243944623, 
+            "target_headway": 2.8963739582518193, 
+            "politeness": 0.256004055590054, 
+            "route": [
+                1, 
+                0
+            ], 
+            "target_velocity": 126.0, 
+            "id": 25, 
+            "min_distance": 2.57913894493272
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 61.428661207211455
+            }, 
+            "target_deceleration": 3.1180714377536565, 
+            "max_acceleration": 2.3562575311498497, 
+            "target_headway": 1.905032764758272, 
+            "politeness": 0.16525238885808738, 
+            "route": [
+                2, 
+                1
+            ], 
+            "target_velocity": 129.0, 
+            "id": 26, 
+            "min_distance": 2.740285487675759
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 1, 
+                "from": 3, 
+                "distance": 56.352408031728054
+            }, 
+            "target_deceleration": 2.456922723599712, 
+            "max_acceleration": 2.9283689880148804, 
+            "target_headway": 1.2410006641288498, 
+            "politeness": 0.3232471052891114, 
+            "route": [
+                2, 
+                3, 
+                3
+            ], 
+            "target_velocity": 136.0, 
+            "id": 27, 
+            "min_distance": 2.8034511139687
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 8, 
+                "distance": 52.78262799511383
+            }, 
+            "target_deceleration": 2.289830298429398, 
+            "max_acceleration": 1.175546649386673, 
+            "target_headway": 2.7451858844921144, 
+            "politeness": 0.2117448533161809, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 119.0, 
+            "id": 28, 
+            "min_distance": 3.4579039868139
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 1, 
+                "from": 7, 
+                "distance": 84.99088373408867
+            }, 
+            "target_deceleration": 2.5608704988459, 
+            "max_acceleration": 2.7259065045349504, 
+            "target_headway": 1.4562832690631642, 
+            "politeness": 0.4541441694667673, 
+            "route": [
+                2, 
+                1, 
+                3
+            ], 
+            "target_velocity": 77.0, 
+            "id": 29, 
+            "min_distance": 2.452320987978415
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 1, 
+                "from": 3, 
+                "distance": 86.48296874300179
+            }, 
+            "target_deceleration": 2.827536456164885, 
+            "max_acceleration": 2.392369161950014, 
+            "target_headway": 2.730389385444762, 
+            "politeness": 0.25695650799237835, 
+            "route": [
+                2, 
+                2
+            ], 
+            "target_velocity": 144.0, 
+            "id": 30, 
+            "min_distance": 2.520898371800784
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 0, 
+                "from": 0, 
+                "distance": 14.634170376477485
+            }, 
+            "target_deceleration": 3.402489849529079, 
+            "max_acceleration": 1.709259443527552, 
+            "target_headway": 1.253435604737128, 
+            "politeness": 0.2846030079466971, 
+            "route": [
+                0, 
+                0
+            ], 
+            "target_velocity": 145.0, 
+            "id": 31, 
+            "min_distance": 3.659484481105876
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 8.37597694483435
+            }, 
+            "target_deceleration": 3.307521901900034, 
+            "max_acceleration": 2.092367051234535, 
+            "target_headway": 2.3035754636247185, 
+            "politeness": 0.4739579188609021, 
+            "route": [
+                2, 
+                2
+            ], 
+            "target_velocity": 97.0, 
+            "id": 32, 
+            "min_distance": 3.3028359565567174
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 85.39327700157335
+            }, 
+            "target_deceleration": 2.8695356310566815, 
+            "max_acceleration": 1.3493330054752402, 
+            "target_headway": 1.114354679432339, 
+            "politeness": 0.3749299930010067, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 107.0, 
+            "id": 33, 
+            "min_distance": 3.539887796776288
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 36.311410714146966
+            }, 
+            "target_deceleration": 2.4236353823578924, 
+            "max_acceleration": 1.7707612854096855, 
+            "target_headway": 2.592499847020787, 
+            "politeness": 0.489765909595409, 
+            "route": [
+                2, 
+                3, 
+                0, 
+                0
+            ], 
+            "target_velocity": 75.0, 
+            "id": 34, 
+            "min_distance": 2.8483327416371917
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 48.46028146567721
+            }, 
+            "target_deceleration": 3.3256599382979224, 
+            "max_acceleration": 1.6676566531345811, 
+            "target_headway": 1.7323305141655752, 
+            "politeness": 0.1817415421085598, 
+            "route": [
+                2, 
+                1, 
+                0, 
+                1
+            ], 
+            "target_velocity": 122.0, 
+            "id": 35, 
+            "min_distance": 2.2672227681668033
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 1, 
+                "from": 3, 
+                "distance": 99.21079521345192
+            }, 
+            "target_deceleration": 3.7131577290304945, 
+            "max_acceleration": 2.8215831654272123, 
+            "target_headway": 2.418433140395142, 
+            "politeness": 0.47620041481941666, 
+            "route": [
+                2, 
+                1, 
+                3, 
+                2
+            ], 
+            "target_velocity": 131.0, 
+            "id": 36, 
+            "min_distance": 2.7090438695526773
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 26.344849983549246
+            }, 
+            "target_deceleration": 2.625128235012167, 
+            "max_acceleration": 2.9474948584046965, 
+            "target_headway": 2.6225376984131286, 
+            "politeness": 0.30606071092101905, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 105.0, 
+            "id": 37, 
+            "min_distance": 2.3423794495555437
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 41.2792757007432
+            }, 
+            "target_deceleration": 3.404467328815457, 
+            "max_acceleration": 1.81617600886629, 
+            "target_headway": 1.6061141251662856, 
+            "politeness": 0.22282246226879884, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 75.0, 
+            "id": 38, 
+            "min_distance": 3.60597892986711
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 5.080255244096166
+            }, 
+            "target_deceleration": 2.504580145102807, 
+            "max_acceleration": 1.643494541551853, 
+            "target_headway": 2.3655820972948853, 
+            "politeness": 0.4459094245936819, 
+            "route": [
+                1, 
+                1, 
+                0
+            ], 
+            "target_velocity": 107.0, 
+            "id": 39, 
+            "min_distance": 3.799833402800679
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 65.46300235499407
+            }, 
+            "target_deceleration": 2.7438139425302257, 
+            "max_acceleration": 2.8433069801215263, 
+            "target_headway": 1.6634297561387796, 
+            "politeness": 0.28506844081876903, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 103.0, 
+            "id": 40, 
+            "min_distance": 2.0449658507535045
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 0.006251535343948511
+            }, 
+            "target_deceleration": 2.100569049483355, 
+            "max_acceleration": 1.4662329319435576, 
+            "target_headway": 1.8355067186407685, 
+            "politeness": 0.26745371373090343, 
+            "route": [
+                2, 
+                0, 
+                2, 
+                1
+            ], 
+            "target_velocity": 72.0, 
+            "id": 41, 
+            "min_distance": 3.2269777082761157
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 1, 
+                "from": 7, 
+                "distance": 18.835764797047094
+            }, 
+            "target_deceleration": 2.295787518078179, 
+            "max_acceleration": 1.2852040218773844, 
+            "target_headway": 2.644311362474472, 
+            "politeness": 0.34988654461132246, 
+            "route": [
+                2, 
+                1
+            ], 
+            "target_velocity": 70.0, 
+            "id": 42, 
+            "min_distance": 3.9310016949299706
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 1, 
+                "from": 1, 
+                "distance": 0.013844867093570912
+            }, 
+            "target_deceleration": 3.8919437529696532, 
+            "max_acceleration": 2.655333698017305, 
+            "target_headway": 2.088056634771722, 
+            "politeness": 0.25492404970167293, 
+            "route": [
+                3, 
+                2, 
+                2
+            ], 
+            "target_velocity": 74.0, 
+            "id": 43, 
+            "min_distance": 3.1199144222464357
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 45.71138058620505
+            }, 
+            "target_deceleration": 2.17303622914046, 
+            "max_acceleration": 1.416806862082483, 
+            "target_headway": 1.6886513134110124, 
+            "politeness": 0.25381409902631025, 
+            "route": [
+                2, 
+                2, 
+                0
+            ], 
+            "target_velocity": 111.0, 
+            "id": 44, 
+            "min_distance": 2.247128627682473
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 19.640291589987147
+            }, 
+            "target_deceleration": 3.7649235003301262, 
+            "max_acceleration": 2.5209312853545476, 
+            "target_headway": 1.9237857327547763, 
+            "politeness": 0.2636872178513712, 
+            "route": [
+                1, 
+                2, 
+                0
+            ], 
+            "target_velocity": 112.0, 
+            "id": 45, 
+            "min_distance": 3.478698853476411
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 1, 
+                "from": 10, 
+                "distance": 18.811236491413872
+            }, 
+            "target_deceleration": 3.6533338861838027, 
+            "max_acceleration": 2.8666005402366843, 
+            "target_headway": 2.102846217209491, 
+            "politeness": 0.31250387581192285, 
+            "route": [
+                2, 
+                2
+            ], 
+            "target_velocity": 99.0, 
+            "id": 46, 
+            "min_distance": 2.665840252491476
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 97.89108815173346
+            }, 
+            "target_deceleration": 3.4378506624594727, 
+            "max_acceleration": 1.0085056432106034, 
+            "target_headway": 2.5635782763069033, 
+            "politeness": 0.39663167572899904, 
+            "route": [
+                3, 
+                1
+            ], 
+            "target_velocity": 75.0, 
+            "id": 47, 
+            "min_distance": 3.977714451367502
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 93.3496561991276
+            }, 
+            "target_deceleration": 2.5894815185684514, 
+            "max_acceleration": 2.5036725676371345, 
+            "target_headway": 1.0865957320728243, 
+            "politeness": 0.39500088912870956, 
+            "route": [
+                2, 
+                0
+            ], 
+            "target_velocity": 81.0, 
+            "id": 48, 
+            "min_distance": 3.6283785856410744
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 1, 
+                "from": 8, 
+                "distance": 2.9399560650724132
+            }, 
+            "target_deceleration": 2.4670509853214417, 
+            "max_acceleration": 1.3945563381673198, 
+            "target_headway": 2.925474258382371, 
+            "politeness": 0.43170431703150025, 
+            "route": [
+                2, 
+                1
+            ], 
+            "target_velocity": 99.0, 
+            "id": 49, 
+            "min_distance": 3.958623320946516
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 1, 
+                "from": 0, 
+                "distance": 96.28731765745951
+            }, 
+            "target_deceleration": 2.4213304797150568, 
+            "max_acceleration": 1.670843486822787, 
+            "target_headway": 1.7960544464475452, 
+            "politeness": 0.27031225944120196, 
+            "route": [
+                2, 
+                2, 
+                0, 
+                2
+            ], 
+            "target_velocity": 147.0, 
+            "id": 50, 
+            "min_distance": 3.667957039098563
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 68.32028638508561
+            }, 
+            "target_deceleration": 3.4830655888793283, 
+            "max_acceleration": 2.452144408034729, 
+            "target_headway": 2.105874969459186, 
+            "politeness": 0.2799709968435552, 
+            "route": [
+                0, 
+                0
+            ], 
+            "target_velocity": 132.0, 
+            "id": 51, 
+            "min_distance": 2.2754070536535096
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 79.62509971347427
+            }, 
+            "target_deceleration": 2.048981410937344, 
+            "max_acceleration": 1.6744770773917894, 
+            "target_headway": 2.0344896159086217, 
+            "politeness": 0.3423816737615708, 
+            "route": [
+                0, 
+                3, 
+                3
+            ], 
+            "target_velocity": 132.0, 
+            "id": 52, 
+            "min_distance": 3.6951159289373074
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 1, 
+                "from": 5, 
+                "distance": 58.148549762177126
+            }, 
+            "target_deceleration": 3.4030465268548835, 
+            "max_acceleration": 2.359497262465, 
+            "target_headway": 1.4571424004262195, 
+            "politeness": 0.4091659262132106, 
+            "route": [
+                3, 
+                0, 
+                2
+            ], 
+            "target_velocity": 123.0, 
+            "id": 53, 
+            "min_distance": 3.370473362265002
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 48.87017950576161
+            }, 
+            "target_deceleration": 3.1254174642054178, 
+            "max_acceleration": 2.782027330995763, 
+            "target_headway": 2.203505355304223, 
+            "politeness": 0.1861002372773055, 
+            "route": [
+                1, 
+                3
+            ], 
+            "target_velocity": 90.0, 
+            "id": 54, 
+            "min_distance": 2.5694476302880727
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 1, 
+                "from": 11, 
+                "distance": 11.514292570883711
+            }, 
+            "target_deceleration": 2.0823245719007017, 
+            "max_acceleration": 2.6451250596236715, 
+            "target_headway": 1.8406290809681967, 
+            "politeness": 0.36181947306410145, 
+            "route": [
+                0, 
+                0, 
+                2, 
+                1
+            ], 
+            "target_velocity": 108.0, 
+            "id": 55, 
+            "min_distance": 2.8503861541582634
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 63.9185478276809
+            }, 
+            "target_deceleration": 2.0192680828980807, 
+            "max_acceleration": 1.1357223649119639, 
+            "target_headway": 1.0595973848264821, 
+            "politeness": 0.20256029248823226, 
+            "route": [
+                1, 
+                1, 
+                0
+            ], 
+            "target_velocity": 146.0, 
+            "id": 56, 
+            "min_distance": 3.8126779042148056
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 1, 
+                "from": 5, 
+                "distance": 61.22359853938357
+            }, 
+            "target_deceleration": 2.580493596903042, 
+            "max_acceleration": 1.3439186880773055, 
+            "target_headway": 1.9359963734129346, 
+            "politeness": 0.283703564398056, 
+            "route": [
+                2, 
+                1
+            ], 
+            "target_velocity": 99.0, 
+            "id": 57, 
+            "min_distance": 3.7581979289928293
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 12.996216921434545
+            }, 
+            "target_deceleration": 3.242312476163004, 
+            "max_acceleration": 2.6772861770352936, 
+            "target_headway": 1.2527673159589159, 
+            "politeness": 0.18938585159907323, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 120.0, 
+            "id": 58, 
+            "min_distance": 3.4294828743950525
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 65.62999838911584
+            }, 
+            "target_deceleration": 3.6825271783545097, 
+            "max_acceleration": 1.5550912610618135, 
+            "target_headway": 1.5092793201154053, 
+            "politeness": 0.40087253475837525, 
+            "route": [
+                3, 
+                1
+            ], 
+            "target_velocity": 123.0, 
+            "id": 59, 
+            "min_distance": 2.8155664476253457
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 36.04642403482159
+            }, 
+            "target_deceleration": 3.546820307058722, 
+            "max_acceleration": 1.022200988386225, 
+            "target_headway": 1.1715911354240125, 
+            "politeness": 0.10926854233194244, 
+            "route": [
+                2, 
+                0, 
+                3
+            ], 
+            "target_velocity": 145.0, 
+            "id": 60, 
+            "min_distance": 3.8528292387744427
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 76.00210004073611
+            }, 
+            "target_deceleration": 2.810039440141937, 
+            "max_acceleration": 1.3264029735466145, 
+            "target_headway": 2.7818773480892776, 
+            "politeness": 0.3680258850013246, 
+            "route": [
+                0, 
+                3
+            ], 
+            "target_velocity": 122.0, 
+            "id": 61, 
+            "min_distance": 2.0519622790470944
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 75.93812144760997
+            }, 
+            "target_deceleration": 2.160192443108243, 
+            "max_acceleration": 1.3781945294092066, 
+            "target_headway": 1.4328919859961755, 
+            "politeness": 0.4760740356331572, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 99.0, 
+            "id": 62, 
+            "min_distance": 2.6330428156565437
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 65.58329041316043
+            }, 
+            "target_deceleration": 3.483570014202307, 
+            "max_acceleration": 2.690485784277797, 
+            "target_headway": 2.472277566185567, 
+            "politeness": 0.4604858008741636, 
+            "route": [
+                2, 
+                0
+            ], 
+            "target_velocity": 115.0, 
+            "id": 63, 
+            "min_distance": 3.646068006280263
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 8.921341273684213
+            }, 
+            "target_deceleration": 2.7656233144727165, 
+            "max_acceleration": 2.7822074415904945, 
+            "target_headway": 2.144856168757072, 
+            "politeness": 0.36528373368014755, 
+            "route": [
+                0, 
+                3, 
+                1
+            ], 
+            "target_velocity": 104.0, 
+            "id": 64, 
+            "min_distance": 3.978030172203704
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 38.776225818774904
+            }, 
+            "target_deceleration": 3.0941929353580075, 
+            "max_acceleration": 1.586559250968509, 
+            "target_headway": 2.2997859578398856, 
+            "politeness": 0.10720987715841668, 
+            "route": [
+                2, 
+                1, 
+                3, 
+                0
+            ], 
+            "target_velocity": 73.0, 
+            "id": 65, 
+            "min_distance": 2.217590004582168
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 42.90001175129541
+            }, 
+            "target_deceleration": 3.0722204345108683, 
+            "max_acceleration": 1.1963354579358825, 
+            "target_headway": 1.1968775517576085, 
+            "politeness": 0.34236853064817174, 
+            "route": [
+                2, 
+                2
+            ], 
+            "target_velocity": 80.0, 
+            "id": 66, 
+            "min_distance": 3.715317722221367
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 97.85505439754208
+            }, 
+            "target_deceleration": 2.2151165316573005, 
+            "max_acceleration": 1.3069628450215434, 
+            "target_headway": 2.287285645335822, 
+            "politeness": 0.4200386738472883, 
+            "route": [
+                0, 
+                0, 
+                1, 
+                3
+            ], 
+            "target_velocity": 104.0, 
+            "id": 67, 
+            "min_distance": 3.233140026339907
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 4.045594874332892
+            }, 
+            "target_deceleration": 3.808800977856528, 
+            "max_acceleration": 1.4968785650878835, 
+            "target_headway": 2.572808716783934, 
+            "politeness": 0.40908852293411646, 
+            "route": [
+                1, 
+                3, 
+                0, 
+                1
+            ], 
+            "target_velocity": 127.0, 
+            "id": 68, 
+            "min_distance": 2.372516934875616
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 0, 
+                "distance": 45.400776214133955
+            }, 
+            "target_deceleration": 3.519921982744506, 
+            "max_acceleration": 2.5811602326152023, 
+            "target_headway": 1.7574073830034833, 
+            "politeness": 0.30300873321908606, 
+            "route": [
+                0, 
+                3, 
+                3
+            ], 
+            "target_velocity": 132.0, 
+            "id": 69, 
+            "min_distance": 2.0336041736133668
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 2, 
+                "from": 11, 
+                "distance": 184.23705455492478
+            }, 
+            "target_deceleration": 2.200797713080963, 
+            "max_acceleration": 2.6360834651710148, 
+            "target_headway": 1.1963641858220513, 
+            "politeness": 0.20176097884238572, 
+            "route": [
+                1, 
+                3
+            ], 
+            "target_velocity": 115.0, 
+            "id": 70, 
+            "min_distance": 3.965738617642704
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 62.529574559542056
+            }, 
+            "target_deceleration": 3.5693509118942846, 
+            "max_acceleration": 2.7092938668130175, 
+            "target_headway": 1.1625511220391456, 
+            "politeness": 0.4999336511240525, 
+            "route": [
+                1, 
+                0, 
+                1, 
+                1
+            ], 
+            "target_velocity": 145.0, 
+            "id": 71, 
+            "min_distance": 3.566312355195962
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 1, 
+                "from": 1, 
+                "distance": 90.76238773719577
+            }, 
+            "target_deceleration": 3.8624616795366578, 
+            "max_acceleration": 1.5436440814392562, 
+            "target_headway": 2.7538953356088864, 
+            "politeness": 0.4468329446995881, 
+            "route": [
+                2, 
+                1
+            ], 
+            "target_velocity": 141.0, 
+            "id": 72, 
+            "min_distance": 2.3069366784740404
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 51.872863025126215
+            }, 
+            "target_deceleration": 3.2341701763180972, 
+            "max_acceleration": 1.7715198205308587, 
+            "target_headway": 1.5470232522534413, 
+            "politeness": 0.4835477303408534, 
+            "route": [
+                3, 
+                1, 
+                2, 
+                2
+            ], 
+            "target_velocity": 120.0, 
+            "id": 73, 
+            "min_distance": 2.575745827527527
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 29.852952146345878
+            }, 
+            "target_deceleration": 2.456878382080749, 
+            "max_acceleration": 1.2451702598443048, 
+            "target_headway": 2.1846409138570895, 
+            "politeness": 0.2857711948984094, 
+            "route": [
+                1, 
+                0, 
+                2
+            ], 
+            "target_velocity": 109.0, 
+            "id": 74, 
+            "min_distance": 3.719574484226806
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 77.08209733821555
+            }, 
+            "target_deceleration": 2.6916234415871356, 
+            "max_acceleration": 2.498075855738869, 
+            "target_headway": 1.3318856659862734, 
+            "politeness": 0.4595979570843932, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 142.0, 
+            "id": 75, 
+            "min_distance": 2.427885477247518
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 78.62436820768512
+            }, 
+            "target_deceleration": 3.5999268797498813, 
+            "max_acceleration": 1.6670095768298825, 
+            "target_headway": 2.3089474282302835, 
+            "politeness": 0.4789135458298942, 
+            "route": [
+                1, 
+                2, 
+                3, 
+                2
+            ], 
+            "target_velocity": 70.0, 
+            "id": 76, 
+            "min_distance": 3.261184364801665
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 11, 
+                "distance": 22.132026586077657
+            }, 
+            "target_deceleration": 2.935071236548946, 
+            "max_acceleration": 2.2913309371366557, 
+            "target_headway": 1.4286162384736556, 
+            "politeness": 0.18551379226510767, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 85.0, 
+            "id": 77, 
+            "min_distance": 2.9389079740698003
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 78.4569968842669
+            }, 
+            "target_deceleration": 2.6519126524566463, 
+            "max_acceleration": 1.3474932380071425, 
+            "target_headway": 2.272812390972783, 
+            "politeness": 0.274867814589076, 
+            "route": [
+                0, 
+                0
+            ], 
+            "target_velocity": 86.0, 
+            "id": 78, 
+            "min_distance": 3.9702194457858644
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 1, 
+                "distance": 139.63658886711693
+            }, 
+            "target_deceleration": 3.1905437364692686, 
+            "max_acceleration": 2.487895690569631, 
+            "target_headway": 1.3628206167489159, 
+            "politeness": 0.18471472802139718, 
+            "route": [
+                0, 
+                2, 
+                2
+            ], 
+            "target_velocity": 76.0, 
+            "id": 79, 
+            "min_distance": 2.714107242872233
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 2, 
+                "from": 1, 
+                "distance": 33.24498889728829
+            }, 
+            "target_deceleration": 2.3433573416890687, 
+            "max_acceleration": 2.8804713586148467, 
+            "target_headway": 2.0043326164303883, 
+            "politeness": 0.18939003845400185, 
+            "route": [
+                1, 
+                1, 
+                0, 
+                2
+            ], 
+            "target_velocity": 72.0, 
+            "id": 80, 
+            "min_distance": 2.1402520456981344
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 0, 
+                "from": 5, 
+                "distance": 31.91678943856874
+            }, 
+            "target_deceleration": 3.672406041362968, 
+            "max_acceleration": 2.364241326370953, 
+            "target_headway": 1.99912049107065, 
+            "politeness": 0.2557957877314997, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 140.0, 
+            "id": 81, 
+            "min_distance": 2.767394669161604
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 74.46060235295306
+            }, 
+            "target_deceleration": 3.604954442923561, 
+            "max_acceleration": 2.338004080350686, 
+            "target_headway": 2.4065538485304794, 
+            "politeness": 0.4316139435775097, 
+            "route": [
+                0, 
+                2
+            ], 
+            "target_velocity": 76.0, 
+            "id": 82, 
+            "min_distance": 3.2718353333203325
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 1, 
+                "from": 1, 
+                "distance": 3.2464519473851983
+            }, 
+            "target_deceleration": 3.9930940430997595, 
+            "max_acceleration": 2.58728870010631, 
+            "target_headway": 1.2536375807772158, 
+            "politeness": 0.3735022849330861, 
+            "route": [
+                3, 
+                1, 
+                1
+            ], 
+            "target_velocity": 92.0, 
+            "id": 83, 
+            "min_distance": 2.4672125358167465
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 48.816980040807664
+            }, 
+            "target_deceleration": 2.3834379393442955, 
+            "max_acceleration": 1.2465504409630659, 
+            "target_headway": 2.6919046412841663, 
+            "politeness": 0.2283819868406273, 
+            "route": [
+                2, 
+                2, 
+                3, 
+                1
+            ], 
+            "target_velocity": 96.0, 
+            "id": 84, 
+            "min_distance": 2.168442345521867
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 46.023461291287674
+            }, 
+            "target_deceleration": 3.1550505617591913, 
+            "max_acceleration": 2.661221316138662, 
+            "target_headway": 1.1532963406681913, 
+            "politeness": 0.2307255840714687, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 88.0, 
+            "id": 85, 
+            "min_distance": 2.8482428425515947
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 19.989188405885415
+            }, 
+            "target_deceleration": 3.4110214814694384, 
+            "max_acceleration": 1.8251574385790206, 
+            "target_headway": 1.3889241994325467, 
+            "politeness": 0.4803607550268366, 
+            "route": [
+                2, 
+                0, 
+                0, 
+                2
+            ], 
+            "target_velocity": 94.0, 
+            "id": 86, 
+            "min_distance": 3.422822686065099
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 1, 
+                "from": 4, 
+                "distance": 97.1858480146208
+            }, 
+            "target_deceleration": 2.6038346410515714, 
+            "max_acceleration": 1.9602856693428072, 
+            "target_headway": 1.9508975435690392, 
+            "politeness": 0.28222707285337634, 
+            "route": [
+                2, 
+                0, 
+                2, 
+                0
+            ], 
+            "target_velocity": 73.0, 
+            "id": 87, 
+            "min_distance": 2.015154570381922
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 52.81606733205608
+            }, 
+            "target_deceleration": 2.6671733588331206, 
+            "max_acceleration": 2.7394930697021715, 
+            "target_headway": 1.214517261287088, 
+            "politeness": 0.3915785835365191, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 79.0, 
+            "id": 88, 
+            "min_distance": 3.7211139197596137
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 1, 
+                "from": 4, 
+                "distance": 74.01819569976064
+            }, 
+            "target_deceleration": 3.2333921178095952, 
+            "max_acceleration": 1.3055188273048404, 
+            "target_headway": 1.6698518638417539, 
+            "politeness": 0.19111078418917057, 
+            "route": [
+                1, 
+                3, 
+                3, 
+                3
+            ], 
+            "target_velocity": 144.0, 
+            "id": 89, 
+            "min_distance": 2.520564584733055
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 0, 
+                "distance": 82.45882454609973
+            }, 
+            "target_deceleration": 2.365056214588543, 
+            "max_acceleration": 1.3893676116327074, 
+            "target_headway": 1.2117908698427866, 
+            "politeness": 0.37593815232429517, 
+            "route": [
+                0, 
+                2, 
+                1
+            ], 
+            "target_velocity": 97.0, 
+            "id": 90, 
+            "min_distance": 2.672845309130688
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 65.92897531148884
+            }, 
+            "target_deceleration": 3.659801617830265, 
+            "max_acceleration": 2.468044204676324, 
+            "target_headway": 2.9711880574365814, 
+            "politeness": 0.4947500233629719, 
+            "route": [
+                3, 
+                0, 
+                3
+            ], 
+            "target_velocity": 115.0, 
+            "id": 91, 
+            "min_distance": 2.1965491252004052
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 23.062167453505623
+            }, 
+            "target_deceleration": 2.8248741089738507, 
+            "max_acceleration": 2.9130454630100298, 
+            "target_headway": 2.1880529057853026, 
+            "politeness": 0.2903021381924533, 
+            "route": [
+                3, 
+                0
+            ], 
+            "target_velocity": 114.0, 
+            "id": 92, 
+            "min_distance": 3.68834899297653
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 25.03454603707661
+            }, 
+            "target_deceleration": 2.7004961330963333, 
+            "max_acceleration": 1.1867914824499675, 
+            "target_headway": 2.3420273450793863, 
+            "politeness": 0.4718212848182408, 
+            "route": [
+                0, 
+                3
+            ], 
+            "target_velocity": 74.0, 
+            "id": 93, 
+            "min_distance": 3.232459576938557
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 1, 
+                "from": 1, 
+                "distance": 57.560159637153404
+            }, 
+            "target_deceleration": 2.5520983744863464, 
+            "max_acceleration": 2.139751138630996, 
+            "target_headway": 1.6004950363857737, 
+            "politeness": 0.3026098962381357, 
+            "route": [
+                1, 
+                1, 
+                2
+            ], 
+            "target_velocity": 138.0, 
+            "id": 94, 
+            "min_distance": 2.3819929459374656
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 0, 
+                "from": 0, 
+                "distance": 0.04206561036533829
+            }, 
+            "target_deceleration": 3.1497703734529994, 
+            "max_acceleration": 1.3443689038089819, 
+            "target_headway": 2.8489586069578383, 
+            "politeness": 0.2638690212539401, 
+            "route": [
+                0, 
+                2, 
+                3, 
+                2
+            ], 
+            "target_velocity": 116.0, 
+            "id": 95, 
+            "min_distance": 3.073579680664637
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 1, 
+                "from": 5, 
+                "distance": 82.7676933147623
+            }, 
+            "target_deceleration": 2.8136724948863, 
+            "max_acceleration": 1.5175598146786964, 
+            "target_headway": 1.1190797116383588, 
+            "politeness": 0.3342154342228152, 
+            "route": [
+                2, 
+                2, 
+                1
+            ], 
+            "target_velocity": 70.0, 
+            "id": 96, 
+            "min_distance": 2.379119033921958
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 11.89932024930509
+            }, 
+            "target_deceleration": 3.761641522827232, 
+            "max_acceleration": 1.6650513541679053, 
+            "target_headway": 2.9259655336683688, 
+            "politeness": 0.11679540407400864, 
+            "route": [
+                3, 
+                1, 
+                1, 
+                3
+            ], 
+            "target_velocity": 82.0, 
+            "id": 97, 
+            "min_distance": 3.539019604426414
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 98.52805986399312
+            }, 
+            "target_deceleration": 2.400992123504935, 
+            "max_acceleration": 2.558457584602243, 
+            "target_headway": 1.2355561535456707, 
+            "politeness": 0.27562259878265355, 
+            "route": [
+                0, 
+                2, 
+                0
+            ], 
+            "target_velocity": 149.0, 
+            "id": 98, 
+            "min_distance": 2.1902824568987853
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 52.12605204116267
+            }, 
+            "target_deceleration": 3.2716661484786833, 
+            "max_acceleration": 1.2703274053564328, 
+            "target_headway": 2.2507949606660898, 
+            "politeness": 0.47341315338778955, 
+            "route": [
+                0, 
+                3
+            ], 
+            "target_velocity": 76.0, 
+            "id": 99, 
+            "min_distance": 3.7740413279469545
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 1, 
+                "from": 1, 
+                "distance": 64.92018852996785
+            }, 
+            "target_deceleration": 3.9905250733934166, 
+            "max_acceleration": 1.9185783162927115, 
+            "target_headway": 1.2504018165316206, 
+            "politeness": 0.3415228954524824, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 125.0, 
+            "id": 100, 
+            "min_distance": 3.259167413308622
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 2, 
+                "from": 8, 
+                "distance": 87.12796973397627
+            }, 
+            "target_deceleration": 3.6427246360424332, 
+            "max_acceleration": 2.9498383348962127, 
+            "target_headway": 2.9886394329472297, 
+            "politeness": 0.39485198999553595, 
+            "route": [
+                3, 
+                1
+            ], 
+            "target_velocity": 94.0, 
+            "id": 101, 
+            "min_distance": 3.049098168232766
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 2, 
+                "from": 5, 
+                "distance": 40.460968959331744
+            }, 
+            "target_deceleration": 2.8395173818609996, 
+            "max_acceleration": 1.2145709943106398, 
+            "target_headway": 2.1461251637580734, 
+            "politeness": 0.4826911900515426, 
+            "route": [
+                1, 
+                0
+            ], 
+            "target_velocity": 113.0, 
+            "id": 102, 
+            "min_distance": 3.4931939743366938
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 62.680498458547284
+            }, 
+            "target_deceleration": 2.8115493057630156, 
+            "max_acceleration": 2.315244926477882, 
+            "target_headway": 2.8847108768821474, 
+            "politeness": 0.3053701664091961, 
+            "route": [
+                2, 
+                2, 
+                3, 
+                3
+            ], 
+            "target_velocity": 101.0, 
+            "id": 103, 
+            "min_distance": 3.1257495052461297
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 15.216610272924092
+            }, 
+            "target_deceleration": 2.2354759900701833, 
+            "max_acceleration": 2.5002252978499233, 
+            "target_headway": 2.1697351072629747, 
+            "politeness": 0.28766426909472387, 
+            "route": [
+                3, 
+                1, 
+                1
+            ], 
+            "target_velocity": 114.0, 
+            "id": 104, 
+            "min_distance": 3.7891175906027863
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 24.431194549138734
+            }, 
+            "target_deceleration": 2.2151585127855395, 
+            "max_acceleration": 1.8697474172674555, 
+            "target_headway": 1.9627645737221189, 
+            "politeness": 0.40291125568695585, 
+            "route": [
+                1, 
+                3
+            ], 
+            "target_velocity": 78.0, 
+            "id": 105, 
+            "min_distance": 2.66506667116772
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 2, 
+                "from": 1, 
+                "distance": 31.41015410838419
+            }, 
+            "target_deceleration": 3.768610507009369, 
+            "max_acceleration": 1.289326976312637, 
+            "target_headway": 1.681251181458528, 
+            "politeness": 0.2165169323176957, 
+            "route": [
+                0, 
+                1, 
+                3
+            ], 
+            "target_velocity": 75.0, 
+            "id": 106, 
+            "min_distance": 3.045556711075172
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 1, 
+                "from": 3, 
+                "distance": 82.62679097495455
+            }, 
+            "target_deceleration": 3.3097734115618653, 
+            "max_acceleration": 1.224825292584129, 
+            "target_headway": 2.0213275046164583, 
+            "politeness": 0.12734177254021276, 
+            "route": [
+                1, 
+                2, 
+                0
+            ], 
+            "target_velocity": 132.0, 
+            "id": 107, 
+            "min_distance": 2.1107847751942552
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 10, 
+                "distance": 46.259350605755664
+            }, 
+            "target_deceleration": 3.69209880303495, 
+            "max_acceleration": 1.7896245130206427, 
+            "target_headway": 2.2383031402991547, 
+            "politeness": 0.34032832088618803, 
+            "route": [
+                1, 
+                1, 
+                1, 
+                2
+            ], 
+            "target_velocity": 105.0, 
+            "id": 108, 
+            "min_distance": 3.7175025135154964
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 1, 
+                "from": 11, 
+                "distance": 120.99796232862508
+            }, 
+            "target_deceleration": 2.2436793665123256, 
+            "max_acceleration": 2.8060104113687068, 
+            "target_headway": 2.8131054385478773, 
+            "politeness": 0.18954103809744594, 
+            "route": [
+                3, 
+                0, 
+                2, 
+                0
+            ], 
+            "target_velocity": 126.0, 
+            "id": 109, 
+            "min_distance": 2.1152003063274596
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 1.5315863463342128
+            }, 
+            "target_deceleration": 3.1742561249017536, 
+            "max_acceleration": 1.6563574532985725, 
+            "target_headway": 1.3224338885001707, 
+            "politeness": 0.4763895915777293, 
+            "route": [
+                0, 
+                1, 
+                2, 
+                3
+            ], 
+            "target_velocity": 138.0, 
+            "id": 110, 
+            "min_distance": 3.5081939768900683
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 1, 
+                "from": 2, 
+                "distance": 60.62474067840223
+            }, 
+            "target_deceleration": 2.4987090119010693, 
+            "max_acceleration": 2.503617121731827, 
+            "target_headway": 2.0808352818606837, 
+            "politeness": 0.2509543696616011, 
+            "route": [
+                0, 
+                1, 
+                1
+            ], 
+            "target_velocity": 113.0, 
+            "id": 111, 
+            "min_distance": 3.8410628641796385
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 1, 
+                "from": 0, 
+                "distance": 26.259956436809762
+            }, 
+            "target_deceleration": 2.4894740901791614, 
+            "max_acceleration": 1.8025702017941425, 
+            "target_headway": 2.4985169085075536, 
+            "politeness": 0.24871004845008948, 
+            "route": [
+                3, 
+                1, 
+                2, 
+                0
+            ], 
+            "target_velocity": 80.0, 
+            "id": 112, 
+            "min_distance": 3.545377538936143
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 90.81380854802403
+            }, 
+            "target_deceleration": 3.9450040834604545, 
+            "max_acceleration": 1.4455532371793336, 
+            "target_headway": 1.649680084974141, 
+            "politeness": 0.15887014106885503, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 128.0, 
+            "id": 113, 
+            "min_distance": 3.043235864670402
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 8, 
+                "distance": 14.587162984840996
+            }, 
+            "target_deceleration": 2.3511686705294528, 
+            "max_acceleration": 2.943432146563482, 
+            "target_headway": 2.545138548449689, 
+            "politeness": 0.3992768322817771, 
+            "route": [
+                0, 
+                0, 
+                2
+            ], 
+            "target_velocity": 85.0, 
+            "id": 114, 
+            "min_distance": 3.4042409283019106
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 83.30506331119642
+            }, 
+            "target_deceleration": 2.851514039248674, 
+            "max_acceleration": 2.363513917128337, 
+            "target_headway": 2.1000511140029943, 
+            "politeness": 0.4037990316240939, 
+            "route": [
+                3, 
+                2, 
+                3
+            ], 
+            "target_velocity": 139.0, 
+            "id": 115, 
+            "min_distance": 2.552407273715456
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 14.617721079958612
+            }, 
+            "target_deceleration": 2.572379393008755, 
+            "max_acceleration": 2.8288502209223028, 
+            "target_headway": 2.3112207630604855, 
+            "politeness": 0.2035963892365958, 
+            "route": [
+                3, 
+                0
+            ], 
+            "target_velocity": 106.0, 
+            "id": 116, 
+            "min_distance": 3.6212058276838692
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 38.307294516559196
+            }, 
+            "target_deceleration": 2.8089384152653367, 
+            "max_acceleration": 1.8324050318563558, 
+            "target_headway": 1.6071294617777665, 
+            "politeness": 0.41562453900372576, 
+            "route": [
+                2, 
+                1, 
+                1
+            ], 
+            "target_velocity": 108.0, 
+            "id": 117, 
+            "min_distance": 2.0828568709482482
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 87.57892706635249
+            }, 
+            "target_deceleration": 3.8281863742281823, 
+            "max_acceleration": 1.5679810357126758, 
+            "target_headway": 2.13393337845538, 
+            "politeness": 0.3138603577328837, 
+            "route": [
+                3, 
+                3, 
+                2, 
+                1
+            ], 
+            "target_velocity": 108.0, 
+            "id": 118, 
+            "min_distance": 3.9257132231052227
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 18.07639901444994
+            }, 
+            "target_deceleration": 2.849371938522049, 
+            "max_acceleration": 1.6003032556424235, 
+            "target_headway": 2.6268876857199146, 
+            "politeness": 0.1021615910748698, 
+            "route": [
+                3, 
+                1, 
+                1
+            ], 
+            "target_velocity": 73.0, 
+            "id": 119, 
+            "min_distance": 3.5007100500125725
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 48.27636402349461
+            }, 
+            "target_deceleration": 3.508093351953297, 
+            "max_acceleration": 2.0341724498612, 
+            "target_headway": 1.943348847183524, 
+            "politeness": 0.23414857321139693, 
+            "route": [
+                1, 
+                3, 
+                0
+            ], 
+            "target_velocity": 76.0, 
+            "id": 120, 
+            "min_distance": 3.3432931052492103
+        }, 
+        {
+            "start": {
+                "to": 0, 
+                "lane": 0, 
+                "from": 1, 
+                "distance": 1.091448638416126
+            }, 
+            "target_deceleration": 3.1770051384669706, 
+            "max_acceleration": 1.8985762112137143, 
+            "target_headway": 1.9974225864664952, 
+            "politeness": 0.41701173125329427, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 136.0, 
+            "id": 121, 
+            "min_distance": 3.9813029587289734
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 24.61507824708541
+            }, 
+            "target_deceleration": 2.459305964137928, 
+            "max_acceleration": 1.1757983867219404, 
+            "target_headway": 2.419520043640567, 
+            "politeness": 0.44208982863534174, 
+            "route": [
+                1, 
+                3, 
+                2, 
+                3
+            ], 
+            "target_velocity": 117.0, 
+            "id": 122, 
+            "min_distance": 2.3291470179942904
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 83.55143929738732
+            }, 
+            "target_deceleration": 2.698475843499292, 
+            "max_acceleration": 2.918853413038191, 
+            "target_headway": 1.1698660495945685, 
+            "politeness": 0.28874743068201025, 
+            "route": [
+                2, 
+                2, 
+                0, 
+                0
+            ], 
+            "target_velocity": 149.0, 
+            "id": 123, 
+            "min_distance": 2.960567677123951
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 9.00665013220131
+            }, 
+            "target_deceleration": 3.768408230363053, 
+            "max_acceleration": 1.3662160908701408, 
+            "target_headway": 1.955932143410991, 
+            "politeness": 0.42568993091579954, 
+            "route": [
+                1, 
+                1
+            ], 
+            "target_velocity": 114.0, 
+            "id": 124, 
+            "min_distance": 2.782319381300801
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 0, 
+                "from": 2, 
+                "distance": 78.72223187356485
+            }, 
+            "target_deceleration": 3.32704444475473, 
+            "max_acceleration": 1.5778380498723557, 
+            "target_headway": 1.2171139859966518, 
+            "politeness": 0.11782673084665861, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 126.0, 
+            "id": 125, 
+            "min_distance": 3.55331048162348
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 2, 
+                "from": 9, 
+                "distance": 13.983289018462274
+            }, 
+            "target_deceleration": 2.892560595490811, 
+            "max_acceleration": 1.1970820981717645, 
+            "target_headway": 2.8316155605161426, 
+            "politeness": 0.10989388740302802, 
+            "route": [
+                0, 
+                0, 
+                3
+            ], 
+            "target_velocity": 99.0, 
+            "id": 126, 
+            "min_distance": 2.4986458004571035
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 71.33440021831241
+            }, 
+            "target_deceleration": 2.9485651490293883, 
+            "max_acceleration": 2.140183227262521, 
+            "target_headway": 2.9187953727904814, 
+            "politeness": 0.38719785127401607, 
+            "route": [
+                3, 
+                1, 
+                3, 
+                3
+            ], 
+            "target_velocity": 113.0, 
+            "id": 127, 
+            "min_distance": 3.210621551553415
+        }, 
+        {
+            "start": {
+                "to": 11, 
+                "lane": 0, 
+                "from": 1, 
+                "distance": 24.220176141363524
+            }, 
+            "target_deceleration": 3.702797492843586, 
+            "max_acceleration": 2.1298534564338145, 
+            "target_headway": 1.5930710059891682, 
+            "politeness": 0.34804179460313917, 
+            "route": [
+                3, 
+                0, 
+                1
+            ], 
+            "target_velocity": 82.0, 
+            "id": 128, 
+            "min_distance": 3.7560894008156254
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 1, 
+                "from": 5, 
+                "distance": 8.266715774603018
+            }, 
+            "target_deceleration": 3.308279378835892, 
+            "max_acceleration": 2.3739844181804632, 
+            "target_headway": 1.7107516919410155, 
+            "politeness": 0.25372618429082894, 
+            "route": [
+                2, 
+                1, 
+                3, 
+                1
+            ], 
+            "target_velocity": 85.0, 
+            "id": 129, 
+            "min_distance": 3.752367658330893
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 67.73806835202429
+            }, 
+            "target_deceleration": 2.280429458351814, 
+            "max_acceleration": 2.6172996864920997, 
+            "target_headway": 2.2986589034436586, 
+            "politeness": 0.42897515851847734, 
+            "route": [
+                0, 
+                0, 
+                1, 
+                1
+            ], 
+            "target_velocity": 133.0, 
+            "id": 130, 
+            "min_distance": 2.93260048497447
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 60.17015198568839
+            }, 
+            "target_deceleration": 2.6361748285318694, 
+            "max_acceleration": 1.6856932126789457, 
+            "target_headway": 2.2058550678525632, 
+            "politeness": 0.4567061803277952, 
+            "route": [
+                0, 
+                2, 
+                1
+            ], 
+            "target_velocity": 86.0, 
+            "id": 131, 
+            "min_distance": 2.051566711278487
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 1, 
+                "from": 2, 
+                "distance": 16.275154557649696
+            }, 
+            "target_deceleration": 3.7339570960759234, 
+            "max_acceleration": 2.925697671134853, 
+            "target_headway": 2.88350337378274, 
+            "politeness": 0.26507444121033474, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 138.0, 
+            "id": 132, 
+            "min_distance": 2.2667409073524203
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 86.53905912659529
+            }, 
+            "target_deceleration": 3.178043792987162, 
+            "max_acceleration": 1.769227984732219, 
+            "target_headway": 2.4619923181871632, 
+            "politeness": 0.1326910600215838, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 74.0, 
+            "id": 133, 
+            "min_distance": 3.2536148644998697
+        }, 
+        {
+            "start": {
+                "to": 2, 
+                "lane": 1, 
+                "from": 5, 
+                "distance": 73.7245822310481
+            }, 
+            "target_deceleration": 3.8702532331629986, 
+            "max_acceleration": 2.36339915164704, 
+            "target_headway": 1.9705012041660894, 
+            "politeness": 0.2459890784152945, 
+            "route": [
+                2, 
+                0, 
+                0
+            ], 
+            "target_velocity": 109.0, 
+            "id": 134, 
+            "min_distance": 2.0178757235062768
+        }, 
+        {
+            "start": {
+                "to": 4, 
+                "lane": 0, 
+                "from": 3, 
+                "distance": 68.9668971956712
+            }, 
+            "target_deceleration": 2.772106119183093, 
+            "max_acceleration": 1.900524386478529, 
+            "target_headway": 2.477497686116025, 
+            "politeness": 0.3995529000353276, 
+            "route": [
+                1, 
+                3
+            ], 
+            "target_velocity": 108.0, 
+            "id": 135, 
+            "min_distance": 3.867364264978333
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 48.700466766781624
+            }, 
+            "target_deceleration": 2.7178291363415172, 
+            "max_acceleration": 2.3696042087533784, 
+            "target_headway": 2.0943205170656505, 
+            "politeness": 0.268093544546093, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 78.0, 
+            "id": 136, 
+            "min_distance": 2.59846807229797
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 18.929293388280577
+            }, 
+            "target_deceleration": 2.853413648657976, 
+            "max_acceleration": 1.4614158026557664, 
+            "target_headway": 1.48347195111282, 
+            "politeness": 0.25889221087205017, 
+            "route": [
+                1, 
+                2
+            ], 
+            "target_velocity": 128.0, 
+            "id": 137, 
+            "min_distance": 3.3237412761335636
+        }, 
+        {
+            "start": {
+                "to": 7, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 50.82323227579547
+            }, 
+            "target_deceleration": 3.707127273060814, 
+            "max_acceleration": 2.76941804380302, 
+            "target_headway": 2.6366410004404033, 
+            "politeness": 0.24313373635145183, 
+            "route": [
+                1, 
+                1, 
+                1
+            ], 
+            "target_velocity": 94.0, 
+            "id": 138, 
+            "min_distance": 3.1065421433410085
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 2, 
+                "from": 9, 
+                "distance": 81.70004506941201
+            }, 
+            "target_deceleration": 2.3754318333535496, 
+            "max_acceleration": 2.9097332783366143, 
+            "target_headway": 1.5547585698356103, 
+            "politeness": 0.4875459269964654, 
+            "route": [
+                2, 
+                0, 
+                3
+            ], 
+            "target_velocity": 109.0, 
+            "id": 139, 
+            "min_distance": 3.8457625568934075
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 4, 
+                "distance": 34.580991962649975
+            }, 
+            "target_deceleration": 3.7960672303767753, 
+            "max_acceleration": 2.6261665674596597, 
+            "target_headway": 1.7843528521519116, 
+            "politeness": 0.2995371351940195, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 80.0, 
+            "id": 140, 
+            "min_distance": 3.337410872852559
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 26.47465868495188
+            }, 
+            "target_deceleration": 2.753712939713016, 
+            "max_acceleration": 1.0635962624719795, 
+            "target_headway": 2.8638940717311643, 
+            "politeness": 0.42705295714886027, 
+            "route": [
+                3, 
+                2, 
+                0, 
+                0
+            ], 
+            "target_velocity": 129.0, 
+            "id": 141, 
+            "min_distance": 2.035290821446864
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 28.08456946397152
+            }, 
+            "target_deceleration": 2.924851073956936, 
+            "max_acceleration": 2.38101007148539, 
+            "target_headway": 1.9987396504213426, 
+            "politeness": 0.14162603467093726, 
+            "route": [
+                3, 
+                2, 
+                0, 
+                2
+            ], 
+            "target_velocity": 125.0, 
+            "id": 142, 
+            "min_distance": 2.2070865154708397
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 14.985866201640608
+            }, 
+            "target_deceleration": 2.492441113019235, 
+            "max_acceleration": 2.082238664265087, 
+            "target_headway": 1.9449712243558275, 
+            "politeness": 0.3864720157335585, 
+            "route": [
+                0, 
+                1, 
+                3, 
+                1
+            ], 
+            "target_velocity": 72.0, 
+            "id": 143, 
+            "min_distance": 3.943876198014025
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 69.79123602530487
+            }, 
+            "target_deceleration": 2.558267238458707, 
+            "max_acceleration": 1.298751530385035, 
+            "target_headway": 2.215411024828029, 
+            "politeness": 0.32705692538336384, 
+            "route": [
+                0, 
+                1, 
+                1
+            ], 
+            "target_velocity": 139.0, 
+            "id": 144, 
+            "min_distance": 3.0618579137176347
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 93.99490126569934
+            }, 
+            "target_deceleration": 2.6909234368079926, 
+            "max_acceleration": 1.318111955882141, 
+            "target_headway": 1.9212689060162478, 
+            "politeness": 0.2639935432672149, 
+            "route": [
+                0, 
+                3, 
+                1, 
+                0
+            ], 
+            "target_velocity": 121.0, 
+            "id": 145, 
+            "min_distance": 2.450961176764246
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 1, 
+                "from": 0, 
+                "distance": 6.299466616325966
+            }, 
+            "target_deceleration": 2.731383363405852, 
+            "max_acceleration": 1.6329874981149721, 
+            "target_headway": 1.1090892663738536, 
+            "politeness": 0.497216315114523, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 124.0, 
+            "id": 146, 
+            "min_distance": 3.0383661122414285
+        }, 
+        {
+            "start": {
+                "to": 1, 
+                "lane": 2, 
+                "from": 11, 
+                "distance": 274.00851686023475
+            }, 
+            "target_deceleration": 2.7889572791093533, 
+            "max_acceleration": 2.7821390263992205, 
+            "target_headway": 2.3993875628924335, 
+            "politeness": 0.4318756402969811, 
+            "route": [
+                1, 
+                0, 
+                2
+            ], 
+            "target_velocity": 119.0, 
+            "id": 147, 
+            "min_distance": 2.04398055052257
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 79.86049208995384
+            }, 
+            "target_deceleration": 2.746185046278219, 
+            "max_acceleration": 2.8156349090373647, 
+            "target_headway": 1.7670125283628586, 
+            "politeness": 0.11782040571785757, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 149.0, 
+            "id": 148, 
+            "min_distance": 3.219119462458293
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 49.215550219187186
+            }, 
+            "target_deceleration": 2.5282118825449, 
+            "max_acceleration": 2.762339063689887, 
+            "target_headway": 2.318490151671986, 
+            "politeness": 0.4102863211497585, 
+            "route": [
+                2, 
+                1, 
+                1, 
+                0
+            ], 
+            "target_velocity": 94.0, 
+            "id": 149, 
+            "min_distance": 2.3109605575938947
+        }, 
+        {
+            "start": {
+                "to": 10, 
+                "lane": 0, 
+                "from": 7, 
+                "distance": 59.26393032980505
+            }, 
+            "target_deceleration": 3.555810695836203, 
+            "max_acceleration": 1.538765524154346, 
+            "target_headway": 1.7896915719993594, 
+            "politeness": 0.4072604801027908, 
+            "route": [
+                3, 
+                3
+            ], 
+            "target_velocity": 112.0, 
+            "id": 150, 
+            "min_distance": 2.239495997163826
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 8, 
+                "distance": 25.47915156207582
+            }, 
+            "target_deceleration": 2.1101196980569936, 
+            "max_acceleration": 1.1110541223792105, 
+            "target_headway": 1.7618344672650572, 
+            "politeness": 0.36650374760009485, 
+            "route": [
+                3, 
+                1
+            ], 
+            "target_velocity": 111.0, 
+            "id": 151, 
+            "min_distance": 2.169738614364191
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 4, 
+                "distance": 87.19581945419976
+            }, 
+            "target_deceleration": 3.342275859857194, 
+            "max_acceleration": 1.1014568170948345, 
+            "target_headway": 1.2810528311076117, 
+            "politeness": 0.4245210607052683, 
+            "route": [
+                3, 
+                2, 
+                2, 
+                3
+            ], 
+            "target_velocity": 81.0, 
+            "id": 152, 
+            "min_distance": 3.8312427182829367
+        }, 
+        {
+            "start": {
+                "to": 3, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 67.91218033652973
+            }, 
+            "target_deceleration": 3.444189028359302, 
+            "max_acceleration": 1.9479505440229292, 
+            "target_headway": 1.9093257925069114, 
+            "politeness": 0.24820983620265952, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 115.0, 
+            "id": 153, 
+            "min_distance": 3.2527119354607876
+        }, 
+        {
+            "start": {
+                "to": 8, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 46.890523386146164
+            }, 
+            "target_deceleration": 2.234050987983949, 
+            "max_acceleration": 1.9936092021821392, 
+            "target_headway": 2.6534383130656263, 
+            "politeness": 0.23898435076025853, 
+            "route": [
+                1, 
+                0, 
+                0
+            ], 
+            "target_velocity": 113.0, 
+            "id": 154, 
+            "min_distance": 3.9297410936385178
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 0, 
+                "from": 6, 
+                "distance": 73.95192238641725
+            }, 
+            "target_deceleration": 2.6571376250969143, 
+            "max_acceleration": 1.6329111944398713, 
+            "target_headway": 2.6620295603201027, 
+            "politeness": 0.27782330611964423, 
+            "route": [
+                0, 
+                1
+            ], 
+            "target_velocity": 142.0, 
+            "id": 155, 
+            "min_distance": 2.623869659821161
+        }, 
+        {
+            "start": {
+                "to": 9, 
+                "lane": 1, 
+                "from": 10, 
+                "distance": 27.64179964355138
+            }, 
+            "target_deceleration": 2.3542180456413027, 
+            "max_acceleration": 2.096907789994293, 
+            "target_headway": 1.5327311916885595, 
+            "politeness": 0.31490761219367697, 
+            "route": [
+                0, 
+                2
+            ], 
+            "target_velocity": 113.0, 
+            "id": 156, 
+            "min_distance": 3.7273743616231645
+        }, 
+        {
+            "start": {
+                "to": 5, 
+                "lane": 1, 
+                "from": 6, 
+                "distance": 97.21513923035253
+            }, 
+            "target_deceleration": 3.3293913198649463, 
+            "max_acceleration": 2.9162404999746916, 
+            "target_headway": 1.7136938876665542, 
+            "politeness": 0.21715460024650404, 
+            "route": [
+                0, 
+                3, 
+                0, 
+                3
+            ], 
+            "target_velocity": 142.0, 
+            "id": 157, 
+            "min_distance": 3.0681958772074305
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 99.75897964612759
+            }, 
+            "target_deceleration": 3.054118384734166, 
+            "max_acceleration": 1.700646515420007, 
+            "target_headway": 1.8338352993893632, 
+            "politeness": 0.34580005514823575, 
+            "route": [
+                2, 
+                1, 
+                3
+            ], 
+            "target_velocity": 92.0, 
+            "id": 158, 
+            "min_distance": 3.5048653870016198
+        }, 
+        {
+            "start": {
+                "to": 6, 
+                "lane": 0, 
+                "from": 9, 
+                "distance": 81.8422014769999
+            }, 
+            "target_deceleration": 3.3615099261235786, 
+            "max_acceleration": 1.4241638478854657, 
+            "target_headway": 2.4051917989638776, 
+            "politeness": 0.4342771880851485, 
+            "route": [
+                3, 
+                2
+            ], 
+            "target_velocity": 139.0, 
+            "id": 159, 
+            "min_distance": 2.409480915839757
+        }
+    ]
+}

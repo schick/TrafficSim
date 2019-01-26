@@ -16,12 +16,13 @@
 class Road;
 class TrafficObject;
 class TrafficLight;
+class Car;
 
 class Lane {
 
 
 public:
-    std::vector<TrafficObject *> mTrafficObjects;
+    std::vector<Car *> mTrafficObjects;
     //TrafficLight &trafficLight;
     bool isRed = false;
 
@@ -31,7 +32,7 @@ public:
     struct NeighboringObjects {
         NeighboringObjects() : front(nullptr), back(nullptr) {};
         TrafficObject *front = nullptr;
-        TrafficObject *back = nullptr;
+        Car *back = nullptr;
     };
 
     Lane(int lane, Road &road, double length) : lane(lane), road(road), mTrafficObjects(), length(length) {

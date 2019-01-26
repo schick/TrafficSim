@@ -8,12 +8,13 @@
 #include <model/Lane.h>
 #include <model/TrafficObject.h>
 #include <model/TrafficLight.h>
+#include <model/Car.h>
 
 class NeighborFinder {
 
 public:
     // general, works for any lane
-    static Lane::NeighboringObjects getNeighboringObjects(Lane *lane, TrafficObject *trafficObject);
+    static Lane::NeighboringObjects getNeighboringObjects(Lane *lane, Car *trafficObject);
 
 };
 
