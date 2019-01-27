@@ -10,8 +10,14 @@ SimpleArgumentParser &SimpleArgumentParser::add_argument(const char *name) {
 }
 
 SimpleArgumentParser &SimpleArgumentParser::add_kw_argument(const char *name, const char *default_) {
-    kwargs_names.push_back("-" + std::string(name));
-    kwargs.push_back(default_);
+    long idx = std::distance(kwargs_names.begin(), std::find(kwargs_names.begin(), kwargs_names.end(), std::string(name)));
+    if (idx < kwargs_names.size()) {
+        std::string &a = kwargs.at((size_t )idx);
+        a = default_;
+    } else {
+        kwargs.emplace_back(default_);
+        kwargs_names.emplace_back(std::string(name));
+    }
     return *this;
 }
 
@@ -31,7 +37,7 @@ bool SimpleArgumentParser::load(int argc, char *argv[]) {
 
     std::string name;
     while (i + 2 < argc) {
-        name = argv[i + 1];
+        name = argv[i + 1] + 1;
         auto idx = std::distance(kwargs_names.begin(), std::find(kwargs_names.begin(), kwargs_names.end(), name));
         if (idx >= kwargs_names.size()) {
             printf("No such argument: %s", name.c_str());
@@ -47,7 +53,7 @@ bool SimpleArgumentParser::load(int argc, char *argv[]) {
 }
 
 std::string SimpleArgumentParser::operator[](const std::string &key) {
-    std::string name = "-" + key;
+    std::string name = key;
     auto idx = std::distance(kwargs_names.begin(), std::find(kwargs_names.begin(), kwargs_names.end(), name));
     if (idx < kwargs_names.size())
         return kwargs[idx];
