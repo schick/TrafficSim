@@ -30,14 +30,12 @@ SET(SOURCE_FILES
         src/LaneChangeModel.cpp
         include/optimization/model/OptimizeScenario.h
         src/optimization/model/OptimizeScenario.cpp
-        include/optimization/DistributionOpenMPOptimizer.h
-        src/optimization/DistributionOpenMPOptimizer.cpp
         include/optimization/DistributionOptimizer.h
         src/optimization/DistributionOptimizer.cpp
-        include/optimization/RandomOptimizer.h
-        src/optimization/RandomOptimizer.cpp
+        include/optimization/ParallelRandomOptimizer.h
+        src/optimization/ParallelRandomOptimizer.cpp
         include/optimization/model/SignalLayout.h
-        src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h)
+        src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h src/optimization/SequentialRandomOptimizer.cpp include/optimization/SequentialRandomOptimizer.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)

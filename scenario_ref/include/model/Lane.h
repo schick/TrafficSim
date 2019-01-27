@@ -42,9 +42,7 @@ public:
     /**
      * Copy Constructor
      */
-    Lane(const Lane &source): road(source.road) {
-        std::cout << "it happened";
-    }
+    Lane(const Lane &source): road(source.road) {}
 
     /**
      * properties
