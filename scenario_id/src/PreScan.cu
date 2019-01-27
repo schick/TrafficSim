@@ -28,6 +28,7 @@ __global__ void TestPreSum(size_t *out, size_t *in, int size) {
 
 
 void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int batch_count) {
+    if(size == 0) return;
     assert(IsPowerOfTwo(batch_count));
     assert(out_size >= GetRequiredPreSumReqBufferSize(size, batch_count));
     int offset = 0;
@@ -39,7 +40,6 @@ void CalculatePreSum(size_t *out, size_t out_size, size_t *in, int size, int bat
     for(step_size = size; step_size >= 1; step_size = step_size == 1 ? 0 : step_size / batch_count + 1) {
         sizes.push_back(step_size);
 
-        assert(0 <= GetRequiredPreSumReqBufferSize(size, batch_count) - offset - step_size);
         GeneralPreSumKernel<<<step_size / batch_count + 1, batch_count / 2, batch_count * sizeof(size_t)>>>(
                 out + offset, step_size, tmp_in, input_array_size,
                         step_size == size ? 1 : batch_count, step_size == size ? 0 : batch_count - 1);

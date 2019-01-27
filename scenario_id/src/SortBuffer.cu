@@ -7,6 +7,9 @@
 #include "SortedBucketContainer.h"
 #include "PreScan.h"
 
+#define MAX(a, b) (a < b ? b : a)
+#define MIN(a, b) (a < b ? a : b)
+
 SortBuffer::SortBuffer(Scenario_id &scenario, size_t preSumBatchSize) {
 
     this->preSumBatchSize = preSumBatchSize;
@@ -25,10 +28,10 @@ SortBuffer::SortBuffer(Scenario_id &scenario, size_t preSumBatchSize) {
     laneCounterSize = scenario.lanes.size();
     GPU_ALLOC((void **) &laneCounter, laneCounterSize * sizeof(unsigned int))
 
-    reinsert_buffer_size = scenario.lanes.size();
+    reinsert_buffer_size = scenario.cars.size();
     GPU_ALLOC((void **) &reinsert_buffer, reinsert_buffer_size * sizeof(TrafficObject_id *))
 
-    preSumInLen = scenario.cars.size();
+    preSumInLen = MAX(scenario.cars.size(), scenario.lanes.size());
     preSumOutLen = GetRequiredPreSumReqBufferSize(preSumInLen, batch_count);
     assert(IsPowerOfTwo(PRE_SUM_BLOCK_SIZE));
 

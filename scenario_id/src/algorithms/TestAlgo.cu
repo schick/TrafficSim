@@ -228,6 +228,8 @@ __device__ void find_nearest_for_car_on_lane(CudaScenario_id *scenario, SortedBu
     BucketData &bucket = container->buckets[car.lane];
     TrafficObject_id::Cmp cmp;
     TrafficObject_id **traffic_object = upper_bound<TrafficObject_id*>(bucket.buffer, bucket.buffer + bucket.size, &car, cmp);
+    assert(traffic_object <= bucket.buffer + bucket.size && traffic_object >= bucket.buffer);
+    assert(bucket.size <= bucket.buffer_size);
 #ifdef DEBUG_MSGS
     if (car.id == CAR_TO_ANALYZE) printf("Lane(%lu) has %lu objects\n", car.lane, bucket.size);
 #endif
@@ -245,6 +247,8 @@ __device__ void find_nearest_for_car_on_lane(CudaScenario_id *scenario, SortedBu
     do {
         traffic_object--;
     } while(traffic_object > bucket.buffer && **traffic_object >= car);
+
+    assert(traffic_object <= bucket.buffer + bucket.size && traffic_object >= bucket.buffer - 1);
 
     if(traffic_object >= bucket.buffer && bucket.buffer + bucket.size != traffic_object && **traffic_object < car) {
 #ifdef DEBUG_MSGS
@@ -269,6 +273,8 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
         size_t car_idx = idx / 3;
 
         TrafficObject_id car = *scenario->getCar(car_idx);
+        assert(scenario->getCar(car_idx) != nullptr);
+
         size_t lane_id = (size_t) -1;
         TrafficObject_id **nearest = nullptr;
         Road_id::NeighboringLanes n_lanes;
@@ -303,15 +309,18 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
             continue;
         }
 
-        size_t n = container->buckets[lane_id].size;
-        if (n == 0) {
+        assert(lane_id < container->bucket_count);
+        if (container->buckets[lane_id].size == 0) {
             nearest_back = nullptr;
             nearest_font = nullptr;
         } else {
             find_nearest_for_car_on_lane(scenario, container, car, nearest_font, nearest_back);
         }
+
         Lane_id *l = scenario->getLane(car.lane);
+        assert(l != nullptr);
         RedTrafficLight_id *tl = scenario->getLight(l->traffic_light);
+        assert(tl != nullptr);
         if (tl->isRed()) {
             if (car < *tl && (nearest_font == nullptr || *tl < *nearest_font)) {
                 nearest_font = tl;
@@ -355,11 +364,11 @@ void static_advance(size_t steps, Scenario_id &scenario) {
     printf("Starting to advance scenario...\n\n");
 #endif
 #ifdef RUN_WITH_TESTS
-    printf("Car(%lu) on Lane(%lu)\n", (size_t) CAR_TO_ANALYZE, scenario.cars[CAR_TO_ANALYZE].lane);
+    if(CAR_TO_ANALYZE < scenario.cars.size())
+        printf("Car(%lu) on Lane(%lu)\n", (size_t) CAR_TO_ANALYZE, scenario.cars[CAR_TO_ANALYZE].lane);
 #endif
     for (int i = 0; i < steps; i++) {
 #ifdef DEBUG_MSGS
-        printf("Step: %d\n", i);
 #endif
         SortedBucketContainer::RestoreValidState(scenario, bucket_memory.get(), preSumBuffer);
 
@@ -368,7 +377,7 @@ void static_advance(size_t steps, Scenario_id &scenario) {
         CHECK_FOR_ERROR();
 #endif
 
-        find_nearest2<<<SUGGESTED_THREADS, SUGGESTED_THREADS>>>(device_cuda_scenario, bucket_memory.get(), dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
+        find_nearest2<<<scenario.cars.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(device_cuda_scenario, bucket_memory.get(), dev_left_neighbors, dev_own_neighbors, dev_right_neighbors);
         CHECK_FOR_ERROR();
 
 #ifdef RUN_WITH_TESTS

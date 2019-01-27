@@ -36,7 +36,6 @@ public:
 
     // CUDA_HOST static void FixSize(SortedBucketContainer *bucketMemory, bool only_lower);
     CUDA_HOST static void FixSize(SortedBucketContainer *bucketMemory, Scenario_id &scenario, bool only_lower, SortBuffer &sortBuffer);
-    CUDA_HOST static void FixSize(SortedBucketContainer *bucketMemory, bool only_lower);
 
     CUDA_HOSTDEV static size_t getBufferSize(CudaScenario_id &scenario, float bucket_memory_factor);
     CUDA_HOST static size_t getBufferSize(Scenario_id &scenario, float bucket_memory_factor);
@@ -45,6 +44,7 @@ public:
 
     CUDA_HOST static void Sort(SortedBucketContainer *container, Scenario_id &scenario, SortBuffer &sortBuffer);
     CUDA_HOST static void FetchBucketSizes(SortedBucketContainer *container, Scenario_id &scenario, size_t *bucketSizes);
+    CUDA_HOST static void FetchBucketBufferSizes(SortedBucketContainer *container, Scenario_id &scenario, size_t *bucketSizes);
     CUDA_HOST static void RestoreValidState(Scenario_id &scenario, SortedBucketContainer *container, SortBuffer &sortBuffer);
 
 

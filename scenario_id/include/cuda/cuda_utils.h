@@ -15,8 +15,8 @@
 #ifdef DEBUG
 #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #else
-// #define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
-#define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
+#define CHECK_FOR_ERROR() { gpuErrchk(cudaPeekAtLastError()); }
+// #define CHECK_FOR_ERROR() { cudaDeviceSynchronize(); gpuErrchk(cudaPeekAtLastError());}
 #endif
 
 
@@ -188,7 +188,7 @@ inline int gpuAssert(cudaError_t code, const char *file, int line, bool abort=tr
     if (code != cudaSuccess)
     {
 
-        fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        fprintf(stderr,"GPUassert: %s %s:%d\n", cudaGetErrorString(code), file, line);
         if (abort)  {
             throw CudaEx("Fail!");
         }

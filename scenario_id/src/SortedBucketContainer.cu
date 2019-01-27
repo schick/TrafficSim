@@ -348,6 +348,12 @@ __global__ void FetchBucketSizesKernel(SortedBucketContainer *container, size_t 
     }
 }
 
+__global__ void FetchBucketBufferSizesKernel(SortedBucketContainer *container, size_t *bucketSizes) {
+    for(size_t idx = GetGlobalIdx(); idx < container->bucket_count; idx += GetGlobalDim()) {
+        bucketSizes[idx] = container->buckets[idx].buffer_size;
+    }
+}
+
 __global__ void FetchBucketSizesPtrKernel(BucketData *buckets, size_t num_buckets, size_t *bucketSizes) {
     for(size_t idx = GetGlobalIdx(); idx < num_buckets; idx += GetGlobalDim()) {
         bucketSizes[idx] = buckets[idx].size;
@@ -355,12 +361,16 @@ __global__ void FetchBucketSizesPtrKernel(BucketData *buckets, size_t num_bucket
 }
 
 void SortedBucketContainer::FetchBucketSizes(SortedBucketContainer *container, Scenario_id &scenario, size_t *bucketSizes) {
-    FetchBucketSizesKernel<<<sqrt(scenario.lanes.size()) + 1, sqrt(scenario.lanes.size()) + 1>>>(container, bucketSizes);
+    FetchBucketSizesKernel<<<scenario.lanes.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, bucketSizes);
+    CHECK_FOR_ERROR();
+}
+void SortedBucketContainer::FetchBucketBufferSizes(SortedBucketContainer *container, Scenario_id &scenario, size_t *bucketSizes) {
+    FetchBucketBufferSizesKernel<<<scenario.lanes.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, bucketSizes);
     CHECK_FOR_ERROR();
 }
 
 void SortedBucketContainer::FetchBucketSizes(BucketData *buckets, size_t num_buckets, Scenario_id &scenario, size_t *bucketSizes) {
-    FetchBucketSizesPtrKernel<<<sqrt(num_buckets) + 1, sqrt(num_buckets) + 1>>>(buckets, num_buckets, bucketSizes);
+    FetchBucketSizesPtrKernel<<<num_buckets / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(buckets, num_buckets, bucketSizes);
     CHECK_FOR_ERROR();
 }
 
@@ -395,45 +405,14 @@ struct free_deleter
     }
 };
 
-__global__ void FixSizeKernel(SortedBucketContainer *container, bool only_lower) {
-    for (size_t lane_id = GetBlockIdx(); lane_id < container->bucket_count; lane_id += GetGridDim()) {
-        auto &bucket = container->buckets[lane_id];
-        bool found = false;
-        size_t new_size;
-        size_t max_size = only_lower ? bucket.size : bucket.buffer_size;
-        for (size_t idx = GetThreadIdx(); idx < max_size; idx += GetBlockDim()) {
-            if (idx == 0) {
-                if (bucket.buffer[0] == nullptr) {
-                    new_size = 0;
-                    found = true;
-                }
-            } else {
-                if (bucket.buffer[idx] == nullptr && bucket.buffer[idx - 1] != nullptr) {
-                    new_size = idx;
-                    found = true;
-                }
-            }
-        }
 
-        if (found) bucket.size = new_size;
-
-#ifdef RUN_WITH_TESTS
-        if (found) {
-            if(lane_id == BUCKET_TO_ANALYZE)
-                printf("Final Bucket(%lu) size: %lu\n", lane_id, new_size);
-        }
-#endif
-    }
-}
-
-
-__global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePreSum, size_t lanePreSumSize, size_t n) {
+__global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePreSum, size_t lanePreSumSize, size_t n, bool only_lower) {
     for (size_t idx = GetGlobalIdx(); idx < 2 * n; idx += GetGlobalDim()) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(idx, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
         if (bucket_idx >= container->bucket_count) continue;
         assert(bucket_idx < container->bucket_count);
-        if(element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
+        if(only_lower && element_idx >= container->buckets[bucket_idx].size) continue; // some other thread found a size...
         bool found = false;
         size_t new_size;
         auto &bucket = container->buckets[bucket_idx];
@@ -446,38 +425,51 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
             if (bucket.buffer[element_idx] == nullptr && bucket.buffer[element_idx - 1] != nullptr) {
                 new_size = element_idx;
                 found = true;
+            } else if (element_idx == bucket.buffer_size - 1 && bucket.buffer[element_idx] != nullptr) {
+                new_size = bucket.buffer_size;
+                found = true;
             }
         }
-
         if (found) {
-            // printf("found size for(%lu): %lu -> %lu\n", bucket_idx, bucket.size, new_size);
+#ifdef DEBUG_MSGS
+            if(bucket_idx == BUCKET_TO_ANALYZE) printf("found size for(%lu): %lu -> %lu\n", bucket_idx, bucket.size, new_size);
+#endif
             bucket.size = new_size;
         } else {
-            // printf("%lu, %lu: %lu\n", bucket_idx, element_idx, bucket.size);
+#ifdef DEBUG_MSGS
+            if(bucket_idx == BUCKET_TO_ANALYZE) printf("no new size for(%lu): %lu\n", bucket_idx, bucket.size);
+#endif
         }
     }
 }
 CUDA_HOST void SortedBucketContainer::FixSize(SortedBucketContainer *container, Scenario_id &scenario, bool only_lower, SortBuffer &sortBuffer) {
-    SortedBucketContainer::FetchBucketSizes(container, scenario, sortBuffer.bucketSizes);
+    size_t buffer_size;
+    if (only_lower) {
+        buffer_size = scenario.cars.size();
+        SortedBucketContainer::FetchBucketSizes(container, scenario, sortBuffer.bucketSizes);
+        CHECK_FOR_ERROR();
+    } else {
+        buffer_size = SortedBucketContainer::getBufferSize(scenario, 4.);
+        SortedBucketContainer::FetchBucketBufferSizes(container, scenario, sortBuffer.bucketSizes);
+        CHECK_FOR_ERROR();
+    }
     CalculatePreSum(sortBuffer.laneBucketPreSumBuffer, sortBuffer.lanePreSumBufferSize, sortBuffer.bucketSizes, scenario.lanes.size(), sortBuffer.preSumBatchSize);
-    CHECK_FOR_ERROR();
-
-    FixSizeKernel2<<<scenario.cars.size() / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.laneBucketPreSumBuffer, scenario.lanes.size(), scenario.cars.size());
+    FixSizeKernel2<<<buffer_size / SUGGESTED_THREADS + 1, SUGGESTED_THREADS>>>(container, sortBuffer.laneBucketPreSumBuffer, scenario.lanes.size(), buffer_size, only_lower);
     CHECK_FOR_ERROR()
-
 }
 
-CUDA_HOST void SortedBucketContainer::FixSize(SortedBucketContainer *container, bool only_lower) {
-    FixSizeKernel<<<SUGGESTED_THREADS, SUGGESTED_THREADS>>>(container, only_lower);
-    CHECK_FOR_ERROR();
-}
 
 CUDA_GLOB void bucketMemoryLoadKernel2(SortedBucketContainer *bucketmem, CudaScenario_id *cuda_device_scenario, unsigned int *temp_value) {
     CUDA_GLOBAL_ITER(car_idx, cuda_device_scenario->getNumCars()) {
         auto car = cuda_device_scenario->getCar(car_idx);
         size_t insert_offset = atomicAdd(temp_value + car->lane, 1);
-        assert(insert_offset < bucketmem->buckets[car->lane].buffer_size);
-        bucketmem->buckets[car->lane].buffer[insert_offset] = car;
+        if(insert_offset < bucketmem->buckets[car->lane].buffer_size)
+            bucketmem->buckets[car->lane].buffer[insert_offset] = car;
+        else {
+#ifdef DEBUG
+            printf("Buffer too small.\n");
+#endif
+        }
     }
 }
 
@@ -524,12 +516,6 @@ CUDA_DEV SortedBucketContainer::SortedBucketContainer(CudaScenario_id *scenario,
     printf("Allocated: %.2fMB\n", (float) (sizeof(size_t) * scenario->getNumLanes() * 2 + sizeof(TrafficObject_id**) * scenario->getNumLanes() +
                                            sizeof(TrafficObject_id*) * total_buffer_size) / 1024. / 1024.);
 #endif
-}
-
-
-
-CUDA_GLOB void bucketMemoryInitializeKernel(SortedBucketContainer *bucketmem,  BucketData *buckets, TrafficObject_id **main_buffer, CudaScenario_id *cuda_device_scenario, float bucket_memory_factor) {
-    new(bucketmem)SortedBucketContainer(cuda_device_scenario, buckets, main_buffer, bucket_memory_factor);
 }
 
 __global__ void CalculateBucketSizes(CudaScenario_id *scenario, size_t *sizes, size_t sizes_len, size_t bucket_memory_factor) {
@@ -599,7 +585,7 @@ std::shared_ptr<SortedBucketContainer> SortedBucketContainer::fromScenario(Scena
 
     gpuErrchk(cudaFree(tmp));
 
-    SortedBucketContainer::FixSize(bucket_memory, false);
+    SortedBucketContainer::FixSize(bucket_memory, scenario, false, sortBuffer);
 
     std::shared_ptr<SortedBucketContainer> result(bucket_memory, free_deleter());
     return result;
@@ -616,18 +602,18 @@ __device__ inline bool isInWrongLane(SortedBucketContainer *container, TrafficOb
 __global__
 void MoveToContainerKernel(SortedBucketContainer *container, TrafficObject_id **objectsToInsert, size_t *n, unsigned int *temp_value) {
     CUDA_GLOBAL_ITER(idx, *n) {
+
         int insert_offset = atomicAdd(temp_value + objectsToInsert[idx]->lane, 1);
         auto &bucket = container->buckets[objectsToInsert[idx]->lane];
         // assert(bucket.size + insert_offset < bucket.buffer_size);
-#ifdef DEBUG
         if(bucket.size + insert_offset >= bucket.buffer_size) {
+#ifdef DEBUG
             // TODO: handle buffer overflow with seperate buffer (adapt find_nearest,
             // TODO: and always put in reinsert buffer to try and reintegrate those back into normal container)
-
             printf("Buffer-Overflow for Lane(%lu)\n", objectsToInsert[idx]->lane);
+#endif
             continue;
         }
-#endif
         assert(bucket.size + insert_offset < bucket.buffer_size);
         bucket.buffer[bucket.size + insert_offset] = objectsToInsert[idx];
 #ifdef RUN_WITH_TESTS
@@ -644,7 +630,10 @@ __global__ void GetIsInWrongLaneKernel(SortedBucketContainer *container, size_t 
     CUDA_GLOBAL_ITER(i, car_count) {
         size_t element_idx, bucket_idx;
         GetBucketIdxFromGlobalIdx(i, lanePreSum, lanePreSumSize, &bucket_idx, &element_idx);
-        if (bucket_idx >= container->bucket_count) continue;
+        if (bucket_idx >= container->bucket_count) {
+            sizes[i] = 0;
+            continue;
+        }
 #ifdef DEBUG_MSGS
         if (element_idx >= container->buckets[bucket_idx].size)
             printf("%lu: %lu, %lu, %lu, %lu\n", i,  bucket_idx, container->bucket_count, element_idx, container->buckets[bucket_idx].size);
@@ -671,7 +660,13 @@ __global__ void MoveToReinsertBufferKernel2(SortedBucketContainer *container, si
 
         if ((idx == 0 && prefixSum[0] > 0) || (idx != 0 && prefixSum[idx] != prefixSum[idx - 1])){
             size_t insert_id = idx == 0 ? 0 : prefixSum[idx - 1];
-            assert(insert_id < buffer_size && container->buckets[bucket_idx].buffer[element_idx] != nullptr);
+            if(insert_id >= buffer_size) {
+#ifdef DEBUG_MSGS
+                printf("ReinsertBuffer overflow.\n");
+#endif
+                continue;
+            }
+            assert(container->buckets[bucket_idx].buffer[element_idx] != nullptr);
             reinsert_buffer[insert_id] = container->buckets[bucket_idx].buffer[element_idx];
             container->buckets[bucket_idx].buffer[element_idx] = nullptr;
 

@@ -10,3 +10,5 @@ double TrafficObject::getPosition() {
 
 
 
+
+
