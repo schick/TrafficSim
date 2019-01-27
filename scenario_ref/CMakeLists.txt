@@ -35,7 +35,7 @@ SET(SOURCE_FILES
         include/optimization/ParallelRandomOptimizer.h
         src/optimization/ParallelRandomOptimizer.cpp
         include/optimization/model/SignalLayout.h
-        src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h)
+        src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h src/optimization/SequentialRandomOptimizer.cpp include/optimization/SequentialRandomOptimizer.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)
