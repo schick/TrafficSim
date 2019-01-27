@@ -77,7 +77,7 @@ public:
      */
     Lane *getLane();
 
-    void setPosition(double position) override;
+    void Car::setPosition(double position);
 
 private:
 
