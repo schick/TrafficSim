@@ -30,8 +30,6 @@ SET(SOURCE_FILES
         src/LaneChangeModel.cpp
         include/optimization/model/OptimizeScenario.h
         src/optimization/model/OptimizeScenario.cpp
-        include/optimization/DistributionOpenMPOptimizer.h
-        src/optimization/DistributionOpenMPOptimizer.cpp
         include/optimization/DistributionOptimizer.h
         src/optimization/DistributionOptimizer.cpp
         include/optimization/ParallelRandomOptimizer.h
