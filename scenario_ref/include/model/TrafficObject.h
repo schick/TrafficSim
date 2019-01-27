@@ -32,7 +32,7 @@ public:
 
     double getPosition();
 
-    virtual void setPosition(double position) { this->position = position; }
+    void setPosition(double position) { this->position = position; }
 
     virtual void calcSameLaneAcceleration(TrafficObject *leadingObject) {};
     virtual double getSameLaneAcceleration() { return 0.; };

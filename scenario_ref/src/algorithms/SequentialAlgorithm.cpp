@@ -38,7 +38,7 @@ void SequentialAlgorithm::sortLanes() {
 
 void SequentialAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
-        //sortLanes();
+        sortLanes();
         calculateCarChanges();
         advanceCars();
         advanceTrafficLights();

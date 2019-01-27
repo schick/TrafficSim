@@ -11,5 +11,3 @@ void TrafficLight::switchOff() {
 void TrafficLight::switchOn() {
     associatedLane->isRed = true;
 }
-
-
