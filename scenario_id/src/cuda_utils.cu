@@ -4,6 +4,8 @@
 
 #include "cuda/cuda_utils.h"
 
+size_t total_gpu_alloc = 0;
+
 CUDA_DEV
 size_t GetGlobalIdx(){
     return + blockIdx.z * blockDim.x * blockDim.y * blockDim.z * gridDim.x * gridDim.y
