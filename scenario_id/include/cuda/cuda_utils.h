@@ -52,11 +52,17 @@ extern size_t total_gpu_alloc;
 #define CUDA_GLOBAL_ITER(VAR_NAME, MAX) size_t each = (MAX) / GetGlobalDim() + 1; \
     size_t begin = each * GetGlobalIdx(); \
     for(size_t VAR_NAME = begin; VAR_NAME < begin + each && VAR_NAME < (MAX); VAR_NAME++)
+#define CUDA_THREAD_ITER(VAR_NAME, MAX) size_t each = (MAX) / GetBlockDim() + 1; \
+    size_t begin = each * GetThreadIdx(); \
+    for(size_t VAR_NAME = begin; VAR_NAME < begin + each && VAR_NAME < (MAX); VAR_NAME++)
+#define CUDA_BLOCK_ITER(VAR_NAME, MAX) size_t each = (MAX) / GetGridDim() + 1; \
+    size_t begin = each * GetBlockIdx(); \
+    for(size_t VAR_NAME = begin; VAR_NAME < begin + each && VAR_NAME < (MAX); VAR_NAME++)
 #define CUDA_GLOBAL_ITER2(NAME, MAX) for(size_t NAME=GetGlobalIdx(); NAME < MAX; NAME += GetGlobalDim())
 
 
 template<typename T, typename Cmp>
-CUDA_HOSTDEV size_t *lower_bound(T *__first, T *__last, const T& __val, Cmp __comp)
+CUDA_HOSTDEV inline size_t *lower_bound(T *__first, T *__last, const T& __val, Cmp __comp)
 {
     size_t __len = __last - __first;
 
@@ -77,7 +83,7 @@ CUDA_HOSTDEV size_t *lower_bound(T *__first, T *__last, const T& __val, Cmp __co
 }
 
 template<typename T>
-CUDA_HOSTDEV size_t *lower_bound(T *__first, T *__last, const T& __val)
+CUDA_HOSTDEV inline size_t *lower_bound(T *__first, T *__last, const T& __val)
 {
     size_t __len = __last - __first;
 
@@ -100,7 +106,7 @@ CUDA_HOSTDEV size_t *lower_bound(T *__first, T *__last, const T& __val)
 
 
 template<typename T, typename Cmp>
-CUDA_HOSTDEV T *upper_bound(T *__first, T *__last, const T& __val, Cmp __comp) {
+CUDA_HOSTDEV inline T *upper_bound(T *__first, T *__last, const T& __val, Cmp __comp) {
     size_t __len = __last - __first;
 
     while (__len > 0)
@@ -121,7 +127,7 @@ CUDA_HOSTDEV T *upper_bound(T *__first, T *__last, const T& __val, Cmp __comp) {
 
 
 template<typename T>
-CUDA_HOSTDEV T *upper_bound(T *__first, T *__last, const T& __val) {
+CUDA_HOSTDEV inline T *upper_bound(T *__first, T *__last, const T& __val) {
     size_t __len = __last - __first;
 
     while (__len > 0)

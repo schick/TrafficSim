@@ -90,7 +90,7 @@ CUDA_GLOB void BitonicSortStepKernel(BucketData *buckets, size_t num_buckets, si
 template<typename T, typename Cmp>
 __device__ void bitonic_sort_step(T *dev_values, int j, int k, int n, Cmp cmp) {
     unsigned int i, ixj; /* Sorting partners: i and ixj */
-    i = threadIdx.x + blockDim.x * threadIdx.y;
+    i = GetThreadIdx();
     ixj = i ^ j;
 
     if (i >= n || ixj >= n)
@@ -149,6 +149,8 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                 // printf("bucket %lu with %lu items.\n", bucket_idx, n);
                 if (GetThreadIdx() < n) {
                     device_values[GetThreadIdx()] = device_values_[GetThreadIdx()];
+                } else {
+                    device_values[GetThreadIdx()] = nullptr;
                 }
                 int j, k;
                 unsigned long power = next_pow2m1(n);
@@ -157,13 +159,13 @@ __device__ void cudaSort(BucketData *buckets, size_t bucket_count, TrafficObject
                 for (k = 2; k <= power; k <<= 1) {
                     /* Minor step */
                     for (j = k >> 1; j > 0; j = j >> 1) {
-                        bitonic_sort_step(device_values, j, k, n, cmp);
+                        bitonic_sort_step(device_values, j, k, power, cmp);
                         __syncthreads();
                     }
                 }
 
                 for (unsigned long k = power; k > 0; k >>= 1) {
-                    bitonic_sort_merge(device_values, k, n, cmp);
+                    bitonic_sort_merge(device_values, k, power, cmp);
                     __syncthreads();
                 }
                 if (GetThreadIdx() < n)
@@ -435,10 +437,6 @@ __global__ void FixSizeKernel2(SortedBucketContainer *container, size_t *lanePre
             if(bucket_idx == BUCKET_TO_ANALYZE) printf("found size for(%lu): %lu -> %lu\n", bucket_idx, bucket.size, new_size);
 #endif
             bucket.size = new_size;
-        } else {
-#ifdef DEBUG_MSGS
-            if(bucket_idx == BUCKET_TO_ANALYZE) printf("no new size for(%lu): %lu\n", bucket_idx, bucket.size);
-#endif
         }
     }
 }
