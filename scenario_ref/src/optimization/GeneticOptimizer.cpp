@@ -8,7 +8,7 @@
 
 nlohmann::json GeneticOptimizer::optimize() {
 
-    constexpr size_t POPULATIONS_SIZE = 36;
+    constexpr size_t POPULATIONS_SIZE = 120;
 
     std::vector<SignalLayout> population;
     population.reserve(POPULATIONS_SIZE);
@@ -18,7 +18,7 @@ nlohmann::json GeneticOptimizer::optimize() {
 
     std::sort(population.begin(), population.end(), SignalLayout::Cmp());
 
-    iterations += 36;
+    iterations += 120;
 
     while (population.front().getTravelledDistance() < minTravelLength) {
 
@@ -27,8 +27,8 @@ nlohmann::json GeneticOptimizer::optimize() {
 
         // Merge the 16 best layouts with each other
         // Exactly 120 iterations
-        for (size_t i = 0; i < 8; i++) {
-            for (size_t j = (i + 1); j < 8; j++) {
+        for (size_t i = 0; i < 16; i++) {
+            for (size_t j = (i + 1); j < 16; j++) {
                 newPopulation.emplace_back(population[i], population[j], algorithm, scenarioData);
             }
         }
@@ -37,7 +37,7 @@ nlohmann::json GeneticOptimizer::optimize() {
 
         population = newPopulation;
 
-        iterations += POPULATIONS_SIZE;
+        iterations += 120;
     }
 
     return population.front().toJson();

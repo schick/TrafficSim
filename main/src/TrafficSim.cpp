@@ -13,9 +13,17 @@
 
 
 void trafficSim::optimize(nlohmann::json &input, SimpleArgumentParser &p) {
+ //   std::shared_ptr<BaseOptimizer> optimizer = BaseOptimizer::instantiate("GeneticOptimizer", input, "OpenMPAlgorithm");
+
     std::shared_ptr<BaseOptimizer> optimizer;
 
-    optimizer = BaseOptimizer::instantiate("GeneticOptimizer", input, "SequentialAlgorithm");
+    size_t car_count = input["cars"].size();
+    if (car_count > 50000) {
+        optimizer = BaseOptimizer::instantiate("SequentialRandomOptimizer", input, "OpenMPAlgorithm");
+    } else {
+        optimizer = BaseOptimizer::instantiate("ParallelRandomOptimizer", input, "SequentialAlgorithm");
+    }
+
     json output = optimizer->optimize();
 
     std::cout << output.dump() << "\n";
