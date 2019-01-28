@@ -9,6 +9,9 @@
 #include <inttypes.h>
 
 #include "TrafficObject.h"
+#include "Scenario.h"
+
+class Scenario;
 
 class Car : public TrafficObject {
 
@@ -50,7 +53,8 @@ public:
 
     std::list<TurnDirection> turns;
 
-    void nextStep();
+    void prepareNextMove();
+    void makeNextMove(Scenario &scenario);
 
     void calcSameLaneAcceleration(TrafficObject *leadingObject) override;
     double getSameLaneAcceleration() override;
