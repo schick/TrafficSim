@@ -12,7 +12,7 @@
 
 nlohmann::json ParallelRandomOptimizer::optimize() {
 
-    constexpr size_t iterationsPerRound = 120;
+    constexpr size_t iterationsPerRound = 12;
 
     while (true) {
 
