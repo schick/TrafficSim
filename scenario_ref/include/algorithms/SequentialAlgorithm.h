@@ -20,7 +20,7 @@ public:
 
     explicit SequentialAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
 
-    void calculateCarChanges();
+    void prepareCars();
 
     Scenario* getRefScenario() {
         return dynamic_cast<Scenario*>(getScenario().get());

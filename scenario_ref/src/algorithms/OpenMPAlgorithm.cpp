@@ -6,11 +6,11 @@
 
 #include "IntelligentDriverModel.h"
 
-void OpenMPAlgorithm::calculateCarChanges() {
+void OpenMPAlgorithm::prepareCars() {
 #pragma omp parallel for
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
-        car.nextStep();
+        car.prepareNextMove();
     }
 };
 
@@ -18,7 +18,7 @@ void OpenMPAlgorithm::advanceCars() {
 #pragma omp parallel for
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
-        IntelligentDriverModel::advanceStep(car, *getRefScenario());
+        car.makeNextMove(*getRefScenario());
     }
 }
 
@@ -44,7 +44,7 @@ void OpenMPAlgorithm::sortLanes() {
 void OpenMPAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
         sortLanes();
-        calculateCarChanges();
+        prepareCars();
         advanceCars();
         advanceTrafficLights();
         getRefScenario()->current_step++;
