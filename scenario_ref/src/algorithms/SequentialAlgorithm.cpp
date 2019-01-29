@@ -6,16 +6,16 @@
 
 #include "IntelligentDriverModel.h"
 
-void SequentialAlgorithm::calculateCarChanges() {
+void SequentialAlgorithm::prepareCars() {
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];
-        car.nextStep();
+        car.prepareNextMove();
     }
 };
 
 void SequentialAlgorithm::advanceCars() {
     for (Car &car : getRefScenario()->cars) {
-        IntelligentDriverModel::advanceStep(car, *getRefScenario());
+        car.makeNextMove(*getRefScenario());
     }
 }
 
@@ -39,7 +39,7 @@ void SequentialAlgorithm::sortLanes() {
 void SequentialAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
         sortLanes();
-        calculateCarChanges();
+        prepareCars();
         advanceCars();
         advanceTrafficLights();
         getRefScenario()->current_step++;

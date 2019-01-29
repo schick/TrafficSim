@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-void Car::nextStep() {
+void Car::prepareNextMove() {
 
     Lane *lane = getLane();
 
@@ -40,6 +40,10 @@ void Car::nextStep() {
         new_acceleration = sameLaneAcceleration;
         new_lane_offset = 0;
     }
+}
+
+void Car::makeNextMove(Scenario &scenario) {
+    IntelligentDriverModel::advanceStep(*this, scenario);
 }
 
 void Car::calcSameLaneAcceleration(TrafficObject *leadingObject) {
