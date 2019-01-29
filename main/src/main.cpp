@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
                     p.add_kw_argument("algorithm", "OpenMPAlgorithm");
                 }
         #else
-                p.add_kw_argument("algorithm", "OpenMPAlgorithm");
+                p.add_kw_argument("algorithm", "SequentialAlgorithm");
         #endif
         p.load(argc, argv);
 
