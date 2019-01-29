@@ -4,7 +4,7 @@
 
 void Lane::sortCars() {
     if (!isSorted) {
-        std::sort(mCars.begin(), mCars.end(), Car::Cmp());
+        std::sort(mCars.begin(), mCars.end(), Car::Cmp);
         isSorted = true;
     }
 }
@@ -17,7 +17,7 @@ Lane::NeighboringObjects Lane::getNeighboringObjects(Car *trafficObject) {
         return result;
     }
 
-    auto it = std::lower_bound(getCars().begin(), getCars().end(), trafficObject, Car::Cmp());
+    auto it = std::lower_bound(getCars().begin(), getCars().end(), trafficObject, Car::Cmp);
 
     if (it != getCars().begin()) {
         result.back = *(it - 1);

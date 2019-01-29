@@ -5,7 +5,7 @@
 #ifndef PROJECT_OPENMPALGORITHM_H
 #define PROJECT_OPENMPALGORITHM_H
 
-#include "AdvanceAlgorithm.h"
+#include "RefAlgorithm.h"
 #include "model/Scenario.h"
 #include "optimization/model/OptimizeScenario.h"
 
@@ -13,18 +13,15 @@
 #include "Visualization.h"
 #endif
 
-class OpenMPAlgorithm : public AdvanceAlgorithm {
+class OpenMPAlgorithm : public RefAlgorithm {
 
 public:
     ADVANCE_ALGO_INIT_WITH_OPT(OpenMPAlgorithm, Scenario, OptimizeScenario, Visualization);
     
-    explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : AdvanceAlgorithm(scenario) {};
+    explicit OpenMPAlgorithm(std::shared_ptr<BaseScenario> scenario) : RefAlgorithm(scenario) {};
 
     void prepareCars();
 
-    Scenario* getRefScenario() {
-        return dynamic_cast<Scenario*>(getScenario().get());
-    }
     void advanceCars();
     void advanceTrafficLights();
     void advance(size_t steps) override;

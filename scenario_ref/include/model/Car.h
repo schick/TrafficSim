@@ -20,13 +20,13 @@ public:
     /**
      * compare object to compare Traffic objects by
      */
-    struct Cmp {
+    static struct _Cmp {
         bool operator () (const Car *lhs, Car *rhs) {
             if (lhs->x == rhs->x)
                 return lhs->id > rhs->id;
             return lhs->x < rhs->x;
         }
-    };
+    } Cmp;
 
      /**
      * data representing a turn at an intersection
