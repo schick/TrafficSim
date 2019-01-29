@@ -119,8 +119,8 @@ void Visualization_id::render_image() {
     }
 
     for(auto &car : scenario->cars) {
-        Point2d from = junctionPoint(scenario->junctions[scenario->roads[scenario->lanes.at(car.getLane()).road].from]);
-        Point2d to = junctionPoint(scenario->junctions[scenario->roads[scenario->lanes.at(car.getLane()).road].to]);
+        Point2d from = junctionPoint(scenario->junctions[scenario->roads[scenario->lanes.at(car.lane).road].from]);
+        Point2d to = junctionPoint(scenario->junctions[scenario->roads[scenario->lanes.at(car.lane).road].to]);
         Point2d dir = (to - from);
 
         //get directions
@@ -132,8 +132,8 @@ void Visualization_id::render_image() {
         auto scaledOuterLaneDir = outerLaneDir * pixel_per_m;
 
         //calculate offsets
-        Point2d carOffset = scaledDir * (car.getPosition() - car.length / 2);
-        Point2d laneOffset = scaledOuterLaneDir * ((double) scenario->lanes.at(car.getLane()).lane_num) * lane_width;
+        Point2d carOffset = scaledDir * (car.x - car.length / 2);
+        Point2d laneOffset = scaledOuterLaneDir * ((double) scenario->lanes.at(car.lane).lane_num) * lane_width;
         Point2d laneBorderOffset = scaledOuterLaneDir * lane_border;
         Point2d carSizeOffset = scaledDir * car_length + scaledOuterLaneDir * car_width;
 

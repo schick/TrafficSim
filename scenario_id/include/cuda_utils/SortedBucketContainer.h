@@ -5,9 +5,9 @@
 #ifndef TRAFFIC_SIM_BUCKETMEMORY_H
 #define TRAFFIC_SIM_BUCKETMEMORY_H
 
-#include "cuda/cuda_utils.h"
-#include "TrafficObject_id.h"
-#include "AlgorithmWrapper.h"
+#include "cuda_utils/cuda_utils.h"
+#include "model/TrafficObject_id.h"
+#include "algorithms/AlgorithmWrapper.h"
 #include "SortBuffer.h"
 
 #define BUCKET_TO_ANALYZE 1110

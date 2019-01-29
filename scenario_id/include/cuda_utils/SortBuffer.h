@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#include "Scenario_id.h"
-#include "cuda/cuda_utils.h"
+#include "model/Scenario_id.h"
+#include "cuda_utils/cuda_utils.h"
 class BucketData;
 
 class SortBuffer {

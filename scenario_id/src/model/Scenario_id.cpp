@@ -8,7 +8,36 @@
 
 #include <algorithm>
 #include "util/json.hpp"
-#include "Scenario_id.h"
+#include "model/Scenario_id.h"
+
+
+void Scenario_id::initializeSignals(Junction_id &junction) {
+    if(junction.signal_count != 0) {
+        junction.current_signal_id = 0;
+        junction.current_signal_time_left = signals.at(junction.signal_begin + junction.current_signal_id).duration;
+    }
+    setSignals(junction);
+}
+
+void Scenario_id::setSignals(Junction_id &junction) {
+    if (junction.signal_count == 0)
+        return;
+    for(int i = 0; i < 4; i++) {
+        for(size_t light_id : junction.red_traffic_lights_ids[i]) {
+            if(light_id != -1) {
+                RedTrafficLight_id &l = traffic_lights[light_id - cars.size()];
+                if (signals.at(junction.signal_begin + junction.current_signal_id).direction == i) {
+                    // green light
+                    l.switchOff();
+                } else {
+                    // red light
+                    l.switchOn();
+                }
+            }
+        }
+    }
+}
+
 
 void Scenario_id::parse(json &input) {
     parseJunctions(input);
@@ -148,7 +177,7 @@ void Scenario_id::initJunctions() {
                 for(auto &i : junction.red_traffic_lights_ids[i]) i = (size_t ) -1;
             }
         }
-        junction.initializeSignals(*this);
+        initializeSignals(junction);
     }
 }
 
@@ -163,15 +192,16 @@ json Scenario_id::toJson() {
     for (int id : car_ids) {
         Car_id &car = cars.at(car_original_to_working_ids[id]);
         json out_car;
-        Lane_id &l = lanes.at(car.getLane());
+        Lane_id &l = lanes.at(car.lane);
         Road_id &r = roads.at(l.road);
         out_car["id"] = id;
         out_car["from"] = junction_working_to_original_ids[r.from];
         out_car["to"] = r.to;
         out_car["lane"] = l.lane_num;
-        out_car["position"] = car.getPosition();
+        out_car["position"] = car.x;
 
         output["cars"].push_back(out_car);
     }
     return output;
 }
+

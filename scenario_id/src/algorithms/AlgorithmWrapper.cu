@@ -4,8 +4,8 @@
 
 
 
-#include "AlgorithmWrapper.h"
-#include "cuda/cuda_utils.h"
+#include "algorithms/AlgorithmWrapper.h"
+#include "cuda_utils/cuda_utils.h"
 
 #define C_MIN(a, b) (a < b ? a : b)
 #define C_MAX(a, b) (a < b ? b : a)
@@ -18,7 +18,7 @@ __global__ void  get_nearest_objects(CudaScenario_id* scenario, size_t *nearest_
     // cu_getNeighboringObjects(scenario, &scenario->cars[i], &scenario->lanes[scenario->cars[i].lane]);
 }
 
-CudaScenario_id *CudaScenario_id::fromScenarioData_device(ScenarioData_id &scenario) {
+CudaScenario_id *CudaScenario_id::fromScenarioData_device(Scenario_id &scenario) {
     CudaScenario_id cudaScenarioId;
     GPU_ALLOC((void**) &cudaScenarioId.junctions, scenario.junctions.size() * sizeof(Junction_id))
     gpuErrchk(cudaMemcpy(cudaScenarioId.junctions, scenario.junctions.data(), scenario.junctions.size() * sizeof(Junction_id), cudaMemcpyHostToDevice));
@@ -80,7 +80,7 @@ void CudaScenario_id::retriveData(Scenario_id *scenario) {
 //
 
 
-#include "AlgorithmWrapper.h"
+#include "algorithms/AlgorithmWrapper.h"
 #include "math.h"
 
 
@@ -423,7 +423,7 @@ CUDA_HOSTDEV void AlgorithmWrapper::updateSignals(Junction_id &junction) {
 }
 
 
-CudaScenario_id CudaScenario_id::fromScenarioData(ScenarioData_id &scenario) {
+CudaScenario_id CudaScenario_id::fromScenarioData(Scenario_id &scenario) {
     CudaScenario_id cudaScenario;
     cudaScenario.junctions = scenario.junctions.data();
     cudaScenario.signals = scenario.signals.data();

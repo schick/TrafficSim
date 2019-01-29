@@ -146,16 +146,14 @@ add_executable(traffic_sim main/src/main.cpp main/src/util/SimpleArgumentParser.
 IF(WITH_CUDA)
     set_property(TARGET traffic_sim PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
     set_property(TARGET traffic_sim PROPERTY CUDA_SEPARABLE_COMPILATION ON)
-    # target_link_libraries(traffic_sim ${CUDA_LIBRARIES})
     target_compile_features(traffic_sim PUBLIC cxx_std_14)
 
-    add_executable(compare main/src/test/compare_algorithms.cpp)
-    target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
-    target_link_libraries(compare scenario_id scenario_base scenario_ref ${CUDA_LIBRARIES} ${OpenCV_LIBS})
-
-    add_executable(generate_scenario  scenario_id/src/cuda_utils.cu main/src/generate_scenario.cpp main/src/generate_scenario.cu main/src/util/SimpleArgumentParser.cpp)
-    set_property(TARGET generate_scenario PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
-    set_property(TARGET generate_scenario PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    add_executable(generate_scenario
+            main/src/generate_scenario.cpp
+            main/src/generate_scenario.cu
+            scenario_id/src/cuda_utils/cuda_utils.cu
+            main/src/util/SimpleArgumentParser.cpp)
+    target_compile_features(generate_scenario PUBLIC cxx_std_14)
 
     add_definitions(-DWITH_CUDA)
 ELSE()
@@ -187,5 +185,5 @@ ELSE()
     message(STATUS "not building tests")
 ENDIF()
 
-
-# target_link_libraries(generate_scenario ${CUDA_LIBRARIES})
+add_executable(compare main/src/test/compare_algorithms.cpp)
+target_link_libraries(compare scenario_id scenario_base scenario_ref)

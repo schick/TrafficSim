@@ -2,8 +2,8 @@
 // Created by oke on 17.01.19.
 //
 
-#include "PreScan.h"
-#include "cuda/cuda_utils.h"
+#include "cuda_utils/PreScan.h"
+#include "cuda_utils/cuda_utils.h"
 #include <assert.h>
 #include <vector>
 

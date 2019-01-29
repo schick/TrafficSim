@@ -6,18 +6,8 @@
 #define PROJECT_CAR_ID_H
 
 #include "TrafficObject_id.h"
-class CudaScenario_id;
+
 class Car_id : public TrafficObject_id {
-
-private:
-
-    /**
-     * lane change metric described on slide 19 (22)
-     * @param ownNeighbors neighbors on current lane
-     * @param otherNeighbors neighbors on other lane
-     * @return metric value in m/s^2
-     */
-    double laneChangeMetric(Scenario_id &s, size_t other_front, size_t other_back, size_t own_front, size_t own_back);
 
 public:
 
@@ -35,9 +25,10 @@ public:
     size_t turns_begin;
     size_t turns_count;
     size_t current_turn_offset;
+
     double travelled_distance;
 
-    //definition from ilias:
+    // definition from ilias:
     static constexpr double min_s = 0.001;
 
     /**
@@ -51,7 +42,6 @@ public:
         double acceleration = 0;
         int8_t lane_offset = 0;
     };
-
 
     /**
      * data representing a turn at an intersection
@@ -86,41 +76,6 @@ public:
                     turns_count(turns_count), current_turn_offset(0), TrafficObject_id(id, length, lane, x, v, a),
                     travelled_distance(0) {}
 
-    /**
-     * calculate advance-data for next step
-     * @return data representing the change
-     */
-    AdvanceData nextStep(Scenario_id &s, size_t own_front, size_t own_back,
-            size_t left_front, size_t left_back,
-            size_t right_front, size_t right_back);
-
-    
-    double getLaneChangeMetricForLane(Scenario_id &s, int neighboringLane, const Lane_id::NeighboringObjects &ownNeighbors);
-
-    /**
-     * advance car based of data
-     * @param data data representing the change
-     */
-    void advanceStep(Scenario_id &s, AdvanceData &data);
-
-    /**
-     * calculate the desired acceleration. base calculation on leading object
-     * @param leading_object leading object. may actually be in a different lane, this methods treats every object
-     *      passed with this parameter as if it where in current lane
-     * @return acceleration in m/s^2
-     */
-    double getAcceleration(Scenario_id &s, size_t leading_object_id) override;
-
-private:
-
-    void updateLane(Scenario_id &s, AdvanceData &data);
-
-    bool isCarOverJunction(Scenario_id &s);
-
-    void moveCarAcrossJunction(Scenario_id &s, Car_id::AdvanceData &data);
-
-    void updateKinematicState(Car_id::AdvanceData &data);
 };
-
 
 #endif //PROJECT_CAR_H

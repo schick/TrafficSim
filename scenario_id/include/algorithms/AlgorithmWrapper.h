@@ -5,10 +5,10 @@
 #ifndef TRAFFIC_SIM_ALGORITHMWRAPPER_H
 #define TRAFFIC_SIM_ALGORITHMWRAPPER_H
 
-#include "Junction_id.h"
-#include "Road_id.h"
-#include "Car_id.h"
-#include "Scenario_id.h"
+#include "model/Junction_id.h"
+#include "model/Road_id.h"
+#include "model/Car_id.h"
+#include "model/Scenario_id.h"
 #include <assert.h>
 
 template<typename T>
@@ -31,8 +31,8 @@ public:
 class CudaScenario_id {
 
 public:
-    static CudaScenario_id *fromScenarioData_device(ScenarioData_id &scenario);
-    static CudaScenario_id fromScenarioData(ScenarioData_id &scenario);
+    static CudaScenario_id *fromScenarioData_device(Scenario_id &scenario);
+    static CudaScenario_id fromScenarioData(Scenario_id &scenario);
     static void freeDeviceCudaScenario(CudaScenario_id *device_cuda_scenario);
     void retriveData(Scenario_id *scenario);
 

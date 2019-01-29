@@ -4,8 +4,8 @@
 
 #include <driver_types.h>
 #include <algorithms/CudaAlgorithm.h>
-#include "SortedBucketContainer.h"
-#include "PreScan.h"
+#include "cuda_utils/SortedBucketContainer.h"
+#include "cuda_utils/PreScan.h"
 
 #define MAX(a, b) (a < b ? b : a)
 #define MIN(a, b) (a < b ? a : b)

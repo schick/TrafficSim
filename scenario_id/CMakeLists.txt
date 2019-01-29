@@ -5,20 +5,14 @@ include_directories(include)
 
 # by_id library
 SET(SOURCE_FILES_BY_ID
-        include/Car_id.h
-        src/Car_id.cpp
-        include/Junction_id.h
-        src/Junction.cpp
-        include/Lane_id.h
-        src/Lane.cpp
-        include/RedTrafficLight_id.h
-        src/RedTrafficLight_id.cpp
-        include/Road_id.h
-        src/Road_id.cpp
-        include/Scenario_id.h
-        src/Scenario.cpp
-        include/TrafficObject_id.h
-        src/TrafficObject.cpp)
+        include/model/Car_id.h
+        include/model/Junction_id.h
+        include/model/Lane_id.h
+        include/model/RedTrafficLight_id.h
+        include/model/Road_id.h
+        include/model/Scenario_id.h
+        src/model/Scenario_id.cpp
+        include/model/TrafficObject_id.h)
 
 IF(OpenCV_FOUND)
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID} src/Visualization.cpp)
@@ -39,18 +33,18 @@ IF(WITH_CUDA)
     add_definitions(-DWITH_CUDA)
 
     set(SOURCE_FILES_BY_ID ${SOURCE_FILES_BY_ID}
-            include/AlgorithmWrapper.h
-            src/AlgorithmWrapper.cu
+            include/algorithms/AlgorithmWrapper.h
+            src/algorithms/AlgorithmWrapper.cu
             include/algorithms/CudaAlgorithm.h
-            src/algorithms/TestAlgo.cu
-            include/PreScan.h
-            src/PreScan.cu
-            include/cuda/cuda_utils.h
-            src/cuda_utils.cu
-            include/SortedBucketContainer.h
-            src/SortedBucketContainer.cu
-            include/SortBuffer.h
-            src/SortBuffer.cu )
+            src/algorithms/CudaAlgorithm.cu
+            include/cuda_utils/PreScan.h
+            src/cuda_utils/PreScan.cu
+            include/cuda_utils/cuda_utils.h
+            src/cuda_utils/cuda_utils.cu
+            include/cuda_utils/SortedBucketContainer.h
+            src/cuda_utils/SortedBucketContainer.cu
+            include/cuda_utils/SortBuffer.h
+            src/cuda_utils/SortBuffer.cu)
 ELSE()
     message(STATUS "WITHOUT cuda")
 ENDIF()

@@ -3,15 +3,15 @@
 //
 
 #include <curand_mtgp32_kernel.h>
-#include <model/Lane.h>
+#include <model/Lane_id.h>
 #include "algorithms/CudaAlgorithm.h"
-#include "cuda/cuda_utils.h"
+#include "cuda_utils/cuda_utils.h"
 #include <chrono>
 #include <thread>
 
-#include "SortedBucketContainer.h"
-#include "PreScan.h"
-#include "SortBuffer.h"
+#include "cuda_utils/SortedBucketContainer.h"
+#include "cuda_utils/PreScan.h"
+#include "cuda_utils/SortBuffer.h"
 
 __device__ void test_right_lane_neighbors(TrafficObject_id **neighbors, CudaScenario_id *scenario) {
     AlgorithmWrapper algorithmWrapper(*scenario);

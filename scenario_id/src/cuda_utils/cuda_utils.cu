@@ -2,7 +2,7 @@
 // Created by oke on 17.01.19.
 //
 
-#include "cuda/cuda_utils.h"
+#include "cuda_utils/cuda_utils.h"
 
 size_t total_gpu_alloc = 0;
 

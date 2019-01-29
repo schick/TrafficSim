@@ -2,10 +2,10 @@
 // Created by oke on 17.01.19.
 //
 
-#include "SortBuffer.h"
-#include "cuda/cuda_utils.h"
-#include "SortedBucketContainer.h"
-#include "PreScan.h"
+#include "cuda_utils/SortBuffer.h"
+#include "cuda_utils/cuda_utils.h"
+#include "cuda_utils/SortedBucketContainer.h"
+#include "cuda_utils/PreScan.h"
 
 #define MAX(a, b) (a < b ? b : a)
 #define MIN(a, b) (a < b ? a : b)

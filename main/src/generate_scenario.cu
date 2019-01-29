@@ -1,6 +1,6 @@
 #include "util/SimpleArgumentParser.h"
 #include <curand_kernel.h>
-#include <cuda/cuda_utils.h>
+#include <cuda_utils/cuda_utils.h>
 #include <string>
 #include "generate_scenario.h"
 

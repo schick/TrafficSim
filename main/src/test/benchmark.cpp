@@ -3,7 +3,6 @@
 //
 
 #include "util/register_algorithms.h"
-#include "model/Scenario.h"
 #include <chrono>
 #include "util/json.hpp"
 #include <fstream>
