@@ -1,4 +1,3 @@
-
 #include <fstream>
 #include <iostream>
 
@@ -46,10 +45,10 @@ int main(int argc, char* argv[]) {
                 if (car_count > 50000) {
                     p.add_kw_argument("algorithm", "CudaAlgorithm");
                 } else {
-                    p.add_kw_argument("algorithm", "SequentialAlgorithm");
+                    p.add_kw_argument("algorithm", "OpenMPAlgorithm");
                 }
         #else
-                p.add_kw_argument("algorithm", "SequentialAlgorithm");
+                p.add_kw_argument("algorithm", "OpenMPAlgorithm");
         #endif
         p.load(argc, argv);
 
