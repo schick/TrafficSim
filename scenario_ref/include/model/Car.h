@@ -8,7 +8,8 @@
 #include <list>
 
 #include "TrafficObject.h"
-#include "Scenario.h"
+#include "TrafficLight.h"
+#include "Lane.h"
 
 class Scenario;
 
@@ -101,6 +102,20 @@ private:
      */
     Lane *lane;
 
+    void updateLane(Scenario &scenario);
+    void moveCarAcrossJunction(Scenario &scenario);
+    bool isCarOverJunction();
+    double getAcceleration(TrafficObject *leading_vehicle);
+    double calculateWithLead(TrafficObject &leading_vehicle);
+    void setLeadingTrafficObject(TrafficObject * &leading_vehicle, TrafficLight &trafficLight);
+
+
+    double getLaneChangeMetric(Lane::NeighboringObjects &sameNeighbors, Lane *otherLane,
+            Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
+    double calculateLaneChangeMetric(Lane::NeighboringObjects &sameNeighbors,
+            Lane::NeighboringObjects &otherNeighbors, bool isLeftLane);
+    bool hasFrontSpaceOnOtherLane(Lane::NeighboringObjects &otherNeighbors);
+    bool hasBackSpaceOnOtherLane(Lane::NeighboringObjects &otherNeighbors);
 };
 
 

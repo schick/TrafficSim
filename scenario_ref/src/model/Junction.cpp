@@ -29,8 +29,9 @@ void Junction::initializeSignals() {
 void Junction::setSignals() {
     for (int i = 0; i < 4; i++) {
         if (incoming[i] != nullptr) {
+            bool isRed = !(signals.empty() || signals[current_signal].direction == i);
             for (Lane *l : incoming[i]->lanes) {
-                l->isRed = !(signals.empty() || signals[current_signal].direction == i);
+                l->trafficLight.isRed = isRed;
             }
         }
     }

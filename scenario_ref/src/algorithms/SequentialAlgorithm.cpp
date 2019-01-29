@@ -4,8 +4,6 @@
 
 #include "algorithms/SequentialAlgorithm.h"
 
-#include "IntelligentDriverModel.h"
-
 void SequentialAlgorithm::prepareCars() {
     for (size_t i = 0; i < getRefScenario()->cars.size(); i++) {
         Car &car = getRefScenario()->cars[i];

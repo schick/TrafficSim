@@ -11,8 +11,9 @@
 #include <algorithm>
 #include <mutex>
 
+#include "TrafficLight.h"
+
 class Car;
-class TrafficObject;
 class Road;
 
 class Lane {
@@ -34,14 +35,14 @@ public:
         Car *back = nullptr;
     };
 
-    Lane(int lane, Road &road, double length) : lane(lane), road(road), mCars(), length(length) {
-
-    }
+    Lane(int lane, Road &road, double length) : lane(lane), road(road), mCars(), length(length), trafficLight(this) {}
 
     /**
      * Copy Constructor
      */
-    Lane(const Lane &source): road(source.road), lane(0), length(0) {}
+    Lane(const Lane &source): road(source.road), lane(0), length(0), trafficLight(source.trafficLight) {}
+
+    Lane::NeighboringObjects getNeighboringObjects(Car *trafficObject);
 
     /**
      * properties
@@ -50,8 +51,7 @@ public:
     Road &road;
     double length;
 
-    bool isRed = false;
-
+    TrafficLight trafficLight;
 
 private:
 

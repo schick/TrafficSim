@@ -11,6 +11,7 @@ SET(SOURCE_FILES
         include/model/Lane.h
         src/model/Lane.cpp
         include/model/TrafficLight.h
+        src/model/TrafficLight.cpp
         include/model/Road.h
         src/model/Road.cpp
         include/model/Scenario.h
@@ -20,12 +21,6 @@ SET(SOURCE_FILES
         src/algorithms/SequentialAlgorithm.cpp
         include/algorithms/OpenMPAlgorithm.h
         src/algorithms/OpenMPAlgorithm.cpp
-        include/IntelligentDriverModel.h
-        src/IntelligentDriverModel.cpp
-        include/NeighborFinder.h
-        src/NeighborFinder.cpp
-        include/LaneChangeModel.h
-        src/LaneChangeModel.cpp
         include/optimization/model/OptimizeScenario.h
         src/optimization/model/OptimizeScenario.cpp
         include/optimization/DistributionOptimizer.h

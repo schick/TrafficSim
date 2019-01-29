@@ -5,7 +5,7 @@
 #ifndef PROJECT_TRAFFICOBJECT_H
 #define PROJECT_TRAFFICOBJECT_H
 
-#include "Lane.h"
+#include <inttypes.h>
 
 class TrafficObject {
 

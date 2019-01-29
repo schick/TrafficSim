@@ -330,14 +330,15 @@ __global__ void find_nearest2(CudaScenario_id *scenario, SortedBucketContainer *
                            nearest_font->lane);
 #endif
             }
+            /**
             if (car > *tl && (nearest_back == nullptr || *tl > *nearest_back)) {
-                nearest_back = tl;
+                // nearest_back = tl;
 #ifdef DEBUG_MSGS
                 if (car.id == CAR_TO_ANALYZE)
                     printf("Car(%lu, %lu) has light(%lu, %lu) in the back.\n", car.id, car.lane, nearest_back->id,
                            nearest_back->lane);
 #endif
-            }
+            }*/
         }
 
     }
