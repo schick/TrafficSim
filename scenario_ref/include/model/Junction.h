@@ -7,9 +7,7 @@
 
 #include <array>
 #include <vector>
-
-#include "TrafficLight.h"
-#include "atomic"
+#include <atomic>
 
 class Road;
 
@@ -19,6 +17,7 @@ class Road;
 class Junction {
 
 public:
+
     /**
      * direction to describe and access incoming and outgoing roads
      */
@@ -33,19 +32,31 @@ public:
      * traffic light signal
      */
     struct Signal {
-        Signal() {};
+        Signal() : duration(0), direction(NORTH) {};
         Signal(uint64_t duration, Direction direction) : duration(duration), direction(direction) {}
         uint64_t duration;
         Direction direction;
     };
 
-    Junction(uint64_t id, double x, double y) : id(id), x(x), y(y), incoming(), outgoing(), incoming_counter() {};
-    Junction(const Junction &other) :
-            signals(other.signals), current_signal(other.current_signal), current_signal_time_left(other.current_signal_time_left),
-            id(other.id), x(other.x), y(other.y),
-            outgoing(other.outgoing), incoming(other.incoming), incoming_counter() {
-        for(int i = 0; i < 4; i++) incoming_counter[i] = other.incoming_counter[i].load();
-    }
+    Junction(uint64_t id, double x, double y);
+    Junction(const Junction &other);
+
+    /**
+     * initialize signals before starting the algorithm. create RedTrafficLight-Objects.
+     */
+    void initializeSignals();
+
+    /**
+     * update signals. called each timestep.
+     */
+    void updateSignals();
+
+    /**
+     * Return a vector containing all possible Direction
+     * @return the direction vector
+     */
+    std::vector<Direction> getPossibleDirections();
+
 
     /**
      * signals to cycle through
@@ -65,23 +76,7 @@ public:
     std::array<Road*, 4> outgoing;
     std::array<Road*, 4> incoming;
 
-    /**
-     * initialize signals before starting the algorithm. create RedTrafficLight-Objects.
-     */
-    void initializeSignals();
-
-    /**
-     * update signals. called each timestep.
-     */
-    void updateSignals();
-
     std::array<std::atomic<uint64_t >, 4> incoming_counter;
-
-    /**
-     * Return a vector containing all possible Direction
-     * @return the direction vector
-     */
-    std::vector<Direction> getPossibleDirections();
 
 private:
 
@@ -92,8 +87,5 @@ private:
 
     void setSignals();
 };
-
-
-
 
 #endif //PROJECT_JUNCTION_H

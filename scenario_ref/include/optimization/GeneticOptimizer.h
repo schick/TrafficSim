@@ -15,11 +15,10 @@ private:
 
     size_t iterations = 0;
 
-    std::mutex solutionLock;
-
 public:
 
-    GeneticOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}
+    GeneticOptimizer(nlohmann::json &scenarioData, const std::string &algorithm)
+        : BaseOptimizer(scenarioData, algorithm) {}
 
     nlohmann::json optimize() override;
 

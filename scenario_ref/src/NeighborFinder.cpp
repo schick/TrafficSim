@@ -9,23 +9,23 @@ Lane::NeighboringObjects NeighborFinder::getNeighboringObjects(Lane *lane, Car *
     Lane::NeighboringObjects result;
 
     //if null reference or is empty return empty struct
-    if (lane == nullptr || lane->mTrafficObjects.empty()) {
+    if (lane == nullptr || lane->getCars().empty()) {
         return result;
     }
 
-    auto it = std::lower_bound(lane->mTrafficObjects.begin(), lane->mTrafficObjects.end(), trafficObject, TrafficObject::Cmp());
+    auto it = std::lower_bound(lane->getCars().begin(), lane->getCars().end(), trafficObject, Car::Cmp());
 
-    if (it != lane->mTrafficObjects.begin()) {
+    if (it != lane->getCars().begin()) {
         result.back = *(it - 1);
     }
 
-    if (lane->mTrafficObjects.end() == it || *it != trafficObject) {
-        if (it != lane->mTrafficObjects.end()) {
+    if (lane->getCars().end() == it || *it != trafficObject) {
+        if (it != lane->getCars().end()) {
             result.front = *it;
         }
     }
     else {
-        if (it + 1 != lane->mTrafficObjects.end()) {
+        if (it + 1 != lane->getCars().end()) {
             result.front = *(it + 1);
         }
 

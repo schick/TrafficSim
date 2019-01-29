@@ -125,7 +125,7 @@ void Scenario::parseCars(json &input) {
         uint8_t startLaneIndex = car["start"]["lane"];
 
         auto lane = from->outgoing[roadDir]->lanes[startLaneIndex];
-        cars.back().moveToLane(lane);
+        cars.back().moveToLane(*lane);
 
         for (const auto &route : car["route"])
             cars.back().turns.emplace_back(route);
@@ -149,7 +149,7 @@ json Scenario::toJson() {
         out_car["from"] = car.getLane()->road.from->id;
         out_car["to"] = car.getLane()->road.to->id;
         out_car["lane"] = car.getLane()->lane;
-        out_car["position"] = car.getPosition();
+        out_car["position"] = car.x;
 
         output["cars"].push_back(out_car);
     }
@@ -159,7 +159,7 @@ json Scenario::toJson() {
 double Scenario::getTravelledDistance() {
     double sum = 0.0;
     for (Car &car : cars) {
-        sum += car.getTravelledDistance();
+        sum += car.travelledDistance;
     }
     return sum;
 }

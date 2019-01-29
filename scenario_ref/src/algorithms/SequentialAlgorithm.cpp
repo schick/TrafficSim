@@ -28,10 +28,7 @@ void SequentialAlgorithm::advanceTrafficLights() {
 
 void SequentialAlgorithm::sortLanes() {
     for (Lane &lane : getRefScenario()->lanes) {
-        if (!lane.isSorted) {
-            std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
-            lane.isSorted = true;
-        }
+        lane.sortCars();
     }
 }
 

@@ -34,10 +34,7 @@ void OpenMPAlgorithm::sortLanes() {
 #pragma omp parallel for
     for (size_t i = 0; i < getRefScenario()->lanes.size(); i++) {
         Lane &lane = getRefScenario()->lanes[i];
-        if (!lane.isSorted) {
-            std::sort(lane.mTrafficObjects.begin(), lane.mTrafficObjects.end(), TrafficObject::Cmp());
-            lane.isSorted = true;
-        }
+        lane.sortCars();
     }
 }
 

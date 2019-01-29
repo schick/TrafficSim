@@ -9,12 +9,6 @@
 class IntelligentDriverModel {
 public:
     /**
-     * advance car based of data
-     * @param data data representing the change
-     */
-    static void advanceStep(Car &car, Scenario &scenario);
-
-    /**
      * calculate the desired acceleration. base calculation on leading object
      * @param leading_object leading object. may actually be in a different lane, this methods treats every object
      *      passed with this parameter as if it where in current lane
@@ -22,14 +16,9 @@ public:
      */
     static double getAcceleration(Car *car, TrafficObject *leading_vehicle);
 
-
-
-
-
-
-private:
     static void updateLane(Car &car, Scenario &scenario);
 
+private:
     static void moveCarAcrossJunction(Car &Car, Scenario &scenario);
 
     static bool isCarOverJunction(Car &car);

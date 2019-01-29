@@ -8,10 +8,11 @@
 
 #include <vector>
 #include "Junction.h"
+
 class Lane;
 
-
 class Road {
+
 public:
 
     struct NeighboringLanes {
@@ -21,14 +22,6 @@ public:
 
     Road(Junction *from, Junction *to, double limit, Junction::Direction roadDir) : from(from), to(to), limit(limit), roadDir(roadDir) {};
 
-    /**
-     * properties
-     */
-    Junction *from;
-    Junction *to;
-    double limit;
-
-    std::vector<Lane*> lanes;
     /**
      * must return first left than right.
      * @param lane
@@ -42,11 +35,17 @@ public:
      */
     Junction::Direction getDirection();
 
-private:
+    /**
+     * properties
+     */
+    Junction *from;
+    Junction *to;
+    double limit;
+
+    std::vector<Lane*> lanes;
+
     Junction::Direction roadDir;
 
 };
-
-
 
 #endif //PROJECT_ROAD_H

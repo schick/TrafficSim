@@ -5,10 +5,7 @@
 #ifndef PROJECT_SCENARIO_H
 #define PROJECT_SCENARIO_H
 
-
-#include <memory>
 #include <unordered_map>
-#include <cmath>
 #include <BaseScenario.h>
 
 #include "util/json.hpp"
@@ -26,13 +23,6 @@ class Scenario : public BaseScenario {
 
 public:
 
-    std::vector<Junction> junctions;
-    std::vector<Road> roads;
-    std::vector<Lane> lanes;
-    std::vector<Car> cars;
-    size_t current_step;
-    size_t total_steps;
-
     // Main parse function
     void parse(json &input) override;
 
@@ -45,12 +35,18 @@ public:
     // Get sum of travelledDistance of all cars
     double getTravelledDistance() override;
 
+    std::vector<Junction> junctions;
+    std::vector<Road> roads;
+    std::vector<Lane> lanes;
+    std::vector<Car> cars;
+    size_t current_step;
+    size_t total_steps;
+
 protected:
 
     // Overridable method that handles parsing of Signals
     virtual void parseSignals(const json &input);
 
-    //TODO: Set hash algorithm to just take the id
     // Needed for faster parsing
     std::unordered_map<uint64_t, Junction*> junctionsMap;
 
@@ -66,6 +62,5 @@ protected:
     double calcRoadLength(Junction* from, Junction *to);
 
 };
-
 
 #endif //PROJECT_SCENARIO_H

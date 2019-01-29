@@ -19,16 +19,16 @@ LaneChangeModel::calculateLaneChangeMetric(Car &car, Lane::NeighboringObjects &s
 
     if (hasFrontSpaceOnOtherLane(car, otherNeighbors) && hasBackSpaceOnOtherLane(car, otherNeighbors)) {
 
-        double sameLaneAcceleration = car.sameLaneAcceleration;
+        double sameLaneAcceleration = car.advance_data.sameLaneAcceleration;
         double otherLaneAcceleration = IntelligentDriverModel::getAcceleration(&car, otherNeighbors.front);
 
         if (otherLaneAcceleration > sameLaneAcceleration) {
 
             if (isLeftLane) {
-                car.leftLaneAcceleration = otherLaneAcceleration;
+                car.advance_data.leftLaneAcceleration = otherLaneAcceleration;
             }
             else {
-                car.rightLaneAcceleration = otherLaneAcceleration;
+                car.advance_data.rightLaneAcceleration = otherLaneAcceleration;
             }
 
             double other_lane_diff = 0;
@@ -52,10 +52,10 @@ LaneChangeModel::calculateLaneChangeMetric(Car &car, Lane::NeighboringObjects &s
 
 bool LaneChangeModel::hasFrontSpaceOnOtherLane(Car &car, Lane::NeighboringObjects &otherNeighbors) {
     return otherNeighbors.front == nullptr ||
-        (otherNeighbors.front->getPosition() - car.getPosition()) >= (car.length / 2);
+        (otherNeighbors.front->x - car.x) >= (car.length / 2);
 }
 
 bool LaneChangeModel::hasBackSpaceOnOtherLane(Car &car, Lane::NeighboringObjects &otherNeighbors) {
     return otherNeighbors.back == nullptr ||
-        (car.getPosition() - otherNeighbors.back->getPosition()) >= (car.length / 2) + car.min_distance;
+        (car.x - otherNeighbors.back->x) >= (car.length / 2) + car.min_distance;
 }

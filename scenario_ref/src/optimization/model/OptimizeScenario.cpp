@@ -45,7 +45,7 @@ void OptimizeScenario::reset() {
         Car &car_instance = this->cars[idx];
 
         car_instance.v = 0;
-        car_instance.setPosition(car["start"]["distance"]);
+        car_instance.x = car["start"]["distance"];
 
         uint64_t fromID = car["start"]["from"];
         uint64_t toID = car["start"]["to"];
@@ -56,19 +56,19 @@ void OptimizeScenario::reset() {
         uint8_t startLaneIndex = car["start"]["lane"];
 
         auto lane = from->outgoing[roadDir]->lanes[startLaneIndex];
-        car_instance.moveToLane(lane);
+        car_instance.moveToLane(*lane);
 
         car_instance.turns.clear();
         for (const auto &route : car["route"])
             car_instance.turns.emplace_back(route);
 
-        car_instance.setTravelledDistance(0);
+        car_instance.travelledDistance = 0;
         car_instance.a = 0;
-        car_instance.new_acceleration = 0;
-        car_instance.new_lane_offset = 0;
-        car_instance.sameLaneAcceleration = 0;
-        car_instance.rightLaneAcceleration = 0;
-        car_instance.leftLaneAcceleration = 0;
+        car_instance.advance_data.new_acceleration = 0;
+        car_instance.advance_data.new_lane_offset = 0;
+        car_instance.advance_data.sameLaneAcceleration = 0;
+        car_instance.advance_data.rightLaneAcceleration = 0;
+        car_instance.advance_data.leftLaneAcceleration = 0;
         idx++;
     }
     current_step = 0;

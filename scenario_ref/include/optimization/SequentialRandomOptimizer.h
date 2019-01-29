@@ -15,8 +15,6 @@ private:
 
     size_t iterations = 0;
 
-    std::mutex solutionLock;
-
 public:
 
     SequentialRandomOptimizer(nlohmann::json &scenarioData, const std::string &algorithm) : BaseOptimizer(scenarioData, algorithm) {}

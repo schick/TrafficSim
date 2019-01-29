@@ -11,13 +11,11 @@ SET(SOURCE_FILES
         include/model/Lane.h
         src/model/Lane.cpp
         include/model/TrafficLight.h
-        src/model/TrafficLight.cpp
         include/model/Road.h
         src/model/Road.cpp
         include/model/Scenario.h
         src/model/Scenario.cpp
         include/model/TrafficObject.h
-        src/model/TrafficObject.cpp
         include/algorithms/SequentialAlgorithm.h
         src/algorithms/SequentialAlgorithm.cpp
         include/algorithms/OpenMPAlgorithm.h
@@ -35,7 +33,11 @@ SET(SOURCE_FILES
         include/optimization/ParallelRandomOptimizer.h
         src/optimization/ParallelRandomOptimizer.cpp
         include/optimization/model/SignalLayout.h
-        src/optimization/model/SignalLayout.cpp src/optimization/GeneticOptimizer.cpp include/optimization/GeneticOptimizer.h src/optimization/SequentialRandomOptimizer.cpp include/optimization/SequentialRandomOptimizer.h)
+        src/optimization/model/SignalLayout.cpp
+        src/optimization/GeneticOptimizer.cpp
+        include/optimization/GeneticOptimizer.h
+        src/optimization/SequentialRandomOptimizer.cpp
+        include/optimization/SequentialRandomOptimizer.h)
 
 if(OpenCV_FOUND)
     set(SOURCE_FILES ${SOURCE_FILES} src/Visualization.cpp)
