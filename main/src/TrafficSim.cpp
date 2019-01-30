@@ -55,8 +55,8 @@ void trafficSim::calculate(nlohmann::json &input, SimpleArgumentParser &p) {
 
 #ifdef VISUALIZATION_ENABLED
     std::shared_ptr<BaseVisualizationEngine> visualization = advancer->createVisualizationEngine(advancer->getScenario());
-    std::string video_fn("output.avi");
-    visualization->setVideoPath(video_fn, 1);
+    std::string video_fn("output.png");
+    visualization->setImageBasePath(video_fn);
     visualization->render_image();
 #endif
 
