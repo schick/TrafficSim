@@ -16,22 +16,20 @@ Lane::NeighboringObjects Lane::getNeighboringObjects(Car *trafficObject) {
     if (mCars.empty()) {
         return result;
     }
+    auto end = getCars().end();
+    auto begin = getCars().begin();
 
-    auto it = std::lower_bound(getCars().begin(), getCars().end(), trafficObject, Car::Cmp);
+    auto it = std::lower_bound(begin, end, trafficObject, Car::Cmp);
 
-    if (it != getCars().begin()) {
+    if (it != begin)
         result.back = *(it - 1);
-    }
 
-    if (getCars().end() == it || *it != trafficObject) {
-        if (it != getCars().end()) {
-            result.front = *it;
-        }
-    } else {
-        if (it + 1 != getCars().end()) {
-            result.front = *(it + 1);
-        }
-    }
+    // skip ego vehicle
+    while(it != end && *it == trafficObject)
+        it++;
+
+    if(it != end) result.front = *it;
+
 
     /**
     if (trafficLight.isRed) {
