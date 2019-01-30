@@ -30,16 +30,10 @@ void SequentialAlgorithm::sortLanes() {
     }
 }
 
-void SequentialAlgorithm::cacheNeighbors() {
-    for(int i = 0; i < getRefScenario()->roads.size(); i++) {
-        getRefScenario()->roads[i].preCalcNeighbors();
-    }
-}
 
 void SequentialAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
         sortLanes();
-        cacheNeighbors();
         prepareCars();
         advanceCars();
         advanceTrafficLights();

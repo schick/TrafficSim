@@ -26,7 +26,6 @@ public:
     void advanceCars();
     void advanceTrafficLights();
     void advance(std::size_t steps) override;
-    void cacheNeighbors();
     void sortLanes();
 };
 
