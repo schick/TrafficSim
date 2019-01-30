@@ -12,9 +12,9 @@
 #include <mutex>
 
 #include "TrafficLight.h"
+#include "Road.h"
 
 class Car;
-class Road;
 
 class Lane {
 
@@ -24,6 +24,8 @@ public:
     std::vector<Car *> const &getCars() const {
         return mCars;
     }
+
+    Road::NeighboringLanes neighboringLanes;
 
     /**
      * stores neighboring objects on a lane based on a given position on lane.

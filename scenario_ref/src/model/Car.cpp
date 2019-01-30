@@ -18,13 +18,10 @@ void Car::prepareNextMove() {
 
     Lane *lane = getLane();
 
-    Road::NeighboringLanes neighboringLanes = lane->road.getNeighboringLanes(lane);
-
     calcSameLaneAcceleration(sameNeighbors.front);
 
-    double m_left = getLaneChangeMetric(sameNeighbors, neighboringLanes.left, leftNeighbors, true);
-
-    double m_right = getLaneChangeMetric(sameNeighbors, neighboringLanes.right, rightNeighbors, false);
+    double m_left = getLaneChangeMetric(sameNeighbors, lane->neighboringLanes.left, leftNeighbors, true);
+    double m_right = getLaneChangeMetric(sameNeighbors, lane->neighboringLanes.right, rightNeighbors, false);
 
     if (m_left > 1 && m_left >= m_right) {
         // go to left lane

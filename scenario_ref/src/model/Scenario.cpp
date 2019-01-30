@@ -96,6 +96,10 @@ Junction::Direction Scenario::calcDirectionOfRoad(Junction *from, Junction *to) 
 void Scenario::createLanesForRoad(uint8_t laneCount, double roadLength, Road &road_obj) {
     for (uint8_t lane_id = 0; lane_id < laneCount; lane_id++) {
         lanes.emplace_back(lane_id, road_obj, roadLength);
+        if(road_obj.lanes.size() > 0) {
+            road_obj.lanes.back()->neighboringLanes.right = &lanes.back();
+            lanes.back().neighboringLanes.left = road_obj.lanes.back();
+        }
         road_obj.lanes.push_back(&(lanes.back()));
     }
 }
