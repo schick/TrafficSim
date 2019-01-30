@@ -19,7 +19,6 @@ class Road;
 class Lane {
 
 public:
-
     void sortCars();
 
     std::vector<Car *> const &getCars() const {
@@ -33,6 +32,9 @@ public:
         NeighboringObjects() : front(nullptr), back(nullptr) {};
         TrafficObject *front = nullptr;
         Car *back = nullptr;
+        bool operator==(const NeighboringObjects &other) {
+            return other.front == front && other.back == back;
+        }
     };
 
     Lane(int lane, Road &road, double length) : lane(lane), road(road), mCars(), length(length), trafficLight(this) {}

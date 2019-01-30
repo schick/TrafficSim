@@ -15,6 +15,8 @@ class Road {
 
 public:
 
+    void preCalcNeighbors();
+
     struct NeighboringLanes {
         Lane *right = nullptr;
         Lane *left = nullptr;

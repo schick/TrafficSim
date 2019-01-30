@@ -36,9 +36,17 @@ void OpenMPAlgorithm::sortLanes() {
     }
 }
 
+void OpenMPAlgorithm::cacheNeighbors() {
+    #pragma omp parallel for
+    for(int i = 0; i < getRefScenario()->roads.size(); i++) {
+        getRefScenario()->roads[i].preCalcNeighbors();
+    }
+}
+
 void OpenMPAlgorithm::advance(size_t steps) {
     for (int i = 0; i < steps; i++) {
         sortLanes();
+        cacheNeighbors();
         prepareCars();
         advanceCars();
         advanceTrafficLights();

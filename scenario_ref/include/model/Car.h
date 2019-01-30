@@ -17,6 +17,9 @@ class Car : public TrafficObject {
 
 public:
 
+    Lane::NeighboringObjects leftNeighbors;
+    Lane::NeighboringObjects rightNeighbors;
+    Lane::NeighboringObjects sameNeighbors;
     /**
      * compare object to compare Traffic objects by
      */
